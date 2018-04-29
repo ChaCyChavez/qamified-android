@@ -1,18 +1,6 @@
 import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
-
-// First, checks if it isn't implemented yet.
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
-}
+import UserStore from './UserStore.js';
 
 class LoginStore {
   @observable
@@ -21,77 +9,64 @@ class LoginStore {
   @observable
   error = ""
 
-  emailLogin = (navigation, user) => {
-    firebase.auth().signInWithEmailAndPassword(user.email_username, user.password)
+  emailLogin = (navigation, cred) => {
+    firebase.auth()
+      .signInWithEmailAndPassword(cred.email_username, cred.password)
       .then(() => {
         firebase.database()
-          .ref('usernames')
-          .child(user.email_username)
-          .once('value', (snapshot) => {
-            if(snapshot.val() !== null) {
-              var uid = snapshot.val()
-              firebase.database()
-                .ref('users')
-                .child(uid)
-                .once('value', (snapshot) => {
-                  if(snapshot.val() !== null) {
-                    this.user = snapshot.val()
-                  }
-                })
+          .ref('/user')
+          .orderByChild('email')
+          .equalTo(user.email_username)
+          .limitToFirst(1)
+          .on('child_added', (user) => {
+            if (user) {
+              UserStore.user = user
             }
           })
-        this.loginState.loading = false;
-        this.loginState.error = ""
+        this.loading = false;
+        this.error = ""
         navigation.navigate('Tab');
       })
       .catch((error) => {
-        this.loginState.loading = false;
-        this.loginState.error = "Login failed"
+        this.loading = false;
+        this.error = "Login failed"
       })
   }
 
-  usernameLogin = (navigation, user) => {
+  usernameLogin = (navigation, cred) => {
     firebase.database()
-        .ref('usernames')
-        .child(user.email_username)
-        .once('value', (snapshot) => {
-          if(snapshot.val() !== null) {
-            var uid = snapshot.val()
-            firebase.database()
-              .ref('users')
-              .child(uid)
-              .once('value', (snapshot) => {
-                if(snapshot.val() !== null) {
-                  this.user = snapshot.val();
-                  this.user.id = snapshot.key;
-                  firebase.auth().signInWithEmailAndPassword(this.user.email, user.password)
-                    .then(() => {
-                      this.loginState.loading = false;
-                      this.loginState.error = ""
-                      navigation.navigate('Tab');
-                    })
-                    .catch((error) => {
-                      this.user = {}
-                      this.loginState.loading = false;
-                      this.loginState.error = error.message
-                    })
-                }
-                else {
-                  this.loginState.loading = false;
-                  this.loginState.error = "Invalid email or username" 
-                }
-              })
-          } 
-          else {
-            this.loginState.loading = false;
-            this.loginState.error = "Invalid email or username"
-          }
-        })
+      .ref('/user')
+      .orderByChild('username')
+      .equalTo(cred.email_username)
+      .limitToFirst(1)
+      .on('child_added', user => {
+        if(user.val() !== null) {
+          UserStore.user = user.val()
+          UserStore.user.id = user.key
+          firebase.auth()
+            .signInAndRetrieveDataWithEmailAndPassword(UserStore.user.email, cred.password)
+            .then(() => {
+              this.loading = false;
+              this.error = ""
+              navigation.navigate('Tab');
+            })
+            .catch((error) => {
+              UserStore.user = {}
+              this.loading = false;
+              this.error = error.message
+            })
+        } 
+        else {
+          this.loading = false;
+          this.error = "Invalid email or username"
+        }
+      })
   }
 
   login = (navigation, user) => {
-    this.loginState.loading = true;
-    this.loginState.error = ""
+    console.log('Login')
+    this.loading = true;
+    this.error = ""
 
     var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     if(regex.test(user.email_username)){

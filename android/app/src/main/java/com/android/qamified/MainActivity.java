@@ -1,4 +1,4 @@
-package com.android.qamified;
+package com.qamified.qamified;
 
 import com.facebook.react.ReactActivity;
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet,
          KeyboardAvoidingView,
-         View } from 'react-native';
+         View, } from 'react-native';
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -11,16 +11,17 @@ import { Drawer,
          Container,
          Input,
          Item,
-         Icon } from 'native-base';
-import firebase from 'react-native-firebase';
+         Icon,
+         Spinner} from 'native-base';
 import { observer } from 'mobx-react';
-import Store from '../mobx/Store.js';
+import { LoginStore,
+         UserStore } from '../mobx';
 
 @observer
 
 export default class Login extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       email_username: "",
@@ -28,49 +29,52 @@ export default class Login extends React.Component {
     }
   }
 
-  render() {
-    
-    return (
-      <KeyboardAvoidingView 
-        behavior="padding" 
-        style={styles.container}>
-          <Text 
-            style={styles.title}>
-              QAmifiED
-          </Text>
-          <Text 
-            style={styles.subtitle}>
-              A Question and Answer Platform
-          </Text>
-          <View 
-            style={styles.form}>   
-              { this.renderForm() }
-              { this.renderLoginButton() }
-            <Button 
-              block 
-              transparent 
-              onPress={this.navigateToRegister}>
-                <Text 
-                  uppercase={false} 
-                  style={styles.registerButton}>
-                    Not a member? Register.
-                </Text>
-            </Button>
-          </View>
-      </KeyboardAvoidingView>
-    );
+  componentDidMount() {
+    UserStore.isLoggedIn(this.props.navigation)
   }
 
-  navigateToRegister = () => {
-    this.props.navigation.navigate('Register')
-  };
-
-  login = () => {
-    Store.login(this.props.navigation, this.state);
-  };
+  render() {
+    if(!UserStore.user){
+      return (
+        <KeyboardAvoidingView 
+          behavior="padding" 
+          style={styles.container}>
+            <Text 
+              style={styles.title}>
+                QAmifiED
+            </Text>
+            <Text 
+              style={styles.subtitle}>
+                A Question and Answer Platform
+            </Text>
+            <View 
+              style={styles.form}>   
+                { this.renderForm() }
+                { this.renderLoginButton() }
+              <Button 
+                block 
+                transparent 
+                onPress={this.navigateToRegister}>
+                  <Text 
+                    uppercase={false} 
+                    style={styles.registerButton}>
+                      Not a member? Register.
+                  </Text>
+              </Button>
+            </View>
+        </KeyboardAvoidingView>
+      )
+    } else {
+      return (
+        <View style={styles.container}>
+          <Spinner color='black' />
+        </View>
+      )
+    }
+  }
 
   renderLoginButton = () => {
-    if(Store.loginState.loading) {
+    if(LoginStore.loading) {
       return (
         <Button 
           block 
@@ -99,7 +103,7 @@ export default class Login extends React.Component {
   };
 
   renderForm = () => {
-    if(Store.loginState.error) {
+    if(LoginStore.error) {
       return (
         <View>
           <Item error style={{marginBottom: 10}}>
@@ -119,7 +123,7 @@ export default class Login extends React.Component {
                 onChangeText={(input) => this.setState({password: input})}
              />
           </Item>
-          <Text style={styles.errorMessage}>{ Store.loginState.error }</Text>
+          <Text style={styles.errorMessage}>{ LoginStore.error }</Text>
         </View>
       )
     }
@@ -145,7 +149,15 @@ export default class Login extends React.Component {
         </Item>
       </View>
     )
-  };
+  }
+  
+  navigateToRegister = () => {
+    this.props.navigation.navigate('Register')
+  }
+
+  login = () => {
+    LoginStore.login(this.props.navigation, this.state);
+  }
 }
 
 const styles = StyleSheet.create({

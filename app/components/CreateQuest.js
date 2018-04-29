@@ -17,20 +17,14 @@ import { Text,
          Icon,
          Input,
          Item } from 'native-base';
-import firebase from 'react-native-firebase';
 import { observer } from 'mobx-react';
-import Store from '../mobx/Store.js';
+import { UserStore } from '../mobx';
 
 @observer
 
 export default class CreateQuest extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      title: "",
-      description: "",
-    }
   }
 
   render() {
@@ -45,8 +39,9 @@ export default class CreateQuest extends React.Component {
                       small
                       source={{ uri:'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }} />
                         <Body>
-                        <Text>{Store.fullName}</Text>
-                    </Body>
+                          <Text style={styles.full_name}>{ UserStore.fullName }</Text>
+                          <Text style={styles.username} note>{ "@" + UserStore.user.username }</Text>
+                        </Body>
                   </Left>
                 </CardItem>
                 <CardItem>
@@ -54,7 +49,7 @@ export default class CreateQuest extends React.Component {
                     <Input
                       style={styles.title}
                       placeholder="Title"
-                      onChangeText={(input) => this.setState({title: input})}/>
+                      onChangeText={(input) => {UserStore.title = input}}/>
                   </Item>
                 </CardItem>
                 <CardItem>
@@ -63,7 +58,7 @@ export default class CreateQuest extends React.Component {
                       style={styles.description}
                       multiline={true}
                       placeholder="Ask question.."
-                      onChangeText={(input) => this.setState({description: input})}/>
+                      onChangeText={(input) => {UserStore.description = input}}/>
                   </Item>
                 </CardItem>
                 <CardItem>
@@ -84,7 +79,7 @@ export default class CreateQuest extends React.Component {
   }
 
   renderPostButton = () => {
-    if(this.state.loading) {
+    if(UserStore.loading) {
       return (
         <Button
           block
@@ -111,13 +106,26 @@ export default class CreateQuest extends React.Component {
   };
 
   postQuest = () => {
-    Store.postQuest(this.props.navigation, this.state)
+    var currDate = new Date();
+    var quest = {
+      date_created: currDate.getTime(),
+      title: UserStore.title,
+      description: UserStore.description,
+      votes: 0,
+      user_id: UserStore.user.id,
+      is_answered: false,
+      username: UserStore.user.username,
+      full_name: UserStore.fullName,
+      solutions: {},
+    }
+
+    UserStore.postQuest(this.props.navigation, quest)
   };
 
   renderErrorMessage = () => {
-    if(this.state.error) {
+    if(UserStore.error) {
       return (
-        <Text>{this.state.error}</Text>
+        <Text>{UserStore.error}</Text>
       )
     }
   };
@@ -144,10 +152,11 @@ const styles = StyleSheet.create({
     width: responsiveWidth(100),
     backgroundColor: "#dddddd",
   },
-  title: {
-
+  full_name: {
+    fontSize: 18,
+    fontWeight: "bold",
   },
-  description: {
-    height: 50,
+  username: {
+    fontSize: 16,
   },
 });

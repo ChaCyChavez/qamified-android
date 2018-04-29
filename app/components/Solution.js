@@ -18,10 +18,10 @@ import { Text,
          Input,
          Icon } from 'native-base';
 import Reply from './Reply.js';
-
-import firebase from 'react-native-firebase';
 import { observer } from 'mobx-react';
-import Store from '../mobx/Store.js';
+import { SolutionStore,
+         UserStore,
+         QuestStore } from '../mobx';
 
 @observer
 
@@ -40,13 +40,19 @@ export default class Solution extends React.Component {
 
   render() {
     var reply = []
-    if(this.props.item.reply) {
-      var reply = this.props.item.reply.map(function(item, index) {
+    if(this.props.solution.reply) {
+      var reply = this.props.solution.reply.map(function(item, index) {
         return (
-          <Reply item={item} key={index}/>
+          <Reply reply={item} key={index}/>
         );
       }, this);
     }
+
+    const isCorrect = (is_correct) => {
+      if (is_correct) {
+        return (<Icon name="ios-checkmark" size={32}/>);
+      }
+    };
 
     return (
       <Card>
@@ -56,18 +62,19 @@ export default class Solution extends React.Component {
               small
               source={{ uri:this.state.avatar_url }} />
                 <Body>
-                  <View style={styles.name}>
-                    <Text style={styles.full_name}>{ this.props.item.full_name }</Text>
-                    <Text style={styles.username} note>{ "@" + this.props.item.username }</Text>
+                  <View>
+                    <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
+                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { this.props.solution.date_created }</Text>
                   </View>
                 </Body>
           </Left>
         </CardItem>
         <CardItem>
-          <Text>{ this.props.item.description }</Text>
+          <Text style={styles.description}>{ this.props.solution.description }</Text>
         </CardItem>
         <CardItem>
           <Left>
+            { isCorrect(this.props.solution.is_correct) }
             <Button transparent>
               <Icon
                 name="ios-arrow-up"
@@ -78,49 +85,38 @@ export default class Solution extends React.Component {
                 name="ios-arrow-down"
                 size={32}/>
             </Button>
-            <Text>{ this.props.item.votes }</Text>
+            <Text>{ this.props.solution.votes }</Text>
           </Left>
         </CardItem>
-        <Card transparent>
-          { reply }
+          { reply } 
+        <CardItem>
           <Item style={styles.addComment}>
             <Input 
+                value={SolutionStore.reply}
                 style={styles.answerInput}
                 multiline={true}
                 placeholder="Add comment"
-                underlineColorAndroid="transparent"
-                onChangeText={(input) => this.setState({comment_input: input})}/>
+                onChangeText={(input) => {SolutionStore.reply = input}}/>
             <Icon 
               name="ios-send"
-              size={64}
-              onPress={ () => this.postReply(this.props.item.id) }/>
+              onPress={ () => this.postReply(this.props.solution._id) }/>
           </Item>
-        </Card>
+        </CardItem>
       </Card>
     );
   }
 
-  postReply = (id) => {
-    this.setState({loading: true});
+  postReply = (solution_id) => {
     var currDate = new Date()
     var reply = {
+      solution_id: solution_id,
       date_created: currDate.getTime(),
-      description: this.state.comment_input,
-      user_id: Store.user.id,
-      username: Store.user.username,
-      full_name: "{0} {1}. {2}".format(Store.user.first_name, Store.user.middle_name.charAt(0), Store.user.last_name),
+      description: SolutionStore.reply,
+      user_id: UserStore.user.id,
+      username: UserStore.user.username,
+      full_name: UserStore.fullName,
     }
-    this.state.comment_input.clear();
-    
-    firebase.database()
-      .ref('posts/' + Store.questState.current_quest.id + "/solutions/" + id + "/reply")
-      .push().set(reply)
-      .then(() => {
-        this.setState({error: "", loading: false, comment_input: ""})
-      })
-      .catch((error) => {
-        this.setState({error: error.message, loading: false})
-      })
+    SolutionStore.postReply(reply, this.props.solution)
   }
 }
 
@@ -170,8 +166,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   username: {
-    fontSize: 18,
-    marginLeft: 5,
+    fontSize: 16,
   },
   addComment: {
     paddingLeft: 10,
@@ -188,6 +183,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   description: {
-    height: 50,
+    fontSize: 18,
   },
 });

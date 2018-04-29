@@ -16,12 +16,12 @@ import { Text,
          Button,
          Item,
          Input,
-         Icon } from 'native-base';
+         Icon,
+         Spinner } from 'native-base';
 import Solution from './Solution.js';
-
-import firebase from 'react-native-firebase';
 import { observer } from 'mobx-react';
-import Store from '../mobx/Store.js';
+import { QuestStore,
+         UserStore } from '../mobx';
 
 @observer
 
@@ -29,28 +29,26 @@ export default class Quest extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.postSolution = this.postSolution.bind(this)
     this.state = {
       avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      error: "",
-      answer_input: "",
-      comment_input: "",
-      loading: false,
     }
   };
 
   render() {
 
-    let itemsLength = Store.questState.current_quest.solutions ? Store.questState.current_quest.solutions.length : 0;
+    let itemsLength = QuestStore.current_solutions ? QuestStore.current_solutions.length : 0;
 
     const isAnswered = (isAnswered) => {
       return (isAnswered ? <Text note>Answered</Text> : <Text note>Unanswered</Text>);
     };
 
     var solutions = []
-    if(Store.questState.current_quest.solutions) {
-      var solutions = Store.questState.current_quest.solutions.map((item, index) => {
+    if(itemsLength > 0) {
+      solutions = QuestStore.current_solutions.map((item, index) => {
         return (
-          <Solution item={item} key={index}/>
+          <Solution solution={item} key={index}/>
         );
       }, this);
     }
@@ -61,10 +59,13 @@ export default class Quest extends React.Component {
         <KeyboardAvoidingView style={{flexGrow: 1}} >
           <Card>
             <CardItem>
-                <Text
-                  style={styles.title}>
-                    {Store.questState.current_quest.title}
-                </Text>
+              <Text
+                style={styles.title}>
+                  {QuestStore.current_quest.title}
+              </Text>
+            </CardItem>
+            <CardItem>
+              { isAnswered(QuestStore.current_quest.is_answered) }
             </CardItem>
             <CardItem>
               <Left>
@@ -72,16 +73,15 @@ export default class Quest extends React.Component {
                   small 
                   source={{ uri:this.state.avatar_url }} />
                     <Body>
-                      <View style={styles.name}>
-                        <Text style={styles.full_name}>{ Store.questState.current_quest.full_name }</Text>
-                        <Text style={styles.username} note>{ "@" + Store.questState.current_quest.username }</Text>
+                      <View>
+                        <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
+                        <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { QuestStore.current_quest.date_created }</Text>
                       </View>
-                      { isAnswered(Store.questState.current_quest.is_answered) }
                     </Body>
               </Left>
             </CardItem>
             <CardItem>
-              <Text>{ Store.questState.current_quest.description }</Text>
+              <Text style={styles.description}>{ QuestStore.current_quest.description }</Text>
             </CardItem>
             <CardItem>
               <Left>
@@ -95,56 +95,47 @@ export default class Quest extends React.Component {
                     name="ios-arrow-down"
                     size={32}/>
                 </Button>
-                <Text>{ Store.questState.current_quest.votes }</Text>
+                <Text>{ QuestStore.current_quest.votes }</Text>
               </Left>
             </CardItem>
           </Card>
           <Card>
-            <CardItem>
-              <Text>{ itemsLength } Answer/s</Text>
+            <CardItem style={styles.spinCon}>
+              { QuestStore.initializing ? <Spinner color='black' /> : <Text>{ itemsLength } Answer/s</Text> }
             </CardItem>
-
-            { solutions }
-
-            <Card>
-              <CardItem>
-                <Left>
-                  <Thumbnail
-                    small
-                    source={{ uri:this.state.avatar_url }} />
-                      <Body>
-                        <View style={styles.name}>
-                          <Text style={styles.full_name}>{ Store.fullName }</Text>
-                          <Text style={styles.username} note>{ "@" + Store.user.username }</Text>
-                        </View>
-                      </Body>
-                </Left>
-              </CardItem>
-              <CardItem>
-                <Item>
-                  <Input 
-                    style={styles.answerInput}
-                    multiline={true}
-                    placeholder="Post answer..."
-                    onChangeText={(input) => this.setState({answer_input: input})}/>
-                </Item>
-              </CardItem>
-              <CardItem>
-                <Item regular>
-                  <Right>
-                    <Button
-                      block
-                      dark
-                      onPress={ this.postSolution }>
-                        <Text
-                          uppercase={false}>
-                            Submit
-                        </Text>
-                    </Button>
-                  </Right>
-                </Item>
-              </CardItem>
-            </Card>
+          </Card>
+          { QuestStore.initializing ? <View></View> : solutions }
+          <Card>
+            <CardItem>
+              <Left>
+                <Thumbnail  
+                  small
+                  source={{ uri:this.state.avatar_url }} />
+                    <Body>
+                      <View>
+                        <Text style={styles.full_name}>{ UserStore.fullName }</Text>
+                        <Text style={styles.username} note>{ "@" + UserStore.user.username }</Text>
+                      </View>
+                    </Body>
+              </Left>
+            </CardItem>
+            <CardItem>
+              <Item>
+                <Input
+                  value={QuestStore.solution}
+                  style={styles.answerInput}
+                  multiline={true}
+                  placeholder="Post answer..."
+                  onChangeText={(input) => {QuestStore.solution = input}}/>
+              </Item>
+            </CardItem>
+            <CardItem>
+              <Item regular>
+                <Right>
+                  { this.renderPostButton() }
+                </Right>
+              </Item>
+            </CardItem>
           </Card>
         </KeyboardAvoidingView> 
         </ScrollView>
@@ -153,7 +144,7 @@ export default class Quest extends React.Component {
   }
 
   renderPostButton = () => {
-    if(this.state.loading) {
+    if(QuestStore.loading) {
       return (
         <Button
           block
@@ -180,56 +171,32 @@ export default class Quest extends React.Component {
   };
 
   postSolution = () => {
-    this.setState({loading: true});
     var currDate = new Date()
     var solution = {
+      quest_id: QuestStore.current_quest._id,
       date_created: currDate.getTime(),
       is_correct: false,
-      description: this.state.answer_input,
+      description: QuestStore.solution,
       votes: 0,
-      user_id: Store.user.id,
-      username: Store.user.username,
-      full_name: "{0} {1}. {2}".format(Store.user.first_name, Store.user.middle_name.charAt(0), Store.user.last_name),
+      user_id: UserStore.user.id,
+      username: UserStore.user.username,
+      full_name: UserStore.fullName,
     }
-
-    firebase.database()
-      .ref('posts/' + Store.questState.current_quest.id + "/solutions")
-      .push().set(solution)
-      .then(() => {
-        this.setState({error: "", loading: false, answer_input: ""})
-      })
-      .catch((error) => {
-        this.setState({error: error.message, loading: false})
-      })
+    QuestStore.postSolution(solution);
+    
   };
 
-  postReply = (id) => {
-    this.setState({loading: true});
-    var currDate = new Date()
-    var reply = {
-      date_created: currDate.getTime(),
-      description: this.state.comment_input,
-      user_id: Store.user.id,
-      username: Store.user.username,
-      full_name: "{0} {1}. {2}".format(Store.user.first_name, Store.user.middle_name.charAt(0), Store.user.last_name),
-    }
-    
-    firebase.database()
-      .ref('posts/' + Store.questState.current_quest.id + "/solutions/" + id + "/reply")
-      .push().set(reply)
-      .then(() => {
-        this.setState({error: "", loading: false, answer_input: ""})
-      })
-      .catch((error) => {
-        this.setState({error: error.message, loading: false})
-      })
-  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E7ECEF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  spinCon: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -264,16 +231,12 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "white",
   },
-  name: {
-    flexDirection: "row",
-  },
   full_name: {
     fontSize: 18,
     fontWeight: "bold",
   },
   username: {
-    fontSize: 18,
-    marginLeft: 5,
+    fontSize: 16,
   },
   readMore: {
     color: "blue",
@@ -283,6 +246,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   description: {
-    height: 50,
+    fontSize: 18,
   },
 });

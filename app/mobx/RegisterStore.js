@@ -1,5 +1,6 @@
 import { observable, computed } from 'mobx';
-import firebase from '../firebase/firebase.js';
+import firebase from 'react-native-firebase';
+import UserStore from './UserStore.js';   
 
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {
@@ -14,70 +15,59 @@ if (!String.prototype.format) {
   };
 }
 
-class LoginStore {
+class RegisterStore {
   @observable
   loading = false
 
   @observable
   error = ""
 
-  insertNewUser = (navigation, username, uid) => {
-    var json = JSON.parse('{' + '"' + username + '"' + ':"' + uid + '"}')
-    firebase.database()
-      .ref('usernames').update(json)
-      .then((data) => {
-        this.registerState.loading = false;
-        this.registerState.error = "Done!"
-        navigation.navigate('Tab');
-      })
-      .catch((error) => {
-        this.registerState.loading = false;
-        this.registerState.error = error.message;
-      });
-  }
+  // insertNewUser = (navigation, username, uid) => {
+  //   var json = JSON.parse('{' + '"' + username + '"' + ':"' + uid + '"}')
+  //   firebase.database()
+  //     .ref('usernames').update(json)
+  //     .then((data) => {
+  //       this.loading = false;
+  //       this.error = "Done!"
+  //       navigation.navigate('Tab');
+  //     })
+  //     .catch((error) => {
+  //       this.loading = false;
+  //       this.error = error.message;
+  //     });
+  // }
 
-  register = (navigation, user) => {
-    this.registerState.loading = true;
-    this.user = {
-      first_name: user.first_name,
-      middle_name: user.mid_name,
-      last_name: user.last_name,
-      institution: user.institution,
-      email: user.email,
-      username: user.username,
-      description: "",
-      achievements: [],
-      points: 0,
-      experience: 0,
-      level: 1,
-      rank: "Beginner",
-    }
-
+  register = (navigation, user, password) => {
+    this.loading = true;
     firebase.database()
-      .ref('usernames')
+      .ref('/user')
       .child(user.username)
       .once('value', (snapshot) => {
         if(snapshot.val() === null) {
-          firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+          firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(user.email, password)
             .then((_user) => {
               firebase.database()
-                .ref('users').child(_user.uid).set(this.user)
+                .ref('user').child(_user.user.uid).set(user)
                 .then(() => {
-                  this.insertNewUser(navigation, user.username, _user.uid);
+                  this.loading = false;
+                  this.error = ""
+                  UserStore.user = user
+                  UserStore.user.id = _user.user.uid
+                  navigation.navigate('Tab');
                 })
                 .catch((error) => {
-                  this.registerState.loading = false;
-                  this.registerState.error = error.message;
+                  this.loading = false;
+                  this.error = error.message;
                 });
             })
             .catch((error) => {
-              this.registerState.loading = false;
-              this.registerState.error = error.message;
+              this.loading = false;
+              this.error = error.message;
             });
         }
         else {
-          this.registerState.loading = false;
-          this.registerState.error = "Username already exists";
+          this.loading = false;
+          this.error = "Username already exists";
         }
       })
   }

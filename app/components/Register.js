@@ -11,9 +11,8 @@ import { Item,
          Button, 
          Text,
          Icon } from 'native-base';
-import firebase from 'react-native-firebase';
 import { observer } from 'mobx-react';
-import Store from '../mobx/Store.js';
+import { RegisterStore } from '../mobx';
 
 @observer
 
@@ -210,7 +209,7 @@ export default class Register extends React.Component {
   };
 
   renderRegisterButton = () => {
-    if(Store.registerState.loading) {
+    if(RegisterStore.loading) {
       return (
         <Button 
           block 
@@ -254,7 +253,7 @@ export default class Register extends React.Component {
 
   renderErrorMessage = () => {
     return(
-      <Text>{Store.registerState.error}</Text>
+      <Text>{RegisterStore.error}</Text>
     )
   };
 
@@ -263,7 +262,21 @@ export default class Register extends React.Component {
   };
 
   register = () => {
-    Store.register(this.props.navigation, this.state);
+    var user = {
+      first_name: this.state.first_name,
+      middle_name: this.state.mid_name,
+      last_name: this.state.last_name,
+      institution: this.state.institution,
+      email: this.state.email,
+      username: this.state.username,
+      description: "",
+      achievements: {},
+      points: 0,
+      experience: 0,
+      level: 1,
+      rank: "Beginner",
+    }
+    RegisterStore.register(this.props.navigation, user, this.state.password);
   };
 }
 

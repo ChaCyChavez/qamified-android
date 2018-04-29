@@ -15,11 +15,12 @@ import { Text,
          Button,
          Icon,
          Input,
-         Item } from 'native-base';
-import firebase from 'react-native-firebase';
-
+         Item,
+         Spinner } from 'native-base';
 import { observer } from 'mobx-react';
-import Store from '../mobx/Store.js';
+import { QuestStore,
+         UserStore,
+         FeedStore } from '../mobx';
 
 @observer
 
@@ -34,7 +35,7 @@ export default class Feed extends React.Component {
   }
 
   componentDidMount() {
-    Store.initFeed()
+    FeedStore.initFeed()
   }
 
   render() {
@@ -45,14 +46,18 @@ export default class Feed extends React.Component {
       return (isAnswered ? <Text note>Answered</Text> : <Text note>Unanswered</Text>);
     };
 
-    var listItems = Store.feedState.posts.map((item, index) => {
+    var loading = <Spinner color='black' />
+    var listItems = FeedStore.quests.map((item, index) => {
       return (
         <Card key={index}>
           <CardItem>
-              <Text
-                style={styles.title}>
-                  {item.title}
-              </Text>
+            <Text
+              style={styles.title}>
+                {item.title}
+            </Text>
+          </CardItem>
+          <CardItem>
+            { isAnswered(item.is_answered) }
           </CardItem>
           <CardItem>
             <Left>
@@ -60,16 +65,15 @@ export default class Feed extends React.Component {
                 small
                 source={{ uri:this.state.avatar_url }} />
                   <Body>
-                    <View style={styles.name}>
-                      <Text style={styles.full_name}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username }</Text>
+                    <View>
+                      <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183; { item.date_created }</Text>
                     </View>
-                    { isAnswered(item.is_answered) }
                   </Body>
             </Left>
           </CardItem>
           <CardItem>
-            <Text>{item.description}</Text>
+            <Text style={styles.description}>{item.description}</Text>
           </CardItem>
           <CardItem>
             <Left>
@@ -126,7 +130,7 @@ export default class Feed extends React.Component {
                 </Left>
               </CardItem>
             </Card>
-            { listItems }
+            { FeedStore.loading ? loading : listItems }
           </ScrollView>
         </View>
 
@@ -135,7 +139,7 @@ export default class Feed extends React.Component {
   }
 
   viewQuest = (quest) => {
-    Store.setCurrentQuest(quest, this.props.navigation);
+    QuestStore.setCurrentQuest(quest, this.props.navigation);
   }
  }
 
@@ -178,16 +182,12 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "white",
   },
-  name: {
-    flexDirection: "row",
-  },
   full_name: {
     fontSize: 18,
     fontWeight: "bold",
   },
   username: {
-    fontSize: 18,
-    marginLeft: 5,
+    fontSize: 16,
   },
   readMore: {
     color: "blue",
@@ -195,5 +195,8 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 24,
+  },
+  description: {
+    fontSize: 18,
   },
 });

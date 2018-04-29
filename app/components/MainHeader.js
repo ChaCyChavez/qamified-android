@@ -15,6 +15,7 @@ import { ActionSheet,
          Button,
          Icon } from 'native-base';
 import SideMenu from './SideMenu.js';
+import { UserStore } from '../mobx';
 
 var BUTTONS = [{ text: "Option 0", icon: "american-football", iconColor: "#2c8ef4" },
   { text: "Option 1", icon: "analytics", iconColor: "#f42ced" },
@@ -62,7 +63,7 @@ export default class MainHeader extends React.Component {
   }
   checkClicked = (buttonClicked) => {
     if(buttonClicked.text === "Logout") {
-      this.props.navigation.navigate('Login')
+      UserStore.logOut(this.props.navigation)
     }
   }
 }

@@ -1,5 +1,6 @@
 import { observable, computed } from 'mobx';
-import firebase from '../firebase/firebase.js';
+import firebase from 'react-native-firebase';
+import FeedStore from './FeedStore.js';
 
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {
@@ -14,45 +15,84 @@ if (!String.prototype.format) {
   };
 }
 
-class LoginStore {
+class QuestStore {
   @observable
   loading = false
 
   @observable
+  initializing = false
+
+  @observable
   error = ""
 
-  postQuest = (navigation, quest) => {
-    this.createQuestState.loading = true;
-    var currDate = new Date();
-    this.quest = {
-      date_created: currDate.getTime(),
-      title: quest.title,
-      description: quest.description,
-      votes: 0,
-      user_id: this.user.id,
-      is_answered: false,
-      username: this.user.username,
-      full_name: "{0} {1}. {2}".format(this.user.first_name, this.user.middle_name.charAt(0), this.user.last_name),
-      solutions: {},
-    }
+  @observable
+  solution = ""
 
+  @observable
+  current_quest = {}
+
+  @observable
+  current_solutions = []
+
+  setCurrentQuest = (quest, navigation) => {
+    this.current_quest = quest;
+    this.current_solutions = []
+    navigation.navigate("Quest")
+    this.initializing = true
     firebase.database()
-      .ref('posts').push().set(this.quest)
-      .then(() => {
-        this.createQuestState.loading = false;
-        this.createQuestState.error = "";
-        navigation.navigate('Tab');
+      .ref('solution/').orderByChild("quest_id").equalTo(quest._id)
+      .once('value', solutions => {
+        if (solutions !== null) {
+          solutions.forEach(s => {
+            var solution = s.val()
+            solution.reply = []
+
+            firebase.database()
+              .ref('reply/').orderByChild("solution_id").equalTo(solution._id)
+              .once('value', replies => {
+                if (replies !== null) {
+                  replies.forEach(r => {
+                    var reply = r.val()
+
+                    solution.reply.push(reply)
+                  })
+                }
+                this.current_solutions.push(solution)
+              })
+          })
+        }
       })
-      .catch((error) => {
-        this.createQuestState.loading = false;
-        this.createQuestState.error = error.message;
-      })
+
+    setTimeout(() => {this.initializing = false}, 2000)
   }
 
+  postSolution = (solution) => {
+    this.loading = true;
 
-  setCurrentQuest = (quest) => {
-    this.questState.current_quest = quest;
-  };
+    let s = solution
+
+    const newSolutionKey = firebase.database().ref().child('solution').push().key
+    s._id = newSolutionKey
+
+    const updates = {}
+    updates[`/quest/${s.quest_id}/solution/${newSolutionKey}`] = true
+    updates[`/user/${s.user_id}/solution/${newSolutionKey}`] = true
+    updates[`/solution/${s._id}`] = s
+
+    firebase.database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        this.loading = false;
+        this.error = "";
+        this.solution = "";
+        this.current_solutions.push(s);
+      })
+      .catch((error) => {
+        this.loading = false;
+        this.error = error.message;
+      })
+  }
 }
 
 export default new QuestStore();

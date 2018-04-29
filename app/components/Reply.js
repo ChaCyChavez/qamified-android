@@ -17,10 +17,7 @@ import { Text,
          Item,
          Input,
          Icon } from 'native-base';
-import firebase from 'react-native-firebase';
 import { observer } from 'mobx-react';
-import Store from '../mobx/Store.js';
-
 @observer
 
 export default class Reply extends React.Component {
@@ -38,15 +35,13 @@ export default class Reply extends React.Component {
 
   render() {
     return (
-    <View>
       <CardItem bordered transparent>
-        <Text style={styles.description}>{ this.props.item.description }</Text>
-        <View style={styles.name}>
-          <Text style={styles.full_name}> - { this.props.item.full_name }</Text>
-          <Text style={styles.username} note>{ "@" + this.props.item.username }</Text>
+        <View>
+          <Text style={styles.full_name}>{ this.props.reply.full_name }</Text>
+          <Text style={styles.username} note>{ "@" + this.props.reply.username } &#183; { this.props.reply.date_created }</Text>
+          <Text style={styles.description}>&#183; { this.props.reply.description }</Text>
         </View>
       </CardItem>
-    </View>
     );
   }
 }
@@ -57,12 +52,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   full_name: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
   },
   username: {
     fontSize: 14,
-    marginLeft: 5,
   },
   readMore: {
     color: "blue",
@@ -73,6 +67,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginLeft: 20,
+    marginLeft: 5,
   },
 });
