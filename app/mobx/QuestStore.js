@@ -1,6 +1,7 @@
 import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
 import FeedStore from './FeedStore.js';
+import UserStore from './UserStore.js';
 
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {

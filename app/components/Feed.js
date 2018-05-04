@@ -30,7 +30,6 @@ export default class Feed extends React.Component {
     super(props);
     this.state = {
       avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      items: [],
     };
   }
 
@@ -77,15 +76,21 @@ export default class Feed extends React.Component {
           </CardItem>
           <CardItem>
             <Left>
-              <Button transparent>
+              <Button
+                bordered
+                onPress={() => this.upvote(item)}
+                style={{borderColor: 'white'}}>
                 <Icon 
                   name="ios-arrow-up" 
-                  size={32}/>
+                  style={{fontSize: 28}}/>
               </Button>
-              <Button transparent>
+              <Button
+                bordered
+                onPress={() => this.downvote(item)}
+                style={{borderColor: 'white'}}>
                 <Icon 
                   name="ios-arrow-down"
-                  size={32}/>
+                  style={{fontSize: 28}}/>
               </Button>
               <Text>{item.votes}</Text>
             </Left>
@@ -140,6 +145,14 @@ export default class Feed extends React.Component {
 
   viewQuest = (quest) => {
     QuestStore.setCurrentQuest(quest, this.props.navigation);
+  }
+
+  upvote = (quest) => {
+    FeedStore.upvoteQuest(quest)
+  }
+
+  downvote = (quest) => {
+    FeedStore.downvoteQuest(quest)
   }
  }
 

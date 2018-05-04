@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, StatusBar, Platform, TextInput, Text, View, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, StatusBar, Platform, TextInput, Text, View, TouchableOpacity, Button, Keyboard } from 'react-native';
 import { DrawerNavigator, TabNavigator, StackNavigator, TabBarBottom, NavigationActions } from 'react-navigation';
 import { Icon } from 'native-base';
 
@@ -12,6 +12,8 @@ import Profile from '../components/Profile.js';
 import Notification from '../components/Notification.js';
 import SideMenu from '../components/SideMenu.js';
 import MainHeader from '../components/MainHeader.js';
+import Todo from '../components/Todo.js';
+import Achievements from '../components/Achievements.js';
 
 export const Stack = StackNavigator({
   Login: {
@@ -50,14 +52,28 @@ export const Tab = TabNavigator({
     screen: Feed,
     navigationOptions: {
       tabBarLabel: 'Feed',
-      tabBarIcon: ({ tintColor }) => <Icon name="ios-home" size={25} style={styles.tabIcon} />
+      tabBarIcon: ({ tintColor }) => <Icon name="ios-home" size={25} style={styles.tabIcon} />,
     },
   },
   Profile: {
     screen: Profile,
     navigationOptions: {
       tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => <Icon name="ios-person" size={25} style={styles.tabIcon} />
+      tabBarIcon: ({ tintColor }) => <Icon name="ios-person" size={25} style={styles.tabIcon} />,
+    },
+  },
+  Todo: {
+    screen: Todo,
+    navigationOptions: {
+      tabBarLabel: 'Todo',
+      tabBarIcon: ({ tintColor }) => <Icon name="ios-list-box" size={25} style={styles.tabIcon} />
+    },
+  },
+  Achievements: {
+    screen: Achievements,
+    navigationOptions: {
+      tabBarLabel: 'Achievements',
+      tabBarIcon: ({ tintColor }) => <Icon name="ios-trophy" size={25} style={styles.tabIcon} />
     },
   },
   Notification: {
@@ -87,7 +103,7 @@ export const Tab = TabNavigator({
       margin: 0
     },
     labelStyle: {
-      fontSize: 10,
+      fontSize: 8,
       color: 'white',
     },
   }

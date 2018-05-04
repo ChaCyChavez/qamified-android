@@ -47,12 +47,37 @@ class UserStore {
           .ref('/user')
           .orderByChild('email')
           .equalTo(user.email)
-          .limitToFirst(1)
           .on('child_added', _user => {
             if (_user.val() != null) {
               this.user = _user.val()
-              this.loading = false
-              navigation.navigate('Tab')
+              this.user.id = _user.key
+              var reps = []
+              var sols = []
+              firebase.database()
+                .ref(`/user/${_user.key}/reply`)
+                .once('value', (replies) => {
+                  if (replies) {
+                    replies.forEach(r => {
+                      var reply = r.key
+                      reps.push(reply)
+                    })
+                    this.user.reply = reps
+                    this.loading = false
+                  }
+                  firebase.database()
+                    .ref(`/user/${_user.key}/solution`)
+                    .once('value', (solutions) => {
+                      if (solutions) {
+                        solutions.forEach(s => {
+                          var solution = s.key
+                          sols.push(solution)
+                        })
+                        this.user.solution = sols
+                        this.loading = false
+                        navigation.navigate('Tab')
+                      }
+                    })
+                })
             }
           })
       }

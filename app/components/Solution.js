@@ -50,7 +50,7 @@ export default class Solution extends React.Component {
 
     const isCorrect = (is_correct) => {
       if (is_correct) {
-        return (<Icon name="ios-checkmark" size={32}/>);
+        return (<Icon name="ios-checkmark-circle" style={{fontSize: 24, color: "green"}}/>);
       }
     };
 
@@ -70,23 +70,51 @@ export default class Solution extends React.Component {
           </Left>
         </CardItem>
         <CardItem>
-          <Text style={styles.description}>{ this.props.solution.description }</Text>
+          <View>
+          <Text style={styles.description}> { isCorrect(this.props.solution.is_correct) } { this.props.solution.description }</Text>
+          </View>
         </CardItem>
         <CardItem>
           <Left>
-            { isCorrect(this.props.solution.is_correct) }
-            <Button transparent>
+            
+            <Button
+              bordered
+              style={{borderColor: 'white'}}
+              onPress={() => this.upvote(this.props.solution)}>
               <Icon
                 name="ios-arrow-up"
-                size={32}/>
+                style={{fontSize: 28}}/>
             </Button>
-            <Button transparent>
+            <Button
+              bordered
+              style={{borderColor: 'white'}}
+              onPress={() => this.downvote(this.props.solution)}>
               <Icon 
                 name="ios-arrow-down"
-                size={32}/>
+                style={{fontSize: 28}}/>
             </Button>
             <Text>{ this.props.solution.votes }</Text>
           </Left>
+          <Body>
+          </Body>
+            <Button
+              bordered
+              style={{borderColor: 'white'}}
+              onPress={() => this.markAsSolution(this.props.solution)}>
+              <Icon 
+                name="ios-checkmark" 
+                style={{fontSize: 34}}/>
+            </Button>
+          <Right>
+            <Button
+              bordered
+              style={{borderColor: 'white'}}
+              onPress={() => this.markAsSolution(this.props.solution)}>
+              <Icon 
+                name="ios-trash" 
+                style={{fontSize: 28}}/>
+            </Button>
+          </Right>
         </CardItem>
           { reply } 
         <CardItem>
@@ -99,7 +127,8 @@ export default class Solution extends React.Component {
                 onChangeText={(input) => {SolutionStore.reply = input}}/>
             <Icon 
               name="ios-send"
-              onPress={ () => this.postReply(this.props.solution._id) }/>
+              onPress={ () => this.postReply(this.props.solution._id) }
+              style={{fontSize: 32}}/>
           </Item>
         </CardItem>
       </Card>
@@ -117,6 +146,18 @@ export default class Solution extends React.Component {
       full_name: UserStore.fullName,
     }
     SolutionStore.postReply(reply, this.props.solution)
+  };
+
+  upvote = (solution) => {
+    SolutionStore.upvoteSolution(solution)
+  };
+
+  downvote = (solution) => {
+    SolutionStore.downvoteSolution(solution)
+  }
+
+  markAsSolution = (solution) => {
+    SolutionStore.markAsSolution(solution)
   }
 }
 

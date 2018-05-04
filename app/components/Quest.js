@@ -21,7 +21,8 @@ import { Text,
 import Solution from './Solution.js';
 import { observer } from 'mobx-react';
 import { QuestStore,
-         UserStore } from '../mobx';
+         UserStore,
+         FeedStore } from '../mobx';
 
 @observer
 
@@ -85,18 +86,34 @@ export default class Quest extends React.Component {
             </CardItem>
             <CardItem>
               <Left>
-                <Button transparent>
+                <Button
+                  bordered
+                  style={{borderColor: 'white'}}
+                  onPress={() => this.upvote(item)}>
                   <Icon
                     name="ios-arrow-up"
-                    size={32}/>
+                    style={{fontSize: 28}}/>
                 </Button>
-                <Button transparent>
+                <Button
+                  bordered
+                  style={{borderColor: 'white'}}
+                  onPress={() => this.downvote(item)}>
                   <Icon
                     name="ios-arrow-down"
-                    size={32}/>
+                    style={{fontSize: 28}}/>
                 </Button>
                 <Text>{ QuestStore.current_quest.votes }</Text>
               </Left>
+              <Right>
+                <Button
+                  bordered
+                  style={{borderColor: 'white'}}
+                  onPress={() => {}}>
+                  <Icon 
+                    name="ios-trash" 
+                    style={{fontSize: 28}}/>
+                </Button>
+              </Right>
             </CardItem>
           </Card>
           <Card>
@@ -183,8 +200,15 @@ export default class Quest extends React.Component {
       full_name: UserStore.fullName,
     }
     QuestStore.postSolution(solution);
-    
   };
+
+  upvote = (quest) => {
+    FeedStore.upvoteQuest(quest)
+  };
+
+  downvote = (quest) => {
+    FeedStore.downvoteQuest(quest)
+  }
 
 }
 

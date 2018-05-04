@@ -52,8 +52,7 @@ export default class Login extends React.Component {
                 { this.renderForm() }
                 { this.renderLoginButton() }
               <Button 
-                block 
-                transparent 
+                transparent
                 onPress={this.navigateToRegister}>
                   <Text 
                     uppercase={false} 

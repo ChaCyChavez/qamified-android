@@ -2,7 +2,9 @@ import React from 'react';
 import { StyleSheet,
          TextInput,
          ScrollView,
-         View } from 'react-native';
+         View,
+         TouchableHighlight,
+         Modal } from 'react-native';
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -14,55 +16,97 @@ import { Text,
          Card,
          CardItem,
          Button,
-         Icon } from 'native-base';
+         Icon,
+         Item,
+         Input,
+         Spinner } from 'native-base';
+import { observer } from 'mobx-react';
+import { UserStore,
+         ProfileStore,
+         QuestStore } from '../mobx';
+
+@observer
 
 export default class Profile extends React.Component {
+  constructor(props) {
+
+    super(props);
+    this.state = {
+      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+      editing: false,
+      bio: UserStore.user.description,
+    };
+  }
+
+  componentDidMount() {
+    ProfileStore.initProfileFeed()
+  }
+
   render() {
-    var items = [{ id: 0, user: "Charles Cyrus S.J. Chavez", avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg', question: "How long should it take to learn Python completely and start developing programs?", is_answered: true, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                  { id: 1, user: "Charles Cyrus S.J. Chavez", avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg', question: "Do Japanese people like foreigners who try to speak Japanese?", is_answered: false, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                  { id: 2, user: "Charles Cyrus S.J. Chavez", avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg', question: "Where did Mark Zuckerberg code Facebook? Not it's physical location but the program used (by program, I don't mean coding languages).", is_answered: false, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                  { id: 3, user: "Charles Cyrus S.J. Chavez", avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg', question: "Is GraphQL a REST killer?", is_answered: true, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                  { id: 4, user: "Charles Cyrus S.J. Chavez", avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg', question: "Which Japanese words are used incorrectly abroad?", is_answered: true, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." }];
-    
     const isAnswered = (isAnswered) => {
       return (isAnswered ? <Text note>Answered</Text> : <Text note>Unanswered</Text>);
     };
 
-    var listItems = items.map(function(item, index) {
+    var loading = <Spinner color='black' />
+    var listItems = ProfileStore.profileFeed.map((item, index) => {
       return (
         <Card key={index}>
           <CardItem>
-              <Text
-                style={styles.title}>
-                  {item.question}
-              </Text>
+            <Text
+              style={styles.title}>
+                {item.title}
+            </Text>
           </CardItem>
           <CardItem>
-            <Text>{item.description}</Text>
+            { isAnswered(item.is_answered) }
           </CardItem>
           <CardItem>
             <Left>
-              <Button transparent>
+              <Thumbnail 
+                small
+                source={{ uri:this.state.avatar_url }} />
+                  <Body>
+                    <View>
+                      <Text style={styles.postFullName} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183; { item.date_created }</Text>
+                    </View>
+                  </Body>
+            </Left>
+          </CardItem>
+          <CardItem>
+            <Text style={styles.description}>{item.description}</Text>
+          </CardItem>
+          <CardItem>
+            <Left>
+              <Button
+                bordered
+                style={{borderColor: 'white'}}
+                onPress={() => this.upvote(item)}>
                 <Icon 
-                  name="md-arrow-up"
-                  size={32}/>
+                  name="ios-arrow-up" 
+                  style={{fontSize: 28}}/>
               </Button>
-              <Button transparent>
-                <Icon
-                  name="md-arrow-down"
-                  size={32}/>
+              <Button
+                bordered
+                style={{borderColor: 'white'}}
+                onPress={() => this.downvote(item)}>
+                <Icon 
+                  name="ios-arrow-down"
+                  style={{fontSize: 28}}/>
               </Button>
-              <Text>14324</Text>
+              <Text>{item.votes}</Text>
             </Left>
             <Right>
               <Button
                 transparent
-                primary 
-                onPress={() => this.props.navigation.navigate('Quest')}>
-                  <Text
+                primary
+                onPress={ () => this.viewQuest(item) }
+                iconRight>
+                  <Text 
                     uppercase={false}>
-                      Read more >
+                      Read more
                   </Text>
+                  <Icon name="ios-arrow-forward" />
               </Button>
             </Right>
           </CardItem>
@@ -73,39 +117,143 @@ export default class Profile extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView behavior="padding" style={styles.scrollView}>
-          <Card>
+          <View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={false}
+              onRequestClose={() => {
+                alert('Modal has been closed.');
+              }}>
+              <View style={{ flex:1, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={styles.modalContent }>
+                  <Text>Hello World!</Text>
+
+                  <TouchableHighlight
+                    onPress={() => {
+                      this.setModalVisible(!this.state.modalVisible);
+                    }}>
+                    <Text>Hide Modal</Text>
+                  </TouchableHighlight>
+                </View>
+              </View>
+            </Modal>
+          </View>
+
+          <Card style={styles.infoContainer}>
             <CardItem>
-              <Icon
-                name="person"
-                size={64} 
-                onPress={() => {}}/>
+              <Thumbnail 
+                small
+                source={{ uri:this.state.avatar_url }} />
             </CardItem>
             <CardItem>
               <Text
                 style={styles.fullName}>
-                  Charles Cyrus S.J. Chavez
+                  { UserStore.fullName }
               </Text>
             </CardItem>
             <CardItem>
               <Text
                 style={styles.email}>
-                  chacychavez@gmail.com
+                  { UserStore.user.email }
               </Text>
             </CardItem>
             <CardItem>
-              <Text 
-                style={styles.bio}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              <Text
+                style={styles.stats}>
+                  { UserStore.user.points } &nbsp;
+                  { UserStore.user.points > 1 ? "points" : "point" }
+              </Text>
+              <Text
+                style={styles.stats}>
+                  &#183; &nbsp;
+                  Level &nbsp;
+                  { UserStore.user.level }
+              </Text>
+              <Text
+                style={styles.stats}>
+                  &#183; &nbsp;
+                  { UserStore.user.rank }
               </Text>
             </CardItem>
+            <CardItem>
+              { this.renderDescription() }
+            </CardItem>
+            <CardItem>
+              { this.renderButton() }
+            </CardItem>
           </Card>
-
           <View>
-            {listItems}
+            { ProfileStore.loading ? loading : listItems }
           </View>
         </ScrollView>
       </View>
     );
+  };
+
+  renderDescription = () => {
+    if(this.state.editing) {
+      return(
+         <Input
+            autoFocus={true}
+            style={styles.bio}
+            value={this.state.bio}
+            multiline={true}
+            placeholder="Add description"
+            onChangeText={(input) => {this.setState({bio: input})}}/>
+      )
+    } else {
+      return(
+        <Text 
+          style={styles.bio}>
+          { UserStore.user.description }
+        </Text>
+      )
+    }
+  };
+
+  renderButton = () => {
+    if(this.state.editing) {
+      return(
+        <Button
+          transparent
+          primary
+          onPress={ () => { this.updateBio() } }>
+            <Text 
+              uppercase={false}>
+               Save
+            </Text>
+        </Button>
+      )
+    } else {
+      return(
+        <Button
+          transparent
+          primary
+           onPress={() => {this.setState({editing: true})}}>
+            <Text 
+              uppercase={false}>
+                Edit description
+            </Text>
+        </Button>
+      )
+    }
+  }
+
+  updateBio = () => {
+    ProfileStore.updateBio(this)
+  }
+
+  viewQuest = (quest) => {
+    QuestStore.setCurrentQuest(quest, this.props.navigation);
+  }
+
+  upvote = (quest) => {
+    ProfileStore.upvoteQuest(quest)
+  }
+
+  downvote = (quest) => {
+    ProfileStore.downvoteQuest(quest)
   }
 }
 
@@ -113,6 +261,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E7ECEF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  infoContainer : {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -132,15 +285,29 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   fullName: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 28,
+    fontWeight: "bold",
+  },
+  postFullName: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  username: {
+    fontSize: 16,
+  },
+  stats: {
+    fontSize: 16,
+    color: "#222222",
+    textAlign: 'center',
   },
   email: {
     fontSize: 16,
-    fontWeight: 'bold',
+    textAlign: 'center',
   },
   bio: {
     textAlign: 'center',
+    fontSize: 16,
   },
   title: {
     fontSize: 30,
@@ -159,4 +326,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 24,
   },
+  description: {
+    fontSize: 18,
+  }
 });

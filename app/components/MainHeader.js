@@ -48,14 +48,13 @@ export default class MainHeader extends React.Component {
                   },
                   buttonIndex => { this.checkClicked(BUTTONS[buttonIndex]) }
                 )}>
-                  <Icon name="ios-menu" size={32} style={styles.headerIcon}/>
+                  <Icon name="ios-menu" style={styles.headerIcon}/>
               </Button>
               <Input placeholder="Search" />
               <Button transparent>
                 <Icon
                   name="ios-create"
-                  style={styles.headerIcon}
-                  size={32}/>
+                  style={styles.headerIcon}/>
               </Button>
             </Item>
         </Header>
@@ -68,17 +67,14 @@ export default class MainHeader extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({ 
-  container: {
-    height: 35,
-  },
+const styles = StyleSheet.create({
   header: {
     width: responsiveWidth(100),
     backgroundColor: "#222222",
   },
   searchBar: {
     width: responsiveWidth(60),
-    height: 35,
+    height: 36,
     fontSize: 16,
     backgroundColor: 'white',
     padding: 8,
@@ -87,7 +83,8 @@ const styles = StyleSheet.create({
   },
   headerIcon: {
     margin: 0,
-    color: '#222222'
+    color: '#222222',
+    fontSize: 30,
   },
 });
 

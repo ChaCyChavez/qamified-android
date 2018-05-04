@@ -4,3 +4,4 @@ export { default as RegisterStore } from './RegisterStore.js';
 export { default as QuestStore } from './QuestStore.js';
 export { default as SolutionStore } from './SolutionStore.js';
 export { default as FeedStore } from './FeedStore.js';
+export { default as ProfileStore } from './ProfileStore.js';
