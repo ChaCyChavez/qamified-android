@@ -23,7 +23,8 @@ import { Text,
 import { observer } from 'mobx-react';
 import { UserStore,
          ProfileStore,
-         QuestStore } from '../mobx';
+         QuestStore,
+         FeedStore } from '../mobx';
 
 @observer
 
@@ -84,7 +85,7 @@ export default class Profile extends React.Component {
                 onPress={() => this.upvote(item)}>
                 <Icon 
                   name="ios-arrow-up" 
-                  style={{fontSize: 28}}/>
+                  style={{fontSize: 28, color: this.isUpvoted(item.upvote) ? 'green' : 'grey'}}/>
               </Button>
               <Button
                 bordered
@@ -92,7 +93,7 @@ export default class Profile extends React.Component {
                 onPress={() => this.downvote(item)}>
                 <Icon 
                   name="ios-arrow-down"
-                  style={{fontSize: 28}}/>
+                  style={{fontSize: 28, color: this.isDownvoted(item.downvote) ? 'red' : 'grey'}}/>
               </Button>
               <Text>{item.votes}</Text>
             </Left>
@@ -191,6 +192,26 @@ export default class Profile extends React.Component {
     );
   };
 
+  isUpvoted = (upvote) => {
+    if(!upvote) {
+      return false
+    } else if(upvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  isDownvoted = (downvote) => {
+    if(!downvote) {
+      return false
+    } else if(downvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   renderDescription = () => {
     if(this.state.editing) {
       return(
@@ -249,11 +270,11 @@ export default class Profile extends React.Component {
   }
 
   upvote = (quest) => {
-    ProfileStore.upvoteQuest(quest)
+    FeedStore.upvoteQuest(quest)
   }
 
   downvote = (quest) => {
-    ProfileStore.downvoteQuest(quest)
+    FeedStore.downvoteQuest(quest)
   }
 }
 

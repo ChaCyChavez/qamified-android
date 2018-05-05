@@ -45,6 +45,7 @@ class SolutionStore {
         this.error = ""
         this.reply = ""
         solution.reply.push(r)
+
       })
       .catch((error) => {
         this.loading = false
@@ -52,47 +53,101 @@ class SolutionStore {
       })
   }
 
-  upvoteSolution = (solution) => {
-    const updates = {}
-    updates[`solution/${solution._id}/upvote/${UserStore.user.id}`] = true
-    updates[`solution/${solution._id}/votes`] = solution.votes + 1
+  upvoteSolution = solution => {
+    if (solution.downvote && solution.downvote.includes(UserStore.user.id)) {
+      const updates = {}
+      updates[`/solution/${solution._id}/downvote/${UserStore.user.id}`] = null
+      updates[`/solution/${solution._id}/votes`] = solution.votes + 1
 
-    firebase.database()
-      .ref()
-      .update(updates)
-      .then(() => {
-        this.loading = false
-        this.error = ""
-        solution.votes += 1
-      })
-      .catch((error) => {
-        this.loading = false
-        this.error = error.message
-      })
+      solution.downvote = solution.downvote.filter(function(user) {
+        return user != UserStore.user.id;
+      });
+
+      firebase.database()
+        .ref()
+        .update(updates)
+        .then(() => {
+          this.loading = false
+          this.error = ""
+          solution.votes += 1
+        })
+        .catch((error) => {
+          this.loading = false
+          this.error = error.message
+        })
+    }
+    else if(!(solution.upvote.includes(UserStore.user.id))) {
+      const updates = {}
+      updates[`/solution/${solution._id}/upvote/${UserStore.user.id}`] = true
+      updates[`/solution/${solution._id}/votes`] = solution.votes + 1
+
+      solution.upvote.push(UserStore.user.id)
+
+      firebase.database()
+        .ref()
+        .update(updates)
+        .then(() => {
+          this.loading = false
+          this.error = ""
+          solution.votes += 1
+        })
+        .catch((error) => {
+          this.loading = false
+          this.error = error.message
+        })
+    }
   }
 
-  downvoteSolution = (solution) => {
-    const updates = {}
-    updates[`solution/${solution._id}/downvote/${UserStore.user.id}`] = true
-    updates[`solution/${solution._id}/votes`] = solution.votes - 1
+  downvoteSolution = solution => {
 
-    firebase.database()
-      .ref()
-      .update(updates)
-      .then(() => {
-        this.loading = false
-        this.error = ""
-        solution.votes -= 1
-      })
-      .catch((error) => {
-        this.loading = false
-        this.error = error.message
-      })
+    if (solution.upvote && solution.upvote.includes(UserStore.user.id)) {
+      const updates = {}
+      updates[`/solution/${solution._id}/upvote/${UserStore.user.id}`] = null
+      updates[`/solution/${solution._id}/votes`] = solution.votes - 1
+
+      solution.upvote = solution.upvote.filter(function(user) {
+        return user != UserStore.user.id;
+      });
+
+      firebase.database()
+        .ref()
+        .update(updates)
+        .then(() => {
+          this.loading = false
+          this.error = ""
+          solution.votes -= 1
+        })
+        .catch((error) => {
+          this.loading = false
+          this.error = error.message
+        })
+    }
+    else if(!(solution.downvote.includes(UserStore.user.id))) {
+      const updates = {}
+      updates[`/solution/${solution._id}/downvote/${UserStore.user.id}`] = true
+      updates[`/solution/${solution._id}/votes`] = solution.votes - 1
+
+
+      solution.downvote.push(UserStore.user.id)
+          
+      firebase.database()
+        .ref()
+        .update(updates)
+        .then(() => {
+          this.loading = false
+          this.error = ""
+          solution.votes -= 1
+        })
+        .catch((error) => {
+          this.loading = false
+          this.error = error.message
+        })
+    }
   }
 
-  markAsSolution = (solution) => {
+  markAsSolution = solution => {
     const updates = {}
-    updates[`solution/${solution._id}/is_correct`] = true
+    updates[`quest/${solution._id}/is_correct`] = true
 
     firebase.database()
       .ref()
@@ -103,7 +158,7 @@ class SolutionStore {
         solution.is_correct = true
 
         const updates = {}
-        updates[`quest/${QuestStore.current_quest._id}/is_answered`] = true
+        updates[`solution/${QuestStore.current_quest._id}/is_answered`] = true
         firebase.database()
           .ref()
           .update(updates)
@@ -121,7 +176,65 @@ class SolutionStore {
         this.loading = false
         this.error = error.message
       })
+  }
 
+  deleteSolution = solution => {
+    if (solution.reply.length > 0) {
+      solution.reply.forEach(reply => {
+        firebase.database()
+          .ref('/reply')
+          .child(reply._id)
+          .remove()
+          .then(() => {
+            const updates = {}
+            updates[`/user/${UserStore.user.id}/reply/${reply._id}`] = null
+
+            firebase.database()
+              .ref()
+              .update(updates)
+              .then(() => {
+                this.removeReply(solution, reply)
+              })
+              .catch(error => console.error(error))
+          })
+          .catch(error => {console.error(error)})
+      })
+    }
+    firebase.database()
+      .ref('/solution')
+      .child(solution._id)
+      .remove()
+      .then(() => {
+        const updates = {}
+        updates[`/user/${UserStore.user.id}/solution/${solution._id}`] = null
+
+        firebase.database()
+          .ref()
+          .update(updates)
+          .then(() => {
+            this.removeSolution(solution)
+          })
+          .catch(error => console.error(error))
+      })
+      .catch(error => {console.error(error)})
+  }
+
+  removeReply = (sol, rep) => {
+    for(let i = 0; i < sol.reply.length; i++) {
+      if(sol.reply[i]._id == rep._id) {
+        sol.reply.splice(i, 1)
+        break
+      }
+    }
+  }
+
+  removeSolution = (sol) => {
+    for(let i = 0; i < QuestStore.current_solutions.length; i++) {
+      if(QuestStore.current_solutions[i]._id == sol._id) {
+        QuestStore.current_solutions.splice(i, 1)
+        break
+      }
+    }
   }
 }
 

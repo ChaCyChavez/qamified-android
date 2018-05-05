@@ -82,7 +82,7 @@ export default class Feed extends React.Component {
                 style={{borderColor: 'white'}}>
                 <Icon 
                   name="ios-arrow-up" 
-                  style={{fontSize: 28}}/>
+                  style={{fontSize: 28, color: this.isUpvoted(item.upvote) ? 'green' : 'gray'}}/>
               </Button>
               <Button
                 bordered
@@ -90,7 +90,7 @@ export default class Feed extends React.Component {
                 style={{borderColor: 'white'}}>
                 <Icon 
                   name="ios-arrow-down"
-                  style={{fontSize: 28}}/>
+                  style={{fontSize: 28, color: this.isDownvoted(item.downvote) ? 'red' : 'gray'}}/>
               </Button>
               <Text>{item.votes}</Text>
             </Left>
@@ -141,6 +141,26 @@ export default class Feed extends React.Component {
 
       </View>
     );
+  }
+
+  isUpvoted = (upvote) => {
+    if(!upvote) {
+      return false
+    } else if(upvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  isDownvoted = (downvote) => {
+    if(!downvote) {
+      return false
+    } else if(downvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
   }
 
   viewQuest = (quest) => {

@@ -126,7 +126,8 @@ export const Base = StackNavigator({
       headerTintColor: '#ffffff',
       headerStyle: {
         backgroundColor: '#222222',
-      }
+      },
+      title: 'Quest',
     }
   },
   CreateQuest: {

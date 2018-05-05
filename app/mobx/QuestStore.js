@@ -47,6 +47,23 @@ class QuestStore {
           solutions.forEach(s => {
             var solution = s.val()
             solution.reply = []
+            var upvotes = []
+            var downvotes = []
+
+            if(solution.upvote) {
+              Object.keys(solution.upvote).forEach(u => {
+                upvotes.push(u)
+              })
+            }
+
+            if(solution.downvote) {
+              Object.keys(solution.downvote).forEach(d => {
+                downvotes.push(d)
+              })
+            }
+
+            solution.upvote = upvotes
+            solution.downvote = downvotes
 
             firebase.database()
               .ref('reply/').orderByChild("solution_id").equalTo(solution._id)
@@ -65,14 +82,15 @@ class QuestStore {
       })
 
     setTimeout(() => {this.initializing = false}, 2000)
+
   }
 
-  postSolution = (solution) => {
+  postSolution = solution => {
     this.loading = true;
 
     let s = solution
 
-    const newSolutionKey = firebase.database().ref().child('solution').push().key
+    const newSolutionKey = firebase.database().ref().child('/solution').push().key
     s._id = newSolutionKey
 
     const updates = {}
@@ -89,10 +107,87 @@ class QuestStore {
         this.solution = "";
         this.current_solutions.push(s);
       })
-      .catch((error) => {
+      .catch(error => {
         this.loading = false;
         this.error = error.message;
       })
+  }
+
+  deleteQuest = (navigation) => {
+    this.current_solutions.forEach(solution => {
+
+      if (solution.reply.length > 0) {
+        solution.reply.forEach(reply => {
+          firebase.database()
+            .ref('/reply')
+            .child(reply._id)
+            .remove()
+            .then(() => {
+              const updates = {}
+              updates[`/user/${UserStore.user.id}/reply/${reply._id}`] = null
+
+              firebase.database()
+                .ref()
+                .update(updates)
+                .then(() => {
+                  this.removeReply(solution, reply)
+                })
+                .catch(error => console.error(error))
+            })
+            .catch(error => {console.error(error)})
+        })
+      }
+      firebase.database()
+        .ref('/solution')
+        .child(solution._id)
+        .remove()
+        .then(() => {
+          const updates = {}
+          updates[`/user/${UserStore.user.id}/solution/${solution._id}`] = null
+
+          firebase.database()
+            .ref()
+            .update(updates)
+            .then(() => {
+              this.removeSolution(solution)
+            })
+            .catch(error => console.error(error))
+        })
+        .catch(error => {console.error(error)})  
+    })
+
+    firebase.database()
+      .ref('/quest')
+      .child(this.current_quest._id)
+      .remove()
+      .then(() => {
+        this.loading = false;
+        this.error = "";
+        navigation.navigate("Tab")
+        FeedStore.removeQuest(quest)
+      })
+      .catch(error => {
+        this.loading = false;
+        this.error = error.message;
+      })
+  }
+
+  removeReply = (sol, rep) => {
+    for(let i = 0; i < sol.reply.length; i++) {
+      if(sol.reply[i]._id == rep._id) {
+        sol.reply.splice(i, 1)
+        break
+      }
+    }
+  }
+
+  removeSolution = (sol) => {
+    for(let i = 0; i < this.current_solutions.length; i++) {
+      if(this.current_solutions[i]._id == sol._id) {
+        this.current_solutions.splice(i, 1)
+        break
+      }
+    }
   }
 }
 

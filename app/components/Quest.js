@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet,
          View,
          ScrollView,
-         KeyboardAvoidingView } from 'react-native';
+         KeyboardAvoidingView,
+         Alert } from 'react-native';
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -89,31 +90,22 @@ export default class Quest extends React.Component {
                 <Button
                   bordered
                   style={{borderColor: 'white'}}
-                  onPress={() => this.upvote(item)}>
+                  onPress={() => this.upvote(QuestStore.current_quest)}>
                   <Icon
                     name="ios-arrow-up"
-                    style={{fontSize: 28}}/>
+                    style={{fontSize: 28, color: this.isDownvoted(QuestStore.current_quest.upvote) ? 'green' : 'gray'}}/>
                 </Button>
                 <Button
                   bordered
                   style={{borderColor: 'white'}}
-                  onPress={() => this.downvote(item)}>
+                  onPress={() => this.downvote(QuestStore.current_quest)}>
                   <Icon
                     name="ios-arrow-down"
-                    style={{fontSize: 28}}/>
+                    style={{fontSize: 28, color: this.isDownvoted(QuestStore.current_quest.downvote) ? 'red' : 'gray'}}/>
                 </Button>
                 <Text>{ QuestStore.current_quest.votes }</Text>
               </Left>
-              <Right>
-                <Button
-                  bordered
-                  style={{borderColor: 'white'}}
-                  onPress={() => {}}>
-                  <Icon 
-                    name="ios-trash" 
-                    style={{fontSize: 28}}/>
-                </Button>
-              </Right>
+              { this.renderDeleteQuestButton() }
             </CardItem>
           </Card>
           <Card>
@@ -160,6 +152,43 @@ export default class Quest extends React.Component {
     );
   }
 
+  isUpvoted = (upvote) => {
+    if(!upvote) {
+      return false
+    } else if(upvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  isDownvoted = (downvote) => {
+    if(!downvote) {
+      return false
+    } else if(downvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  renderDeleteQuestButton = () => {
+    if(QuestStore.current_quest.user_id == UserStore.user.id) {
+      return (
+        <Right>
+          <Button
+            bordered
+            style={{borderColor: 'white'}}
+            onPress={() => this.delete(QuestStore.current_quest)}>
+            <Icon 
+              name="ios-trash" 
+              style={{fontSize: 24}}/>
+          </Button>
+        </Right>
+      )
+    }
+  }
+
   renderPostButton = () => {
     if(QuestStore.loading) {
       return (
@@ -198,6 +227,7 @@ export default class Quest extends React.Component {
       user_id: UserStore.user.id,
       username: UserStore.user.username,
       full_name: UserStore.fullName,
+      reply: []
     }
     QuestStore.postSolution(solution);
   };
@@ -208,6 +238,18 @@ export default class Quest extends React.Component {
 
   downvote = (quest) => {
     FeedStore.downvoteQuest(quest)
+  }
+
+  delete = (quest) => {
+    Alert.alert(
+      'Remove Quest',
+      'Are you sure?',
+      [
+        {text: 'CANCEL', onPress: () => {}},
+        {text: 'YES', onPress: () => QuestStore.deleteQuest(this.props.navigation)},
+      ],
+      { cancelable: true }
+    )
   }
 
 }

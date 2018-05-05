@@ -116,7 +116,7 @@ export default class CreateQuest extends React.Component {
       is_answered: false,
       username: UserStore.user.username,
       full_name: UserStore.fullName,
-      solutions: {},
+      solutions: [],
     }
 
     UserStore.postQuest(this.props.navigation, quest)

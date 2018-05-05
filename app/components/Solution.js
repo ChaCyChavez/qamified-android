@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet,
          View,
          ScrollView,
-         KeyboardAvoidingView } from 'react-native';
+         KeyboardAvoidingView,
+         Alert } from 'react-native';
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -76,14 +77,13 @@ export default class Solution extends React.Component {
         </CardItem>
         <CardItem>
           <Left>
-            
             <Button
               bordered
               style={{borderColor: 'white'}}
               onPress={() => this.upvote(this.props.solution)}>
               <Icon
                 name="ios-arrow-up"
-                style={{fontSize: 28}}/>
+                style={{fontSize: 28, color: this.isUpvoted(this.props.solution.upvote) ? 'green' : 'gray'}}/>
             </Button>
             <Button
               bordered
@@ -91,29 +91,15 @@ export default class Solution extends React.Component {
               onPress={() => this.downvote(this.props.solution)}>
               <Icon 
                 name="ios-arrow-down"
-                style={{fontSize: 28}}/>
+                style={{fontSize: 28, color: this.isDownvoted(this.props.solution.downvote) ? 'red' : 'gray'}}/>
             </Button>
             <Text>{ this.props.solution.votes }</Text>
           </Left>
           <Body>
           </Body>
-            <Button
-              bordered
-              style={{borderColor: 'white'}}
-              onPress={() => this.markAsSolution(this.props.solution)}>
-              <Icon 
-                name="ios-checkmark" 
-                style={{fontSize: 34}}/>
-            </Button>
+            { this.renderCheckSolutionButton(this.props.solution) }
           <Right>
-            <Button
-              bordered
-              style={{borderColor: 'white'}}
-              onPress={() => this.markAsSolution(this.props.solution)}>
-              <Icon 
-                name="ios-trash" 
-                style={{fontSize: 28}}/>
-            </Button>
+            { this.renderDeleteSolutionButton(this.props.solution) }
           </Right>
         </CardItem>
           { reply } 
@@ -135,7 +121,57 @@ export default class Solution extends React.Component {
     );
   }
 
-  postReply = (solution_id) => {
+  isUpvoted = (upvote) => {
+    if(!upvote) {
+      return false
+    } else if(upvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  isDownvoted = (downvote) => {
+    if(!downvote) {
+      return false
+    } else if(downvote.includes(UserStore.user.id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  renderCheckSolutionButton = (solution) => {
+    if(solution.is_answered && solution.user_id == UserStore.user.id) {
+      return (
+        <Button
+          bordered
+          style={{borderColor: 'white'}}
+          onPress={() => this.markAsSolution(solution)}>
+          <Icon 
+            name="ios-checkmark" 
+            style={{fontSize: 34}}/>
+        </Button>
+      )
+    }
+  }
+
+  renderDeleteSolutionButton = (solution) => {
+    if(solution.user_id == UserStore.user.id) {
+      return (
+        <Button
+          bordered
+          style={{borderColor: 'white'}}
+          onPress={() => this.delete(solution)}>
+          <Icon 
+            name="ios-trash" 
+            style={{fontSize: 24}}/>
+        </Button>
+      )
+    }
+  }
+
+  postReply = solution_id => {
     var currDate = new Date()
     var reply = {
       solution_id: solution_id,
@@ -145,19 +181,32 @@ export default class Solution extends React.Component {
       username: UserStore.user.username,
       full_name: UserStore.fullName,
     }
+    // console.error(this.props.solution)
     SolutionStore.postReply(reply, this.props.solution)
   };
 
-  upvote = (solution) => {
+  upvote = solution => {
     SolutionStore.upvoteSolution(solution)
   };
 
-  downvote = (solution) => {
+  downvote = solution => {
     SolutionStore.downvoteSolution(solution)
   }
 
-  markAsSolution = (solution) => {
+  markAsSolution = solution => {
     SolutionStore.markAsSolution(solution)
+  }
+
+  delete = solution => {
+    Alert.alert(
+      'Remove Solution',
+      'Are you sure?',
+      [
+        {text: 'CANCEL', onPress: () => {}},
+        {text: 'YES', onPress: () => SolutionStore.deleteSolution(solution)},
+      ],
+      { cancelable: true }
+    )
   }
 }
 
