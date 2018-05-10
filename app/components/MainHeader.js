@@ -51,11 +51,6 @@ export default class MainHeader extends React.Component {
                   <Icon name="ios-menu" style={styles.headerIcon}/>
               </Button>
               <Input placeholder="Search" />
-              <Button transparent>
-                <Icon
-                  name="ios-create"
-                  style={styles.headerIcon}/>
-              </Button>
             </Item>
         </Header>
     );

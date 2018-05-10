@@ -13,6 +13,7 @@ import { Item,
          Icon } from 'native-base';
 import { observer } from 'mobx-react';
 import { RegisterStore } from '../mobx';
+import moment from 'moment';
 
 @observer
 
@@ -275,6 +276,7 @@ export default class Register extends React.Component {
       experience: 0,
       level: 1,
       rank: "Beginner",
+      date_created: moment().format()
     }
     RegisterStore.register(this.props.navigation, user, this.state.password);
   };

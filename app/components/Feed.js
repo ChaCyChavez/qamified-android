@@ -21,6 +21,7 @@ import { observer } from 'mobx-react';
 import { QuestStore,
          UserStore,
          FeedStore } from '../mobx';
+import moment from 'moment';
 
 @observer
 
@@ -66,7 +67,7 @@ export default class Feed extends React.Component {
                   <Body>
                     <View>
                       <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username } &#183; { item.date_created }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183; { moment(item.date_created).fromNow() }</Text>
                     </View>
                   </Body>
             </Left>

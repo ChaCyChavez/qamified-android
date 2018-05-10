@@ -2,6 +2,8 @@ import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
 import UserStore from './UserStore.js';
 import QuestStore from './QuestStore';
+import moment from 'moment';
+
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {
   String.prototype.format = function() {
@@ -25,6 +27,34 @@ class SolutionStore {
   @observable
   reply = ""
 
+  replyNotification = (quest) => {
+    let n = {
+      description: UserStore.user.username + " posted a reply to your solution.",
+      date_created: moment().format(),
+      user_id: quest.user_id,
+      quest_id: quest._id,
+    }
+
+    const newQuestKey = firebase.database().ref().child('notification').push().key
+    n._id = newQuestKey
+    console.error(n)
+
+    const updates = {}
+    updates[`/notification/${n._id}`] = n
+
+    firebase.database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        this.loading = false
+        this.error = ""
+      })
+      .catch(error => {
+        this.loading = false
+        this.error = error.message
+      })
+  }
+
   postReply = (reply, solution) => {
 
     let r = reply
@@ -46,8 +76,36 @@ class SolutionStore {
         this.reply = ""
         solution.reply.push(r)
 
+        this.replyNotification(QuestStore.current_quest)
       })
       .catch((error) => {
+        this.loading = false
+        this.error = error.message
+      })
+  }
+
+  voteNotification = (quest, liked) => {
+    let n = {
+      description: UserStore.user.username + (liked ? " upvoted" : " downvoted") +  " your solution.",
+      date_created: moment().format(),
+      user_id: quest.user_id,
+      quest_id: quest._id,
+    }
+    
+    const newQuestKey = firebase.database().ref().child('notification').push().key
+    n._id = newQuestKey
+
+    const updates = {}
+    updates[`/notification/${n._id}`] = n
+
+    firebase.database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        this.loading = false
+        this.error = ""
+      })
+      .catch(error => {
         this.loading = false
         this.error = error.message
       })
@@ -70,6 +128,8 @@ class SolutionStore {
           this.loading = false
           this.error = ""
           solution.votes += 1
+
+          this.voteNotification(QuestStore.current_quest, true)
         })
         .catch((error) => {
           this.loading = false
@@ -90,6 +150,8 @@ class SolutionStore {
           this.loading = false
           this.error = ""
           solution.votes += 1
+
+          this.voteNotification(QuestStore.current_quest, true)
         })
         .catch((error) => {
           this.loading = false
@@ -116,6 +178,8 @@ class SolutionStore {
           this.loading = false
           this.error = ""
           solution.votes -= 1
+
+          this.voteNotification(QuestStore.current_quest, false)
         })
         .catch((error) => {
           this.loading = false
@@ -137,6 +201,8 @@ class SolutionStore {
           this.loading = false
           this.error = ""
           solution.votes -= 1
+
+          this.voteNotification(QuestStore.current_quest, false)
         })
         .catch((error) => {
           this.loading = false

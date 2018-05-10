@@ -15,12 +15,12 @@ import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
 import { observer } from 'mobx-react';
-import { NotificationStore } from '../mobx';
+import { RankingStore } from '../mobx';
 import moment from 'moment';
 
 @observer
 
-export default class Notification extends React.Component {
+export default class Ranking extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -29,31 +29,30 @@ export default class Notification extends React.Component {
   }
 
   componentDidMount() {
-    NotificationStore.initNotifications()
+    RankingStore.initRanking()
   }
 
   render () {
-    var notifications = NotificationStore.notifications.map((item, i) => {
+    var ranking = RankingStore.users.map((item, i) => {
       return (
         <ListItem
           avatar
           key={i}
-          style={styles.item}
-          button={true}
-          onPress={() => { this.getQuest(item.quest_id) }}>
+          style={styles.item}>
             <Left>
               <Thumbnail small source={{uri:this.state.avatar_url}} />
             </Left>
             <Body>
+              <Text>{ item.username }</Text>
               <Text
                 note>
-                  { item.description }
+                  { item.points + " points | " + item.rank }
               </Text>
             </Body>
             <Right>
               <Text
                 note>
-                  { moment(item.date_created).fromNow() }
+                  {`#${i + 1}`}
               </Text>
             </Right>
         </ListItem>
@@ -63,14 +62,10 @@ export default class Notification extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
-            { notifications }
+            { ranking }
         </ScrollView>
       </View>
     )
-  }
-
-  getQuest = (quest_id) => {
-    NotificationStore.getQuest(quest_id, this.props.navigation);
   }
 }
 

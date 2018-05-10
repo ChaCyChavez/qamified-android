@@ -34,7 +34,7 @@ export default class Login extends React.Component {
   }
 
   render() {
-    if(!UserStore.user){
+    if(Object.keys(UserStore.user).length === 0){
       return (
         <KeyboardAvoidingView 
           behavior="padding" 

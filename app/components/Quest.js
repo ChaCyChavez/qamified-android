@@ -24,6 +24,7 @@ import { observer } from 'mobx-react';
 import { QuestStore,
          UserStore,
          FeedStore } from '../mobx';
+import moment from 'moment';
 
 @observer
 
@@ -77,7 +78,7 @@ export default class Quest extends React.Component {
                     <Body>
                       <View>
                         <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
-                        <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { QuestStore.current_quest.date_created }</Text>
+                        <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
                       </View>
                     </Body>
               </Left>
@@ -220,7 +221,7 @@ export default class Quest extends React.Component {
     var currDate = new Date()
     var solution = {
       quest_id: QuestStore.current_quest._id,
-      date_created: currDate.getTime(),
+      date_created: moment().format(),
       is_correct: false,
       description: QuestStore.solution,
       votes: 0,

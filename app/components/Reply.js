@@ -18,6 +18,8 @@ import { Text,
          Input,
          Icon } from 'native-base';
 import { observer } from 'mobx-react';
+import moment from 'moment';
+
 @observer
 
 export default class Reply extends React.Component {
@@ -38,7 +40,7 @@ export default class Reply extends React.Component {
       <CardItem bordered transparent>
         <View>
           <Text style={styles.full_name}>{ this.props.reply.full_name }</Text>
-          <Text style={styles.username} note>{ "@" + this.props.reply.username } &#183; { this.props.reply.date_created }</Text>
+          <Text style={styles.username} note>{ "@" + this.props.reply.username } &#183; { moment(this.props.reply.date_created).fromNow() }</Text>
           <Text style={styles.description}>&#183; { this.props.reply.description }</Text>
         </View>
       </CardItem>

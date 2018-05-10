@@ -2,6 +2,7 @@ import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
 import FeedStore from './FeedStore.js';
 import UserStore from './UserStore.js';
+import moment from 'moment';
 
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {
@@ -42,7 +43,7 @@ class QuestStore {
     this.initializing = true
     firebase.database()
       .ref('solution/').orderByChild("quest_id").equalTo(quest._id)
-      .once('value', solutions => {
+      .on('value', solutions => {
         if (solutions !== null) {
           solutions.forEach(s => {
             var solution = s.val()
@@ -85,6 +86,33 @@ class QuestStore {
 
   }
 
+  solutionNotification = (quest) => {
+    let n = {
+      description: UserStore.user.username + " posted a solution to your quest.",
+      date_created: moment().format(),
+      user_id: quest.user_id,
+      quest_id: quest._id,
+    }
+
+    const newQuestKey = firebase.database().ref().child('notification').push().key
+    n._id = newQuestKey
+
+    const updates = {}
+    updates[`/notification/${n._id}`] = n
+
+    firebase.database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        this.loading = false
+        this.error = ""
+      })
+      .catch(error => {
+        this.loading = false
+        this.error = error.message
+      })
+  }
+
   postSolution = solution => {
     this.loading = true;
 
@@ -106,6 +134,9 @@ class QuestStore {
         this.error = "";
         this.solution = "";
         this.current_solutions.push(s);
+
+        this.solutionNotification(this.current_quest)
+
       })
       .catch(error => {
         this.loading = false;

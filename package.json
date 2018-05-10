@@ -10,6 +10,11 @@
     "react-test-renderer": "16.2.0",
     "replace-in-file": "^3.0.0"
   },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -24,6 +29,7 @@
     "fbjs": "^0.8.16",
     "mobx": "^4.1.1",
     "mobx-react": "^5.0.0",
+    "moment": "^2.22.1",
     "native-base": "^2.3.9",
     "react": "^16.3.0-alpha.1",
     "react-native": "^0.54.4",

@@ -23,6 +23,7 @@ import { observer } from 'mobx-react';
 import { SolutionStore,
          UserStore,
          QuestStore } from '../mobx';
+import moment from 'moment';
 
 @observer
 
@@ -65,7 +66,7 @@ export default class Solution extends React.Component {
                 <Body>
                   <View>
                     <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
-                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { this.props.solution.date_created }</Text>
+                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
                   </View>
                 </Body>
           </Left>
@@ -175,7 +176,7 @@ export default class Solution extends React.Component {
     var currDate = new Date()
     var reply = {
       solution_id: solution_id,
-      date_created: currDate.getTime(),
+      date_created: moment().format(),
       description: SolutionStore.reply,
       user_id: UserStore.user.id,
       username: UserStore.user.username,

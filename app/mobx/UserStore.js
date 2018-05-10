@@ -81,6 +81,7 @@ class UserStore {
             }
           })
       }
+
       this.loading = false
     })
   }

@@ -25,6 +25,7 @@ import { UserStore,
          ProfileStore,
          QuestStore,
          FeedStore } from '../mobx';
+import moment from 'moment';
 
 @observer
 
@@ -69,7 +70,7 @@ export default class Profile extends React.Component {
                   <Body>
                     <View>
                       <Text style={styles.postFullName} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username } &#183; { item.date_created }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183; { moment(item.date_created).fromNow() }</Text>
                     </View>
                   </Body>
             </Left>
@@ -118,29 +119,6 @@ export default class Profile extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView behavior="padding" style={styles.scrollView}>
-          <View>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={false}
-              onRequestClose={() => {
-                alert('Modal has been closed.');
-              }}>
-              <View style={{ flex:1, justifyContent: 'center', alignItems: 'center' }}>
-                <View style={styles.modalContent }>
-                  <Text>Hello World!</Text>
-
-                  <TouchableHighlight
-                    onPress={() => {
-                      this.setModalVisible(!this.state.modalVisible);
-                    }}>
-                    <Text>Hide Modal</Text>
-                  </TouchableHighlight>
-                </View>
-              </View>
-            </Modal>
-          </View>
-
           <Card style={styles.infoContainer}>
             <CardItem>
               <Thumbnail 
@@ -183,6 +161,20 @@ export default class Profile extends React.Component {
             <CardItem>
               { this.renderButton() }
             </CardItem>
+          </Card>
+          <Card>
+          <CardItem>
+            <Body style={{flexDirection: "row", justifyContent: "center"}}>
+              <Button transparent onPress={()=>this.props.navigation.navigate('Achievements')}>
+                <Icon name="ios-trophy"/>
+                <Text uppercase={false}>Achievements</Text>
+              </Button>
+              <Button transparent onPress={()=>this.props.navigation.navigate('Todo')}>
+                <Icon name="ios-list-box"/>
+                <Text uppercase={false}>Todo</Text>
+              </Button>
+            </Body>
+          </CardItem>
           </Card>
           <View>
             { ProfileStore.loading ? loading : listItems }

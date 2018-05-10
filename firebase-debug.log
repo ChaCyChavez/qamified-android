@@ -1,0 +1,82 @@
+[debug] [2018-05-10T04:41:54.249Z] ----------------------------------------------------------------------
+[debug] [2018-05-10T04:41:54.252Z] Command:       /usr/bin/node /usr/bin/firebase init qamified-functions
+[debug] [2018-05-10T04:41:54.252Z] CLI Version:   3.18.4
+[debug] [2018-05-10T04:41:54.252Z] Platform:      linux
+[debug] [2018-05-10T04:41:54.252Z] Node Version:  v9.5.0
+[debug] [2018-05-10T04:41:54.253Z] Time:          Thu May 10 2018 12:41:54 GMT+0800 (+08)
+[debug] [2018-05-10T04:41:54.253Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-05-10T04:41:54.261Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase"]
+[debug] [2018-05-10T04:41:54.261Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/chacychavez/Desktop/qamified-android
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2018-05-10T04:41:54.269Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects  
+  
+ Thu May 10 2018 12:41:54 GMT+0800 (+08)
+[debug] [2018-05-10T04:41:55.626Z] <<< HTTP RESPONSE 200
+[info] 
+=== Qamified-functions Setup
+[debug] [2018-05-10T04:41:56.871Z] TypeError: features[nextFeature] is not a function
+    at init (/usr/lib/node_modules/firebase-tools/lib/init/index.js:13:49)
+    at /usr/lib/node_modules/firebase-tools/lib/init/index.js:14:14
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:160:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2018-05-10T04:43:08.864Z] ----------------------------------------------------------------------
+[debug] [2018-05-10T04:43:08.867Z] Command:       /usr/bin/node /usr/bin/firebase init qamified-functions
+[debug] [2018-05-10T04:43:08.868Z] CLI Version:   3.18.4
+[debug] [2018-05-10T04:43:08.868Z] Platform:      linux
+[debug] [2018-05-10T04:43:08.868Z] Node Version:  v9.5.0
+[debug] [2018-05-10T04:43:08.868Z] Time:          Thu May 10 2018 12:43:08 GMT+0800 (+08)
+[debug] [2018-05-10T04:43:08.868Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-05-10T04:43:08.876Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase"]
+[debug] [2018-05-10T04:43:08.876Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/chacychavez/Desktop/qamified-android
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2018-05-10T04:43:08.884Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects  
+  
+ Thu May 10 2018 12:43:08 GMT+0800 (+08)
+[debug] [2018-05-10T04:43:11.341Z] <<< HTTP RESPONSE 200
+[info] 
+=== Qamified-functions Setup
+[debug] [2018-05-10T04:43:12.824Z] TypeError: features[nextFeature] is not a function
+    at init (/usr/lib/node_modules/firebase-tools/lib/init/index.js:13:49)
+    at /usr/lib/node_modules/firebase-tools/lib/init/index.js:14:14
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:160:7)
+[error] 
+[error] Error: An unexpected error has occurred.

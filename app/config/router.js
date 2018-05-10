@@ -14,6 +14,7 @@ import SideMenu from '../components/SideMenu.js';
 import MainHeader from '../components/MainHeader.js';
 import Todo from '../components/Todo.js';
 import Achievements from '../components/Achievements.js';
+import Ranking from '../components/Ranking.js';
 
 export const Stack = StackNavigator({
   Login: {
@@ -62,18 +63,11 @@ export const Tab = TabNavigator({
       tabBarIcon: ({ tintColor }) => <Icon name="ios-person" size={25} style={styles.tabIcon} />,
     },
   },
-  Todo: {
-    screen: Todo,
+  Ranking: {
+    screen: Ranking,
     navigationOptions: {
-      tabBarLabel: 'Todo',
-      tabBarIcon: ({ tintColor }) => <Icon name="ios-list-box" size={25} style={styles.tabIcon} />
-    },
-  },
-  Achievements: {
-    screen: Achievements,
-    navigationOptions: {
-      tabBarLabel: 'Achievements',
-      tabBarIcon: ({ tintColor }) => <Icon name="ios-trophy" size={25} style={styles.tabIcon} />
+      tabBarLabel: 'Ranking',
+      tabBarIcon: ({ tintColor }) => <Icon name="ios-stats" size={25} style={styles.tabIcon} />
     },
   },
   Notification: {
@@ -103,7 +97,7 @@ export const Tab = TabNavigator({
       margin: 0
     },
     labelStyle: {
-      fontSize: 8,
+      fontSize: 10,
       color: 'white',
     },
   }
@@ -132,6 +126,24 @@ export const Base = StackNavigator({
   },
   CreateQuest: {
     screen: CreateQuest,
+    navigationOptions: {
+      headerTintColor: '#ffffff',
+      headerStyle: {
+        backgroundColor: '#222222',
+      }
+    }
+  },
+  Todo: {
+    screen: Todo,
+    navigationOptions: {
+      headerTintColor: '#ffffff',
+      headerStyle: {
+        backgroundColor: '#222222',
+      }
+    }
+  },
+  Achievements: {
+    screen: Achievements,
     navigationOptions: {
       headerTintColor: '#ffffff',
       headerStyle: {

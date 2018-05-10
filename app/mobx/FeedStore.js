@@ -1,6 +1,7 @@
 import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
 import UserStore from './UserStore.js';
+import moment from 'moment';
 
 class FeedStore {
   @observable
@@ -20,8 +21,9 @@ class FeedStore {
     if (this.quests.length == 0) {
       firebase.database()
       .ref('/quest')
-      .once('value', (quests) => {
+      .on('value', (quests) => {
         if (quests) {
+          this.quests = []
           quests.forEach(q => {
             var quest = q.val()
             quest._id =  q.key
@@ -60,6 +62,33 @@ class FeedStore {
     this.loading = false
   }
 
+  voteNotification = (quest, liked) => {
+    let n = {
+      description: UserStore.user.username + (liked ? " upvoted" : " downvoted") +  " your post.",
+      date_created: moment().format(),
+      user_id: quest.user_id,
+      quest_id: quest._id,
+    }
+    
+    const newQuestKey = firebase.database().ref().child('notification').push().key
+    n._id = newQuestKey
+
+    const updates = {}
+    updates[`/notification/${n._id}`] = n
+
+    firebase.database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        this.loading = false
+        this.error = ""
+      })
+      .catch(error => {
+        this.loading = false
+        this.error = error.message
+      })
+  }
+
   upvoteQuest = (quest) => {
     if (quest.downvote && quest.downvote.includes(UserStore.user.id)) {
       const updates = {}
@@ -77,6 +106,7 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes += 1
+          this.voteNotification(quest, true)
         })
         .catch((error) => {
           this.loading = false
@@ -96,6 +126,7 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes += 1
+          this.voteNotification(quest, true)
           
         })
         .catch((error) => {
@@ -123,6 +154,7 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes -= 1
+          this.voteNotification(quest, false)
         })
         .catch((error) => {
           this.loading = false
@@ -143,7 +175,7 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes -= 1
-          
+          this.voteNotification(quest, false)
         })
         .catch((error) => {
           this.loading = false

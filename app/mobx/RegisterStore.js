@@ -21,22 +21,7 @@ class RegisterStore {
 
   @observable
   error = ""
-
-  // insertNewUser = (navigation, username, uid) => {
-  //   var json = JSON.parse('{' + '"' + username + '"' + ':"' + uid + '"}')
-  //   firebase.database()
-  //     .ref('usernames').update(json)
-  //     .then((data) => {
-  //       this.loading = false;
-  //       this.error = "Done!"
-  //       navigation.navigate('Tab');
-  //     })
-  //     .catch((error) => {
-  //       this.loading = false;
-  //       this.error = error.message;
-  //     });
-  // }
-
+  
   register = (navigation, user, password) => {
     this.loading = true;
     firebase.database()

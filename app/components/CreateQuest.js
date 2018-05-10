@@ -19,6 +19,7 @@ import { Text,
          Item } from 'native-base';
 import { observer } from 'mobx-react';
 import { UserStore } from '../mobx';
+import moment from 'moment';
 
 @observer
 
@@ -108,7 +109,7 @@ export default class CreateQuest extends React.Component {
   postQuest = () => {
     var currDate = new Date();
     var quest = {
-      date_created: currDate.getTime(),
+      date_created: moment().format(),
       title: UserStore.title,
       description: UserStore.description,
       votes: 0,
