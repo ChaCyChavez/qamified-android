@@ -10,7 +10,10 @@ import { List,
          Left,
          Right,
          Text,
-         Button } from 'native-base'
+         Button,
+         Picker,
+         Icon,
+         Item } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -25,11 +28,20 @@ export default class Ranking extends React.Component {
     super(props)
     this.state = {
       avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+      selected: "key1",
     }
   }
 
   componentDidMount() {
     RankingStore.initRanking()
+  }
+
+  onValueChange(value) {
+    this.setState({
+      selected: value
+    });
+
+    RankingStore.sortRanking(value)
   }
 
   render () {
@@ -62,7 +74,23 @@ export default class Ranking extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
-            { ranking }
+          <Item style={{flex: 1, flexDirection: "row"}}>
+            <Left>
+            <Text>Sort by : </Text>
+            </Left>
+            <Right>
+            <Picker
+              mode="dropdown"
+              style={{ width: responsiveWidth(50) }}
+              selectedValue={this.state.selected}
+              onValueChange={this.onValueChange.bind(this)}
+            >
+              <Picker.Item label="Points" value="key0" />
+              <Picker.Item label="Rank" value="key1" />
+            </Picker>
+            </Right>
+          </Item>
+          { ranking }
         </ScrollView>
       </View>
     )

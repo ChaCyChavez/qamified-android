@@ -31,7 +31,6 @@ class RankingStore {
         users.forEach(n => {
           var user = n.val()
           user._id = n.key
-
           if(!this.inList(user._id)) {
             this.users.unshift(user)
           }
@@ -45,6 +44,22 @@ class RankingStore {
         QuestStore.setCurrentQuest(quest, navigation);
       }
     })
+  }
+
+  sortRanking = (category) => {
+    this.users = []
+    firebase.database()
+      .ref('user/')
+      .orderByChild(category)
+      .on('value', users => {
+        users.forEach(n => {
+          var user = n.val()
+          user._id = n.key
+          if(!this.inList(user._id)) {
+            this.users.unshift(user)
+          }
+        })
+      })
   }
 
 }
