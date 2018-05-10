@@ -31,19 +31,24 @@ class RegisterStore {
         if(snapshot.val() === null) {
           firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(user.email, password)
             .then((_user) => {
+              user._id = _user.user.uid
+
+              const updates = {}
+              updates[`user/${user._id}`] = user
+
               firebase.database()
-                .ref('user').child(_user.user.uid).set(user)
+                .ref()
+                .update(updates)
                 .then(() => {
-                  this.loading = false;
                   this.error = ""
+                  this.loading = false
                   UserStore.user = user
-                  UserStore.user.id = _user.user.uid
                   navigation.navigate('Tab');
                 })
-                .catch((error) => {
-                  this.loading = false;
-                  this.error = error.message;
-                });
+                .catch(error => {
+                  this.error = error.message
+                  this.loading = false
+                })
             })
             .catch((error) => {
               this.loading = false;

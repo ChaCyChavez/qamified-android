@@ -42,7 +42,6 @@ class LoginStore {
       .on('child_added', user => {
         if(user.val() !== null) {
           UserStore.user = user.val()
-          UserStore.user.id = user.key
           firebase.auth()
             .signInAndRetrieveDataWithEmailAndPassword(UserStore.user.email, cred.password)
             .then(() => {

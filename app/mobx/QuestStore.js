@@ -155,7 +155,7 @@ class QuestStore {
             .remove()
             .then(() => {
               const updates = {}
-              updates[`/user/${UserStore.user.id}/reply/${reply._id}`] = null
+              updates[`/user/${UserStore.user._id}/reply/${reply._id}`] = null
 
               firebase.database()
                 .ref()
@@ -174,7 +174,7 @@ class QuestStore {
         .remove()
         .then(() => {
           const updates = {}
-          updates[`/user/${UserStore.user.id}/solution/${solution._id}`] = null
+          updates[`/user/${UserStore.user._id}/solution/${solution._id}`] = null
 
           firebase.database()
             .ref()

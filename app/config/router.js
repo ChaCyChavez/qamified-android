@@ -15,6 +15,7 @@ import MainHeader from '../components/MainHeader.js';
 import Todo from '../components/Todo.js';
 import Achievements from '../components/Achievements.js';
 import Ranking from '../components/Ranking.js';
+import UserProfile from '../components/UserProfile.js';
 
 export const Stack = StackNavigator({
   Login: {
@@ -144,6 +145,15 @@ export const Base = StackNavigator({
   },
   Achievements: {
     screen: Achievements,
+    navigationOptions: {
+      headerTintColor: '#ffffff',
+      headerStyle: {
+        backgroundColor: '#222222',
+      }
+    }
+  },
+  UserProfile: {
+    screen: UserProfile,
     navigationOptions: {
       headerTintColor: '#ffffff',
       headerStyle: {

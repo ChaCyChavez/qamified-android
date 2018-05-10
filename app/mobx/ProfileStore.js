@@ -28,8 +28,8 @@ class ProfileStore {
     if (this.profileFeed.length == 0) {
 
       FeedStore.quests.forEach(quest => {
-        if(quest.user_id == UserStore.user.id) {
-          if(!this.alreadyExist(quest.id)) {
+        if(quest.user_id == UserStore.user._id) {
+          if(!this.alreadyExist(quest._id)) {
             this.profileFeed.push(quest)
           }
         }
@@ -38,13 +38,13 @@ class ProfileStore {
       UserStore.user.solution.forEach(s_id => {
         FeedStore.quests.forEach(quest => {
           if(quest.solution.includes(s_id)) {
-            if(!this.alreadyExist(quest.id)) {
+            if(!this.alreadyExist(quest._id)) {
               this.profileFeed.push(quest)
             }
           }
         })
       })
-      setTimeout(() => {this.loading = false}, 2000)
+      setTimeout(() => {this.loading = false}, 1000)
     }
   }
 
@@ -52,7 +52,7 @@ class ProfileStore {
     let bio = profile.state.bio
 
     const updates = {}
-    updates[`/user/${UserStore.user.id}/description`] = bio
+    updates[`/user/${UserStore.user._id}/description`] = bio
 
     firebase.database()
       .ref()

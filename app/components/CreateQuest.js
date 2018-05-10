@@ -113,7 +113,7 @@ export default class CreateQuest extends React.Component {
       title: UserStore.title,
       description: UserStore.description,
       votes: 0,
-      user_id: UserStore.user.id,
+      user_id: UserStore.user._id,
       is_answered: false,
       username: UserStore.user.username,
       full_name: UserStore.fullName,

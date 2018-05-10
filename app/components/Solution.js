@@ -125,7 +125,7 @@ export default class Solution extends React.Component {
   isUpvoted = (upvote) => {
     if(!upvote) {
       return false
-    } else if(upvote.includes(UserStore.user.id)) {
+    } else if(upvote.includes(UserStore.user._id)) {
       return true
     } else {
       return false
@@ -135,7 +135,7 @@ export default class Solution extends React.Component {
   isDownvoted = (downvote) => {
     if(!downvote) {
       return false
-    } else if(downvote.includes(UserStore.user.id)) {
+    } else if(downvote.includes(UserStore.user._id)) {
       return true
     } else {
       return false

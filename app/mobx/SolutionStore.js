@@ -112,13 +112,13 @@ class SolutionStore {
   }
 
   upvoteSolution = solution => {
-    if (solution.downvote && solution.downvote.includes(UserStore.user.id)) {
+    if (solution.downvote && solution.downvote.includes(UserStore.user._id)) {
       const updates = {}
-      updates[`/solution/${solution._id}/downvote/${UserStore.user.id}`] = null
+      updates[`/solution/${solution._id}/downvote/${UserStore.user._id}`] = null
       updates[`/solution/${solution._id}/votes`] = solution.votes + 1
 
       solution.downvote = solution.downvote.filter(function(user) {
-        return user != UserStore.user.id;
+        return user != UserStore.user._id;
       });
 
       firebase.database()
@@ -136,12 +136,12 @@ class SolutionStore {
           this.error = error.message
         })
     }
-    else if(!(solution.upvote.includes(UserStore.user.id))) {
+    else if(!(solution.upvote.includes(UserStore.user._id))) {
       const updates = {}
-      updates[`/solution/${solution._id}/upvote/${UserStore.user.id}`] = true
+      updates[`/solution/${solution._id}/upvote/${UserStore.user._id}`] = true
       updates[`/solution/${solution._id}/votes`] = solution.votes + 1
 
-      solution.upvote.push(UserStore.user.id)
+      solution.upvote.push(UserStore.user._id)
 
       firebase.database()
         .ref()
@@ -162,13 +162,13 @@ class SolutionStore {
 
   downvoteSolution = solution => {
 
-    if (solution.upvote && solution.upvote.includes(UserStore.user.id)) {
+    if (solution.upvote && solution.upvote.includes(UserStore.user._id)) {
       const updates = {}
-      updates[`/solution/${solution._id}/upvote/${UserStore.user.id}`] = null
+      updates[`/solution/${solution._id}/upvote/${UserStore.user._id}`] = null
       updates[`/solution/${solution._id}/votes`] = solution.votes - 1
 
       solution.upvote = solution.upvote.filter(function(user) {
-        return user != UserStore.user.id;
+        return user != UserStore.user._id;
       });
 
       firebase.database()
@@ -186,13 +186,13 @@ class SolutionStore {
           this.error = error.message
         })
     }
-    else if(!(solution.downvote.includes(UserStore.user.id))) {
+    else if(!(solution.downvote.includes(UserStore.user._id))) {
       const updates = {}
-      updates[`/solution/${solution._id}/downvote/${UserStore.user.id}`] = true
+      updates[`/solution/${solution._id}/downvote/${UserStore.user._id}`] = true
       updates[`/solution/${solution._id}/votes`] = solution.votes - 1
 
 
-      solution.downvote.push(UserStore.user.id)
+      solution.downvote.push(UserStore.user._id)
           
       firebase.database()
         .ref()
@@ -253,7 +253,7 @@ class SolutionStore {
           .remove()
           .then(() => {
             const updates = {}
-            updates[`/user/${UserStore.user.id}/reply/${reply._id}`] = null
+            updates[`/user/${UserStore.user._id}/reply/${reply._id}`] = null
 
             firebase.database()
               .ref()
@@ -272,7 +272,7 @@ class SolutionStore {
       .remove()
       .then(() => {
         const updates = {}
-        updates[`/user/${UserStore.user.id}/solution/${solution._id}`] = null
+        updates[`/user/${UserStore.user._id}/solution/${solution._id}`] = null
 
         firebase.database()
           .ref()

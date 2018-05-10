@@ -21,27 +21,24 @@ import { Text,
          Input,
          Spinner } from 'native-base';
 import { observer } from 'mobx-react';
-import { UserStore,
-         ProfileStore,
+import { UserProfileStore,
          QuestStore,
          FeedStore } from '../mobx';
 import moment from 'moment';
 
 @observer
 
-export default class Profile extends React.Component {
+export default class UserProfile extends React.Component {
   constructor(props) {
 
     super(props);
     this.state = {
       avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      editing: false,
-      bio: UserStore.user.description,
     };
   }
 
   componentDidMount() {
-    ProfileStore.initProfileFeed()
+    UserProfileStore.initProfileFeed()
   }
 
   render() {
@@ -50,7 +47,7 @@ export default class Profile extends React.Component {
     };
 
     var loading = <Spinner color='black' />
-    var listItems = ProfileStore.profileFeed.map((item, index) => {
+    var listItems = UserProfileStore.profileFeed.map((item, index) => {
       return (
         <Card key={index}>
           <CardItem>
@@ -128,31 +125,31 @@ export default class Profile extends React.Component {
             <CardItem>
               <Text
                 style={styles.fullName}>
-                  { UserStore.fullName }
+                  { UserProfileStore.fullName }
               </Text>
             </CardItem>
             <CardItem>
               <Text
                 style={styles.email}>
-                  { UserStore.user.email  } &#183;{ UserStore.user.institution  }
+                  { UserProfileStore.current_user.email } &#183; { UserProfileStore.current_user.email }
               </Text>
             </CardItem>
             <CardItem>
               <Text
                 style={styles.stats}>
-                  { UserStore.user.points } &nbsp;
-                  { UserStore.user.points > 1 ? "points" : "point" }
+                  { UserProfileStore.current_user.points } &nbsp;
+                  { UserProfileStore.current_user.points > 1 ? "points" : "point" }
               </Text>
               <Text
                 style={styles.stats}>
                   &#183; &nbsp;
                   Level &nbsp;
-                  { UserStore.user.level }
+                  { UserProfileStore.current_user.level }
               </Text>
               <Text
                 style={styles.stats}>
                   &#183; &nbsp;
-                  { UserStore.user.rank }
+                  { UserProfileStore.current_user.rank }
               </Text>
             </CardItem>
             <CardItem>
@@ -162,22 +159,8 @@ export default class Profile extends React.Component {
               { this.renderButton() }
             </CardItem>
           </Card>
-          <Card>
-          <CardItem>
-            <Body style={{flexDirection: "row", justifyContent: "center"}}>
-              <Button transparent onPress={()=>this.props.navigation.navigate('Achievements')}>
-                <Icon name="ios-trophy"/>
-                <Text uppercase={false}>Achievements</Text>
-              </Button>
-              <Button transparent onPress={()=>this.props.navigation.navigate('Todo')}>
-                <Icon name="ios-list-box"/>
-                <Text uppercase={false}>Todo</Text>
-              </Button>
-            </Body>
-          </CardItem>
-          </Card>
           <View>
-            { ProfileStore.loading ? loading : listItems }
+            { UserProfileStore.loading ? loading : listItems }
           </View>
         </ScrollView>
       </View>
@@ -187,7 +170,7 @@ export default class Profile extends React.Component {
   isUpvoted = (upvote) => {
     if(!upvote) {
       return false
-    } else if(upvote.includes(UserStore.user._id)) {
+    } else if(upvote.includes(UserProfileStore.current_user._id)) {
       return true
     } else {
       return false
@@ -197,7 +180,7 @@ export default class Profile extends React.Component {
   isDownvoted = (downvote) => {
     if(!downvote) {
       return false
-    } else if(downvote.includes(UserStore.user._id)) {
+    } else if(downvote.includes(UserProfileStore.current_user._id)) {
       return true
     } else {
       return false
@@ -219,7 +202,7 @@ export default class Profile extends React.Component {
       return(
         <Text 
           style={styles.bio}>
-          { UserStore.user.description }
+          { UserProfileStore.current_user.description }
         </Text>
       )
     }

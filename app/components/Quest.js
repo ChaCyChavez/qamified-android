@@ -156,7 +156,7 @@ export default class Quest extends React.Component {
   isUpvoted = (upvote) => {
     if(!upvote) {
       return false
-    } else if(upvote.includes(UserStore.user.id)) {
+    } else if(upvote.includes(UserStore.user._id)) {
       return true
     } else {
       return false
@@ -166,7 +166,7 @@ export default class Quest extends React.Component {
   isDownvoted = (downvote) => {
     if(!downvote) {
       return false
-    } else if(downvote.includes(UserStore.user.id)) {
+    } else if(downvote.includes(UserStore.user._id)) {
       return true
     } else {
       return false
@@ -174,7 +174,7 @@ export default class Quest extends React.Component {
   }
 
   renderDeleteQuestButton = () => {
-    if(QuestStore.current_quest.user_id == UserStore.user.id) {
+    if(QuestStore.current_quest.user_id == UserStore.user._id) {
       return (
         <Right>
           <Button
@@ -225,7 +225,7 @@ export default class Quest extends React.Component {
       is_correct: false,
       description: QuestStore.solution,
       votes: 0,
-      user_id: UserStore.user.id,
+      user_id: UserStore.user._id,
       username: UserStore.user.username,
       full_name: UserStore.fullName,
       reply: []

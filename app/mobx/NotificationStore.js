@@ -24,8 +24,9 @@ class NotificationStore {
   }
 
   initNotifications = () => {
+    this.notifications = []
     firebase.database()
-      .ref('notification/').orderByChild("user_id").equalTo(UserStore.user.id)
+      .ref('notification/').orderByChild("user_id").equalTo(UserStore.user._id)
       .on('value', notifications => {
         notifications.forEach(n => {
           var notification = n.val()

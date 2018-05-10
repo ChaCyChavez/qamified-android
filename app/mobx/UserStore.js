@@ -33,8 +33,7 @@ class UserStore {
 
   @computed
   get fullName(): string {
-
-    return "{0} {1}. {2}".format(this.user.first_name, this.user.middle_name.charAt(0), this.user.last_name);
+    return `${this.user.first_name} ${this.user.middle_name.charAt(0)}. ${this.user.last_name}`
   }
 
   isLoggedIn = (navigation) => {
@@ -50,7 +49,6 @@ class UserStore {
           .on('child_added', _user => {
             if (_user.val() != null) {
               this.user = _user.val()
-              this.user.id = _user.key
               var reps = []
               var sols = []
               firebase.database()

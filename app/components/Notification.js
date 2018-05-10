@@ -39,7 +39,7 @@ export default class Notification extends React.Component {
           avatar
           key={i}
           style={styles.item}
-          button={true}
+          button
           onPress={() => { this.getQuest(item.quest_id) }}>
             <Left>
               <Thumbnail small source={{uri:this.state.avatar_url}} />

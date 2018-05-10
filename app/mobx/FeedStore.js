@@ -90,13 +90,13 @@ class FeedStore {
   }
 
   upvoteQuest = (quest) => {
-    if (quest.downvote && quest.downvote.includes(UserStore.user.id)) {
+    if (quest.downvote && quest.downvote.includes(UserStore.user._id)) {
       const updates = {}
-      updates[`/quest/${quest._id}/downvote/${UserStore.user.id}`] = null
+      updates[`/quest/${quest._id}/downvote/${UserStore.user._id}`] = null
       updates[`/quest/${quest._id}/votes`] = quest.votes + 1
       
       quest.downvote = quest.downvote.filter(function(user) {
-        return user != UserStore.user.id;
+        return user != UserStore.user._id;
       });
       
       firebase.database()
@@ -113,11 +113,11 @@ class FeedStore {
           this.error = error.message
         })
     }
-    else if(!(quest.upvote.includes(UserStore.user.id))) {
+    else if(!(quest.upvote.includes(UserStore.user._id))) {
       const updates = {}
-      updates[`/quest/${quest._id}/upvote/${UserStore.user.id}`] = true
+      updates[`/quest/${quest._id}/upvote/${UserStore.user._id}`] = true
       updates[`/quest/${quest._id}/votes`] = quest.votes + 1
-      quest.upvote.push(UserStore.user.id)
+      quest.upvote.push(UserStore.user._id)
       
       firebase.database()
         .ref()
@@ -138,13 +138,13 @@ class FeedStore {
 
   downvoteQuest = (quest) => {
 
-    if (quest.upvote && quest.upvote.includes(UserStore.user.id)) {
+    if (quest.upvote && quest.upvote.includes(UserStore.user._id)) {
       const updates = {}
-      updates[`/quest/${quest._id}/upvote/${UserStore.user.id}`] = null
+      updates[`/quest/${quest._id}/upvote/${UserStore.user._id}`] = null
       updates[`/quest/${quest._id}/votes`] = quest.votes - 1
 
       quest.upvote = quest.upvote.filter(function(user) {
-        return user != UserStore.user.id;
+        return user != UserStore.user._id;
       });
 
       firebase.database()
@@ -161,12 +161,12 @@ class FeedStore {
           this.error = error.message
         })
     }
-    else if(!(quest.downvote.includes(UserStore.user.id))) {
+    else if(!(quest.downvote.includes(UserStore.user._id))) {
       const updates = {}
-      updates[`/quest/${quest._id}/downvote/${UserStore.user.id}`] = true
+      updates[`/quest/${quest._id}/downvote/${UserStore.user._id}`] = true
       updates[`/quest/${quest._id}/votes`] = quest.votes - 1
 
-      quest.downvote.push(UserStore.user.id)
+      quest.downvote.push(UserStore.user._id)
       
       firebase.database()
         .ref()

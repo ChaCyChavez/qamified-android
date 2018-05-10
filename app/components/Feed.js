@@ -20,7 +20,8 @@ import { Text,
 import { observer } from 'mobx-react';
 import { QuestStore,
          UserStore,
-         FeedStore } from '../mobx';
+         FeedStore,
+         UserProfileStore } from '../mobx';
 import moment from 'moment';
 
 @observer
@@ -59,7 +60,7 @@ export default class Feed extends React.Component {
           <CardItem>
             { isAnswered(item.is_answered) }
           </CardItem>
-          <CardItem>
+          <CardItem button onPress={() => this.setUser(item.user_id)}>
             <Left>
               <Thumbnail 
                 small
@@ -147,7 +148,7 @@ export default class Feed extends React.Component {
   isUpvoted = (upvote) => {
     if(!upvote) {
       return false
-    } else if(upvote.includes(UserStore.user.id)) {
+    } else if(upvote.includes(UserStore.user._id)) {
       return true
     } else {
       return false
@@ -157,7 +158,7 @@ export default class Feed extends React.Component {
   isDownvoted = (downvote) => {
     if(!downvote) {
       return false
-    } else if(downvote.includes(UserStore.user.id)) {
+    } else if(downvote.includes(UserStore.user._id)) {
       return true
     } else {
       return false
@@ -174,6 +175,10 @@ export default class Feed extends React.Component {
 
   downvote = (quest) => {
     FeedStore.downvoteQuest(quest)
+  }
+
+  setUser = (user_id) => {
+    UserProfileStore.setUser(user_id, this.props.navigation)
   }
  }
 
