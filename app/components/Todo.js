@@ -16,11 +16,15 @@ import { responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
 
 export default class Todo extends React.Component {
-  navigateToQuest = () => { 
-    this.props.navigation.navigate('Login')
-  };
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+    }
+  }
+
   render () {
-    
     const list = [
       {
         name: 'Amy Farha',
@@ -71,18 +75,18 @@ export default class Todo extends React.Component {
           key={i}
           style={styles.item}>
             <Left>
-              <Thumbnail source={{uri:item.avatar_url}} />
+              <Thumbnail source={{uri:this.state.avatar_url}} />
             </Left>
             <Body>
-              <Text>Kumar Pratik</Text>
+              <Text style={styles.title}>Kumar Pratik</Text>
               <Text
-                note>
+                note style={styles.description}>
                   Doing what you like will always keep you happy . .
               </Text>
             </Body>
             <Right>
               <Text
-                note>
+                note style={styles.status}>
                   3:43 pm
               </Text>
             </Right>
@@ -110,15 +114,11 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     width: responsiveWidth(100),
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    backgroundColor: "#0b0c10",
   },
   item: {
-    marginLeft: 0,
-    backgroundColor: "white",
-    width: responsiveWidth(100)
+    backgroundColor: "transparent",
+    width: responsiveWidth(90),
   },
   subtitleView: {
     flexDirection: 'row',
@@ -132,5 +132,17 @@ const styles = StyleSheet.create({
   ratingText: {
     paddingLeft: 10,
     color: 'grey'
-  }
+  },
+  title: {
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
+  },
+  description: { 
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  },
+  status: {
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
+  },
 });

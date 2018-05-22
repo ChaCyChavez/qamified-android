@@ -1,21 +1,9 @@
 import { observable, computed } from 'mobx';
+import { ToastAndroid } from 'react-native'
 import firebase from 'react-native-firebase';
 import UserStore from './UserStore.js';
 import QuestStore from './QuestStore';
 import moment from 'moment';
-
-// First, checks if it isn't implemented yet.
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
-}
 
 class SolutionStore {
   @observable
@@ -37,7 +25,6 @@ class SolutionStore {
 
     const newQuestKey = firebase.database().ref().child('notification').push().key
     n._id = newQuestKey
-    console.error(n)
 
     const updates = {}
     updates[`/notification/${n._id}`] = n
@@ -55,7 +42,7 @@ class SolutionStore {
       })
   }
 
-  postReply = (reply, solution) => {
+  postReply = (reply, solution, _this) => {
 
     let r = reply
 
@@ -63,9 +50,19 @@ class SolutionStore {
     r._id = newReplyKey
 
     const updates = {}
-    updates[`/solution/${r.solution_id}/reply/${newReplyKey}`] = true
     updates[`/user/${r.user_id}/reply/${newReplyKey}`] = true
     updates[`/reply/${r._id}`] = r
+
+    updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + 5
+    UserStore.user.experience += 5
+    var did_level_up = false
+    if(UserStore.user.experience >= UserStore.user.level_exp) {
+      updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+      UserStore.user.level += 1
+      updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+      UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+      did_level_up = true
+    }
 
     firebase.database()
       .ref()
@@ -73,8 +70,14 @@ class SolutionStore {
       .then(() => {
         this.loading = false
         this.error = ""
-        this.reply = ""
-        solution.reply.push(r)
+        _this.setState({reply: ""})
+        
+        ToastAndroid.show('Replied successfully!', ToastAndroid.SHORT);
+        ToastAndroid.show('5 experience gained!', ToastAndroid.SHORT);
+        if(did_level_up) {
+          ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+          did_level_up = false
+        }
 
         this.replyNotification(QuestStore.current_quest)
       })

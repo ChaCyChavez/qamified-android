@@ -33,10 +33,7 @@ export default class Solution extends React.Component {
     super(props);
     this.state = {
       avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      error: "",
-      answer_input: "",
-      comment_input: "",
-      loading: false,
+      reply: "",
     }
   };
 
@@ -57,8 +54,8 @@ export default class Solution extends React.Component {
     };
 
     return (
-      <Card>
-        <CardItem>
+      <Card style={styles.questions}>
+        <CardItem style={{backgroundColor: 'transparent'}}>
           <Left>
             <Thumbnail
               small
@@ -71,16 +68,16 @@ export default class Solution extends React.Component {
                 </Body>
           </Left>
         </CardItem>
-        <CardItem>
+        <CardItem style={{backgroundColor: 'transparent'}}>
           <View>
           <Text style={styles.description}> { isCorrect(this.props.solution.is_correct) } { this.props.solution.description }</Text>
           </View>
         </CardItem>
-        <CardItem>
+        <CardItem style={{backgroundColor: 'transparent'}}>
           <Left>
             <Button
               bordered
-              style={{borderColor: 'white'}}
+              style={{borderColor: 'transparent'}}
               onPress={() => this.upvote(this.props.solution)}>
               <Icon
                 name="ios-arrow-up"
@@ -88,13 +85,13 @@ export default class Solution extends React.Component {
             </Button>
             <Button
               bordered
-              style={{borderColor: 'white'}}
+              style={{borderColor: 'transparent'}}
               onPress={() => this.downvote(this.props.solution)}>
               <Icon 
                 name="ios-arrow-down"
                 style={{fontSize: 28, color: this.isDownvoted(this.props.solution.downvote) ? 'red' : 'gray'}}/>
             </Button>
-            <Text>{ this.props.solution.votes }</Text>
+            <Text style={styles.votes}>{ this.props.solution.votes }</Text>
           </Left>
           <Body>
           </Body>
@@ -104,24 +101,41 @@ export default class Solution extends React.Component {
           </Right>
         </CardItem>
           { reply } 
-        <CardItem>
+        <CardItem style={{backgroundColor: 'transparent'}}>
           <Item style={styles.addComment}>
-            <Input 
-                value={SolutionStore.reply}
-                style={styles.answerInput}
+            <Input
+                value={this.state.reply}
+                style={styles.replyInput}
                 multiline={true}
                 placeholder="Add comment"
-                onChangeText={(input) => {SolutionStore.reply = input}}/>
-            <Icon 
-              name="ios-send"
-              onPress={ () => this.postReply(this.props.solution._id) }
-              style={{fontSize: 32}}/>
+                placeholderTextColor="#959697"
+                onChangeText={(input) => this.setState({reply: input})}/>
+            { this.renderReplyButton() }
           </Item>
         </CardItem>
       </Card>
-    );
+    )
   }
 
+  completeField = () => {
+    return this.state.reply ? true : false
+  }
+
+  renderReplyButton = () => {
+    if(!this.completeField() || SolutionStore.loading) {
+      return (
+        <Icon 
+          name="ios-send"
+          style={{fontSize: 32, color: "#b2d8d8"}}/>
+      )
+    }
+    return(
+      <Icon 
+        name="ios-send"
+        onPress={ () => this.postReply(this.props.solution._id) }
+        style={{fontSize: 32, color: "#66fcf1"}}/>
+    )
+  }
   isUpvoted = (upvote) => {
     if(!upvote) {
       return false
@@ -147,7 +161,7 @@ export default class Solution extends React.Component {
       return (
         <Button
           bordered
-          style={{borderColor: 'white'}}
+          style={{borderColor: 'transparent'}}
           onPress={() => this.markAsSolution(solution)}>
           <Icon 
             name="ios-checkmark" 
@@ -158,15 +172,15 @@ export default class Solution extends React.Component {
   }
 
   renderDeleteSolutionButton = (solution) => {
-    if(solution.user_id == UserStore.user.id) {
+    if(solution.user_id == UserStore.user._id) {
       return (
         <Button
           bordered
-          style={{borderColor: 'white'}}
+          style={{borderColor: 'transparent'}}
           onPress={() => this.delete(solution)}>
           <Icon 
             name="ios-trash" 
-            style={{fontSize: 24}}/>
+            style={{fontSize: 24, color: "#66fcf1"}}/>
         </Button>
       )
     }
@@ -177,13 +191,12 @@ export default class Solution extends React.Component {
     var reply = {
       solution_id: solution_id,
       date_created: moment().format(),
-      description: SolutionStore.reply,
-      user_id: UserStore.user.id,
+      description: this.state.reply,
+      user_id: UserStore.user._id,
       username: UserStore.user.username,
       full_name: UserStore.fullName,
     }
-    // console.error(this.props.solution)
-    SolutionStore.postReply(reply, this.props.solution)
+    SolutionStore.postReply(reply, this.props.solution, this)
   };
 
   upvote = solution => {
@@ -218,62 +231,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    backgroundColor: "#222222",
-    margin: 0,
-  },
-  searchBar: {
-    width: responsiveWidth(75),
-    height: 35,
-    fontSize: 16,
-    backgroundColor: 'white',
-    padding: 8,
-    color: '#111111',
-  },
-  search: {
-    margin: 0,
-  },
-  headerIcon: {
-    width: responsiveWidth(10),
-  },
   scrollView: { 
     flex: 1,
     width: responsiveWidth(100),
-    backgroundColor: "#dddddd",
+    backgroundColor: "#0b0c10",
   },
   questions: {
-    elevation: 1,
-    marginBottom: 12,
-    padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "#1f2833",
+    borderColor: 'transparent',
   },
   name: {
     flexDirection: "row",
   },
   full_name: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#c5c6c7",
   },
   username: {
     fontSize: 16,
+    fontFamily: "Proxima Nova Light",
+    color: "#e5e6e7",
   },
   addComment: {
     paddingLeft: 10,
     paddingRight: 10,
   },
-  answerInput: {
+  replyInput: {
     fontSize: 14,
-  },
-  readMore: {
-    color: "blue",
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 24,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7"
   },
   description: {
     fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#c5c6c7",
   },
+  votes: {
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  }
 });

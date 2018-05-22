@@ -51,8 +51,8 @@ export default class Register extends React.Component {
           </View>
           { this.renderForm() }
           <View style={styles.buttonSection}>
-            { this.renderErrorMessage() }
             { this.renderPageButton() }
+            { RegisterStore.error ? <Text style={styles.errorMessage}>{ RegisterStore.error }</Text> : null }
             { this.renderRegisterButton() }
           </View>
         <Button 
@@ -73,12 +73,11 @@ export default class Register extends React.Component {
     if(this.state.page === 1) {
       return (
         <View style={styles.pageButton}>
-            <Button small disabled iconLeft>
+            <Button small disabled style={styles.disabledNextPrevButton}>
               <Icon name="arrow-back" size={24} color="white"/>
-              <Text uppercase={false}>Back</Text>
             </Button>
-            <Button small onPress={this.nextPage} iconRight>
-              <Text uppercase={false}>Next</Text>
+            <Text> &nbsp; </Text>
+            <Button small onPress={this.nextPage}  style={styles.nextPrevButton}>
               <Icon name="arrow-forward" size={24} color="white"/>
             </Button>
         </View>
@@ -87,12 +86,11 @@ export default class Register extends React.Component {
     else {
       return (
         <View style={styles.pageButton}>
-            <Button small onPress={this.backPage} iconLeft>
+            <Button small onPress={this.backPage} style={styles.nextPrevButton}>
               <Icon name="arrow-back" size={24} color="white"/>
-              <Text uppercase={false}>Back</Text>
             </Button>
-            <Button small disabled iconRight>
-              <Text uppercase={false}>Next</Text>
+            <Text> &nbsp; </Text>
+            <Button small disabled style={styles.disabledNextPrevButton}>
               <Icon name="arrow-forward" size={24} color="white"/>
             </Button>
         </View>
@@ -215,10 +213,11 @@ export default class Register extends React.Component {
         <Button 
           block 
           dark
-          style={styles.registerButton}
+          style={styles.disabledRegisterButton}
           disabled>
             <Text
-              uppercase={false}>
+              uppercase={false}
+              style={styles.registerText}>
                 Loading...
             </Text>
         </Button>
@@ -229,10 +228,11 @@ export default class Register extends React.Component {
         <Button
           block
           dark
-          style={styles.registerButton}
+          style={styles.disabledRegisterButton}
           disabled>
             <Text
-              uppercase={false}>
+              uppercase={false}
+              style={styles.registerText}>
                 Register
             </Text>
         </Button>
@@ -249,12 +249,6 @@ export default class Register extends React.Component {
               Register
           </Text>
       </Button>
-    )
-  };
-
-  renderErrorMessage = () => {
-    return(
-      <Text>{RegisterStore.error}</Text>
     )
   };
 
@@ -276,7 +270,8 @@ export default class Register extends React.Component {
       experience: 0,
       level: 1,
       rank: "Beginner",
-      date_created: moment().format()
+      date_created: moment().format(),
+      level_exp: 50,
     }
     RegisterStore.register(this.props.navigation, user, this.state.password);
   };
@@ -285,23 +280,28 @@ export default class Register extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E7ECEF',
+    backgroundColor: '#1f2833',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
     textAlign: 'center',
     fontSize: 30,
-    fontWeight: 'bold',
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   subtitle: {
     fontSize: 14,
     marginBottom: 30,
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
   },
   header: {
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 10,
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   form: {
     width: responsiveWidth(80)
@@ -311,11 +311,12 @@ const styles = StyleSheet.create({
     height: 44,
     fontSize: 16,
     backgroundColor: 'white',
-    color: '#111111',
+    color: '#1f2833',
+    fontFamily: "Proxima Nova Regular",
   },
   buttonSection: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   pageButton: {
     flexDirection: "row",
@@ -325,10 +326,36 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     fontSize: 14,
-    color: '#222222',
+    color: '#e5e6e7',
     textDecorationLine: 'underline',
+    fontFamily: "Proxima Nova Regular",
   },
   registerButton: {
     width: responsiveWidth(80),
+    backgroundColor: "#45a29e",
+  },
+  disabledRegisterButton: {
+    width: responsiveWidth(80),
+    backgroundColor: "#b2d8d8",
+  },
+  registerText: {
+    fontFamily: "Proxima Nova Regular",
+  },
+  nextPrevText: {
+    fontFamily: "Proxima Nova Regular",
+  },
+  nextPrevButton: {
+    backgroundColor: "#45a29e",
+  },
+  disabledNextPrevButton: {
+    backgroundColor: "#b2d8d8",
+  },
+  errorMessage: {
+    textAlign: "center",
+    fontSize: 14,
+    color: "#ef0202",
+    marginBottom: 10,
+    fontFamily: "Proxima Nova Regular",
+    color: "#f64c72",
   },
 });

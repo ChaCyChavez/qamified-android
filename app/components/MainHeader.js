@@ -15,7 +15,8 @@ import { ActionSheet,
          Button,
          Icon } from 'native-base';
 import SideMenu from './SideMenu.js';
-import { UserStore } from '../mobx';
+import { UserStore,
+         SearchStore } from '../mobx';
 
 var BUTTONS = [{ text: "Option 0", icon: "american-football", iconColor: "#2c8ef4" },
   { text: "Option 1", icon: "analytics", iconColor: "#f42ced" },
@@ -28,7 +29,9 @@ var CANCEL_INDEX = 4;
 export default class MainHeader extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      query: "",
+    };
   }
   
   render() { 
@@ -38,7 +41,8 @@ export default class MainHeader extends React.Component {
           rounded style={styles.header}
           hasTabs={!!this.props.hasTabs}>
             <Item>
-              <Button transparent onPress={() => 
+              <Button transparent 
+                style={styles.menuButton}onPress={() => 
                 ActionSheet.show(
                   {
                     options: BUTTONS,
@@ -50,7 +54,9 @@ export default class MainHeader extends React.Component {
                 )}>
                   <Icon name="ios-menu" style={styles.headerIcon}/>
               </Button>
-              <Input placeholder="Search" />
+              <Input style={styles.searchInput} placeholder="Search"
+                onChangeText={(input) => {this.setState({query: input})}} />   
+              { this.renderSearchButton() }
             </Item>
         </Header>
     );
@@ -59,6 +65,21 @@ export default class MainHeader extends React.Component {
     if(buttonClicked.text === "Logout") {
       UserStore.logOut(this.props.navigation)
     }
+  }
+
+  renderSearchButton = () => {
+    if(this.state.query) {
+      return(
+        <Button transparent 
+          style={styles.menuButton} onPress={() => {this.search()}}>
+            <Icon name="ios-search" style={styles.headerIcon}/>
+        </Button>
+      )
+    }
+  }
+
+  search = () => {
+    SearchStore.search(this.state.query, this.props.navigation);
   }
 }
 
@@ -70,16 +91,22 @@ const styles = StyleSheet.create({
   searchBar: {
     width: responsiveWidth(60),
     height: 36,
-    fontSize: 16,
-    backgroundColor: 'white',
     padding: 8,
-    color: '#111111',
     marginLeft: 0
+  },
+  searchInput: {
+    fontFamily: "Proxima Nova Regular",
+    fontSize: 18,
+    backgroundColor: '#e5e6e7',
+    color: "#1f2833",
   },
   headerIcon: {
     margin: 0,
-    color: '#222222',
+    color: '#1f2833',
     fontSize: 30,
   },
+  menuButton: {
+    backgroundColor: '#e5e6e7',
+  }
 });
 

@@ -35,6 +35,7 @@ export default class Quest extends React.Component {
 
     this.postSolution = this.postSolution.bind(this)
     this.state = {
+      solution: "",
       avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
     }
   };
@@ -44,7 +45,7 @@ export default class Quest extends React.Component {
     let itemsLength = QuestStore.current_solutions ? QuestStore.current_solutions.length : 0;
 
     const isAnswered = (isAnswered) => {
-      return (isAnswered ? <Text note>Answered</Text> : <Text note>Unanswered</Text>);
+      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>);
     };
 
     var solutions = []
@@ -60,17 +61,17 @@ export default class Quest extends React.Component {
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
         <KeyboardAvoidingView style={{flexGrow: 1}} >
-          <Card>
-            <CardItem>
+          <Card style={styles.questions}>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.title}>
                   {QuestStore.current_quest.title}
               </Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               { isAnswered(QuestStore.current_quest.is_answered) }
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Left>
                 <Thumbnail
                   small 
@@ -83,14 +84,14 @@ export default class Quest extends React.Component {
                     </Body>
               </Left>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Text style={styles.description}>{ QuestStore.current_quest.description }</Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Left>
                 <Button
                   bordered
-                  style={{borderColor: 'white'}}
+                  style={{borderColor: 'transparent'}}
                   onPress={() => this.upvote(QuestStore.current_quest)}>
                   <Icon
                     name="ios-arrow-up"
@@ -98,25 +99,25 @@ export default class Quest extends React.Component {
                 </Button>
                 <Button
                   bordered
-                  style={{borderColor: 'white'}}
+                  style={{borderColor: 'transparent'}}
                   onPress={() => this.downvote(QuestStore.current_quest)}>
                   <Icon
                     name="ios-arrow-down"
                     style={{fontSize: 28, color: this.isDownvoted(QuestStore.current_quest.downvote) ? 'red' : 'gray'}}/>
                 </Button>
-                <Text>{ QuestStore.current_quest.votes }</Text>
+                <Text style={styles.votes}>{ QuestStore.current_quest.votes }</Text>
               </Left>
               { this.renderDeleteQuestButton() }
             </CardItem>
           </Card>
-          <Card>
+          <Card style={styles.questions}>
             <CardItem style={styles.spinCon}>
-              { QuestStore.initializing ? <Spinner color='black' /> : <Text>{ itemsLength } Answer/s</Text> }
+              { QuestStore.initializing ? <Spinner color='#66fcf1' /> : <Text style={styles.answers}>{ itemsLength } Answer/s</Text> }
             </CardItem>
           </Card>
           { QuestStore.initializing ? <View></View> : solutions }
-          <Card>
-            <CardItem>
+          <Card style={styles.questions}>
+            <CardItem style={{backgroundColor: "transparent"}}>
               <Left>
                 <Thumbnail  
                   small
@@ -129,22 +130,19 @@ export default class Quest extends React.Component {
                     </Body>
               </Left>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: "transparent"}}>
               <Item>
                 <Input
-                  value={QuestStore.solution}
                   style={styles.answerInput}
+                  value={this.state.solution}
                   multiline={true}
                   placeholder="Post answer..."
-                  onChangeText={(input) => {QuestStore.solution = input}}/>
+                  placeholderTextColor="#959697"
+                  onChangeText={(input) => this.setState({solution: input})}/>
               </Item>
             </CardItem>
-            <CardItem>
-              <Item regular>
-                <Right>
-                  { this.renderPostButton() }
-                </Right>
-              </Item>
+            <CardItem style={{backgroundColor: "transparent"}}>
+              { this.renderPostButton() }
             </CardItem>
           </Card>
         </KeyboardAvoidingView> 
@@ -179,38 +177,58 @@ export default class Quest extends React.Component {
         <Right>
           <Button
             bordered
-            style={{borderColor: 'white'}}
+            style={{borderColor: 'transparent'}}
             onPress={() => this.delete(QuestStore.current_quest)}>
             <Icon 
               name="ios-trash" 
-              style={{fontSize: 24}}/>
+              style={{fontSize: 24, color: "#66fcf1"}}/>
           </Button>
         </Right>
       )
     }
   }
 
+  completeField = () => {
+    return this.state.solution ? true : false
+  }
+
   renderPostButton = () => {
     if(QuestStore.loading) {
       return (
         <Button
-          block
-          dark
+          transparent
+          style={styles.disabledPostButton}
           disabled>
             <Text
-             uppercase={false}>
+             uppercase={false}
+             style={{color: "white", fontFamily: "Proxima Nova Bold"}}>
               Submitting...
+            </Text>
+        </Button>
+      )
+    }
+    else if(!this.completeField()) {
+      return (
+        <Button
+          transparent
+          style={styles.disabledPostButton}
+          disabled>
+            <Text
+             uppercase={false}
+             style={{color: "white", fontFamily: "Proxima Nova Bold"}}>
+              Submit
             </Text>
         </Button>
       )
     }
     return (
       <Button
-        block
-        dark
+        transparent
+        style={styles.postButton}
         onPress={ this.postSolution }>
           <Text
-            uppercase={false}>
+            uppercase={false}
+            style={{color: "white", fontFamily: "Proxima Nova Bold"}}>
               Submit
           </Text>
       </Button>
@@ -223,14 +241,14 @@ export default class Quest extends React.Component {
       quest_id: QuestStore.current_quest._id,
       date_created: moment().format(),
       is_correct: false,
-      description: QuestStore.solution,
+      description: this.state.solution,
       votes: 0,
       user_id: UserStore.user._id,
       username: UserStore.user.username,
       full_name: UserStore.fullName,
       reply: []
     }
-    QuestStore.postSolution(solution);
+    QuestStore.postSolution(solution, this);
   };
 
   upvote = (quest) => {
@@ -266,53 +284,66 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
-  header: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    backgroundColor: "#222222",
-    margin: 0,
-  },
-  searchBar: {
-    width: responsiveWidth(75),
-    height: 35,
-    fontSize: 16,
-    backgroundColor: 'white',
-    padding: 8,
-    color: '#111111',
-  },
-  search: {
-    margin: 0,
-  },
-  headerIcon: {
-    width: responsiveWidth(10),
+  answers: {
+    fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   scrollView: { 
     flex: 1,
     width: responsiveWidth(100),
-    backgroundColor: "#dddddd",
+    backgroundColor: "#0b0c10",
   },
   questions: {
-    elevation: 1,
-    marginBottom: 12,
-    padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "#1f2833",
+    borderColor: 'transparent',
+  },
+  status: {
+    fontFamily: "Proxima Nova Light",
+    fontSize: 16,
+    color: "#c5c6c7",
   },
   full_name: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   username: {
     fontSize: 16,
-  },
-  readMore: {
-    color: "blue",
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
   },
   title: {
-    fontWeight: 'bold',
+    fontFamily: "Gotham Bold",
     fontSize: 24,
+    color: "#e5e6e7",
+  },
+  answerInput: {
+    fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   description: {
     fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  },
+  votes: {
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  },
+  postButton: {
+    justifyContent: 'center',
+    width: responsiveWidth(90),
+    backgroundColor: "#45a29e",
+    borderColor: 'transparent',
+  },
+  disabledPostButton: {
+    justifyContent: 'center',
+    width: responsiveWidth(90),
+    backgroundColor: "#b2d8d8",
+    borderColor: 'transparent',
   },
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet,
-         TextInput,
          View,
          ScrollView } from 'react-native';
 import { responsiveHeight,
@@ -26,6 +25,10 @@ import moment from 'moment';
 export default class CreateQuest extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      title: "",
+      description: ""
+    }
   }
 
   render() {
@@ -33,8 +36,8 @@ export default class CreateQuest extends React.Component {
       <View style={styles.container}>
         <View style={styles.container}>
           <ScrollView style={styles.scrollView}>
-              <Card>
-                <CardItem>
+              <Card style={styles.card}>
+                <CardItem style={{backgroundColor: 'transparent'}}>
                   <Left>
                     <Thumbnail 
                       small
@@ -45,32 +48,30 @@ export default class CreateQuest extends React.Component {
                         </Body>
                   </Left>
                 </CardItem>
-                <CardItem>
+                <CardItem style={{backgroundColor: 'transparent'}}>
                   <Item>
                     <Input
                       style={styles.title}
                       placeholder="Title"
-                      onChangeText={(input) => {UserStore.title = input}}/>
+                      placeholderTextColor="#959697"
+                      onChangeText={(input) => {this.state.title = input}}/>
                   </Item>
                 </CardItem>
-                <CardItem>
+                <CardItem style={{backgroundColor: 'transparent'}}>
                   <Item>
                     <Input
                       style={styles.description}
                       multiline={true}
                       placeholder="Ask question.."
-                      onChangeText={(input) => {UserStore.description = input}}/>
+                      placeholderTextColor="#959697"
+                      onChangeText={(input) => {this.setState({description: input})}}/>
                   </Item>
                 </CardItem>
-                <CardItem>
+                <CardItem style={{backgroundColor: 'transparent'}}>
                   { this.renderErrorMessage() }
                 </CardItem>
-                <CardItem>
-                  <Item regular>
-                    <Right>
-                      { this.renderPostButton() }
-                    </Right>
-                  </Item>
+                <CardItem style={{backgroundColor: 'transparent'}}>
+                  { this.renderPostButton() }
                 </CardItem>
               </Card>
           </ScrollView>
@@ -79,27 +80,47 @@ export default class CreateQuest extends React.Component {
     );
   }
 
+  completeField = () => {
+    return (this.state.title &&
+            this.state.description) ? true : false
+  }
   renderPostButton = () => {
     if(UserStore.loading) {
       return (
         <Button
-          block
-          dark
+          transparent
+          style={styles.disabledPostButton}
           disabled>
             <Text
-             uppercase={false}>
+             uppercase={false}
+             style={{color: "white", fontFamily: "Proxima Nova Regular"}}>
               Posting...
+            </Text>
+        </Button>
+      )
+    }
+    else if(!this.completeField()) {
+      return (
+        <Button
+          transparent
+          style={styles.disabledPostButton}
+          disabled>
+            <Text
+             uppercase={false}
+             style={{color: "white", fontFamily: "Proxima Nova Regular"}}>
+              Post
             </Text>
         </Button>
       )
     }
     return (
       <Button
-        block
-        dark
+        transparent
+        style={styles.postButton}
         onPress={this.postQuest}>
           <Text
-            uppercase={false}>
+            uppercase={false}
+            style={{color: "white", fontFamily: "Proxima Nova Regular"}}>
               Post
           </Text>
       </Button>
@@ -110,8 +131,8 @@ export default class CreateQuest extends React.Component {
     var currDate = new Date();
     var quest = {
       date_created: moment().format(),
-      title: UserStore.title,
-      description: UserStore.description,
+      title: this.state.title,
+      description: this.state.description,
       votes: 0,
       user_id: UserStore.user._id,
       is_answered: false,
@@ -139,25 +160,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    backgroundColor: "#222222",
-    margin: 0,
-  },
-  headerIcon: {
-    width: responsiveWidth(10),
-  },
   scrollView: { 
     flex: 1,
     width: responsiveWidth(100),
-    backgroundColor: "#dddddd",
+    backgroundColor: "#0b0c10",
+  },
+  card: {
+    backgroundColor: '#1f2833',
+    borderColor: 'transparent',
   },
   full_name: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   username: {
     fontSize: 16,
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
+  },
+  title: {
+    color: "#e5e6e7",
+    fontFamily: "Proxima Nova Regular",
+  },
+  description: {
+    color: "#e5e6e7",
+    fontFamily: "Proxima Nova Regular",
+  },
+  postButton: {
+    justifyContent: 'center',
+    width: responsiveWidth(90),
+    backgroundColor: "#45a29e",
+    borderColor: 'transparent',
+  },
+  disabledPostButton: {
+    justifyContent: 'center',
+    width: responsiveWidth(90),
+    backgroundColor: "#b2d8d8",
+    borderColor: 'transparent',
   },
 });

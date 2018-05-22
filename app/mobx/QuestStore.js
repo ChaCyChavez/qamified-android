@@ -1,21 +1,9 @@
 import { observable, computed } from 'mobx';
+import { ToastAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
 import FeedStore from './FeedStore.js';
 import UserStore from './UserStore.js';
 import moment from 'moment';
-
-// First, checks if it isn't implemented yet.
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
-}
 
 class QuestStore {
   @observable
@@ -38,15 +26,16 @@ class QuestStore {
 
   setCurrentQuest = (quest, navigation) => {
     this.current_quest = quest;
-    this.current_solutions = []
+    this.current_solutions.splice(0, this.current_solutions.length)
     navigation.navigate("Quest")
     this.initializing = true
     firebase.database()
       .ref('solution/').orderByChild("quest_id").equalTo(quest._id)
-      .on('value', solutions => {
+      .on('child_added', solutions => {
         if (solutions !== null) {
-          solutions.forEach(s => {
-            var solution = s.val()
+          // this.current_solutions.splice(0, this.current_solutions.length)
+          // solutions.forEach(s => {
+            var solution = solutions.val()
             solution.reply = []
             var upvotes = []
             var downvotes = []
@@ -68,7 +57,7 @@ class QuestStore {
 
             firebase.database()
               .ref('reply/').orderByChild("solution_id").equalTo(solution._id)
-              .once('value', replies => {
+              .on('value', replies => {
                 if (replies !== null) {
                   replies.forEach(r => {
                     var reply = r.val()
@@ -76,14 +65,27 @@ class QuestStore {
                     solution.reply.push(reply)
                   })
                 }
-                this.current_solutions.push(solution)
+                this.addSolution(solution)
               })
-          })
+          // })
         }
       })
 
     setTimeout(() => {this.initializing = false}, 2000)
 
+  }
+
+  addSolution = solution => {
+    var has_added = false
+    this.current_solutions.forEach((s, index) => {
+      if(solution._id == s._id) {
+        this.current_solutions[index] = solution
+        has_added = true
+      }
+    })
+    if(!has_added) {
+      this.current_solutions.push(solution)
+    }
   }
 
   solutionNotification = (quest) => {
@@ -113,7 +115,7 @@ class QuestStore {
       })
   }
 
-  postSolution = solution => {
+  postSolution = (solution, _this) => {
     this.loading = true;
 
     let s = solution
@@ -122,9 +124,19 @@ class QuestStore {
     s._id = newSolutionKey
 
     const updates = {}
-    updates[`/quest/${s.quest_id}/solution/${newSolutionKey}`] = true
     updates[`/user/${s.user_id}/solution/${newSolutionKey}`] = true
     updates[`/solution/${s._id}`] = s
+
+    updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + 40
+    UserStore.user.experience += 40
+    var did_level_up = false
+    if(UserStore.user.experience >= UserStore.user.level_exp) {
+      updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+      UserStore.user.level += 1
+      updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+      UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+      did_level_up = true
+    }
 
     firebase.database()
       .ref()
@@ -132,10 +144,16 @@ class QuestStore {
       .then(() => {
         this.loading = false;
         this.error = "";
-        this.solution = "";
-        this.current_solutions.push(s);
+        _this.setState({solution: ""})
 
         this.solutionNotification(this.current_quest)
+
+        ToastAndroid.show('Solution posted successfully!', ToastAndroid.SHORT);
+        ToastAndroid.show('40 experience gained!', ToastAndroid.SHORT);
+        if(did_level_up) {
+          ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+          did_level_up = false
+        }
 
       })
       .catch(error => {

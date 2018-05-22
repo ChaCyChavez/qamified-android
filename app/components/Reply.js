@@ -37,7 +37,7 @@ export default class Reply extends React.Component {
 
   render() {
     return (
-      <CardItem bordered transparent>
+      <CardItem bordered style={{backgroundColor: "transparent"}}>
         <View>
           <Text style={styles.full_name}>{ this.props.reply.full_name }</Text>
           <Text style={styles.username} note>{ "@" + this.props.reply.username } &#183; { moment(this.props.reply.date_created).fromNow() }</Text>
@@ -55,20 +55,18 @@ const styles = StyleSheet.create({
   },
   full_name: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#c5c6c7",
   },
   username: {
     fontSize: 14,
-  },
-  readMore: {
-    color: "blue",
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 24,
+    fontFamily: "Proxima Nova Light",
+    color: "#e5e6e7",
   },
   description: {
     fontSize: 16,
     marginLeft: 5,
+    fontFamily: "Proxima Nova Regular",
+    color: "#c5c6c7",
   },
 });

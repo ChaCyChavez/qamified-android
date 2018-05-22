@@ -63,7 +63,6 @@ class LoginStore {
   }
 
   login = (navigation, user) => {
-    console.log('Login')
     this.loading = true;
     this.error = ""
 

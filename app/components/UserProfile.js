@@ -43,26 +43,25 @@ export default class UserProfile extends React.Component {
 
   render() {
     const isAnswered = (isAnswered) => {
-      return (isAnswered ? <Text note>Answered</Text> : <Text note>Unanswered</Text>);
+      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>);
     };
 
-    var loading = <Spinner color='black' />
+    var loading = <Spinner color='#c5c6c7' />
     var listItems = UserProfileStore.profileFeed.map((item, index) => {
       return (
-        <Card key={index}>
-          <CardItem>
+        <Card style={styles.questions} key={index}>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             <Text
               style={styles.title}>
                 {item.title}
             </Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             { isAnswered(item.is_answered) }
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             <Left>
-              <Thumbnail 
-                small
+              <Thumbnail
                 source={{ uri:this.state.avatar_url }} />
                   <Body>
                     <View>
@@ -72,14 +71,14 @@ export default class UserProfile extends React.Component {
                   </Body>
             </Left>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             <Text style={styles.description}>{item.description}</Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             <Left>
               <Button
                 bordered
-                style={{borderColor: 'white'}}
+                style={{borderColor: 'transparent'}}
                 onPress={() => this.upvote(item)}>
                 <Icon 
                   name="ios-arrow-up" 
@@ -87,13 +86,13 @@ export default class UserProfile extends React.Component {
               </Button>
               <Button
                 bordered
-                style={{borderColor: 'white'}}
+                style={{borderColor: 'transparent'}}
                 onPress={() => this.downvote(item)}>
                 <Icon 
                   name="ios-arrow-down"
                   style={{fontSize: 28, color: this.isDownvoted(item.downvote) ? 'red' : 'grey'}}/>
               </Button>
-              <Text>{item.votes}</Text>
+              <Text style={styles.votes}>{item.votes}</Text>
             </Left>
             <Right>
               <Button
@@ -102,10 +101,11 @@ export default class UserProfile extends React.Component {
                 onPress={ () => this.viewQuest(item) }
                 iconRight>
                   <Text 
-                    uppercase={false}>
+                    uppercase={false}
+                    style={styles.readMore}>
                       Read more
                   </Text>
-                  <Icon name="ios-arrow-forward" />
+                  <Icon style={{color: "#66fcf1"}}name="ios-arrow-forward" />
               </Button>
             </Right>
           </CardItem>
@@ -117,24 +117,24 @@ export default class UserProfile extends React.Component {
       <View style={styles.container}>
         <ScrollView behavior="padding" style={styles.scrollView}>
           <Card style={styles.infoContainer}>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Thumbnail 
                 small
                 source={{ uri:this.state.avatar_url }} />
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.fullName}>
                   { UserProfileStore.fullName }
               </Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.email}>
                   { UserProfileStore.current_user.email } &#183; { UserProfileStore.current_user.email }
               </Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.stats}>
                   { UserProfileStore.current_user.points } &nbsp;
@@ -142,20 +142,20 @@ export default class UserProfile extends React.Component {
               </Text>
               <Text
                 style={styles.stats}>
-                  &#183; &nbsp;
+                  &nbsp; &#183;&nbsp;
                   Level &nbsp;
                   { UserProfileStore.current_user.level }
               </Text>
               <Text
                 style={styles.stats}>
-                  &#183; &nbsp;
+                  &nbsp; &#183; &nbsp;
                   { UserProfileStore.current_user.rank }
               </Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               { this.renderDescription() }
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
               { this.renderButton() }
             </CardItem>
           </Card>
@@ -216,7 +216,8 @@ export default class UserProfile extends React.Component {
           primary
           onPress={ () => { this.updateBio() } }>
             <Text 
-              uppercase={false}>
+              uppercase={false}
+              style={styles.buttonText}>
                Save
             </Text>
         </Button>
@@ -228,7 +229,8 @@ export default class UserProfile extends React.Component {
           primary
            onPress={() => {this.setState({editing: true})}}>
             <Text 
-              uppercase={false}>
+              uppercase={false}
+              style={styles.buttonText}>
                 Edit description
             </Text>
         </Button>
@@ -256,19 +258,20 @@ export default class UserProfile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E7ECEF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   infoContainer : {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: "#1f2833",
     justifyContent: 'center',
+    borderColor: "transparent",
   },
   scrollView: {
     flex: 1,
     width: responsiveWidth(100),
-    backgroundColor: "#dddddd",
+    backgroundColor: "#0b0c10",
   },
   info: {
     flex: 1,
@@ -283,46 +286,70 @@ const styles = StyleSheet.create({
   fullName: {
     textAlign: 'center',
     fontSize: 28,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   postFullName: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   username: {
     fontSize: 16,
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
   },
   stats: {
     fontSize: 16,
     color: "#222222",
     textAlign: 'center',
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   email: {
     fontSize: 16,
     textAlign: 'center',
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   bio: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  },
+  buttonText: {
+    color: "#66fcf1",
   },
   title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontFamily: "Gotham Bold",
+    fontSize: 24,
+    color: "#e5e6e7",
+  },
+  status: {
+    fontFamily: "Proxima Nova Light",
+    fontSize: 16,
+    color: "#c5c6c7",
   },
   questions: {
-    elevation: 1,
-    marginBottom: 12,
-    padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "#1f2833",
+    borderColor: 'transparent',
   },
   readMore: {
-    color: "blue",
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 24,
+    color: "#66fcf1",
+    fontFamily: "Proxima Nova Regular",
   },
   description: {
     fontSize: 18,
-  }
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  },
+  votes: {
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  },
+  readMore: {
+    color: "#66fcf1",
+    fontFamily: "Proxima Nova Regular",
+  },
 });

@@ -49,7 +49,26 @@ export default class Login extends React.Component {
             </Text>
             <View 
               style={styles.form}>   
-                { this.renderForm() }
+                <View>
+                  <Item style={{marginBottom: 10}}>
+                    <Input
+                        style={styles.input}
+                        placeholder='Email or Username'
+                        underlineColorAndroid='transparent'
+                        onChangeText={(input) => this.setState({email_username: input})}
+                     />
+                  </Item>
+                  <Item style={{marginBottom: 10}}>
+                    <Input
+                        style={styles.input}
+                        placeholder='Password'
+                        secureTextEntry
+                        underlineColorAndroid='transparent'
+                        onChangeText={(input) => this.setState({password: input})}
+                     />
+                  </Item>
+                  { LoginStore.error ? <Text style={styles.errorMessage}>{ LoginStore.error }</Text> : null }
+                </View>
                 { this.renderLoginButton() }
               <Button 
                 transparent
@@ -66,23 +85,43 @@ export default class Login extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <Spinner color='black' />
+          <Spinner color='#66fcf1'/>
         </View>
       )
     }
+  }
+
+  completeField = () => {
+    return (this.state.email_username &&
+            this.state.password) ? true : false;
   }
 
   renderLoginButton = () => {
     if(LoginStore.loading) {
       return (
         <Button 
-          block 
-          dark 
-          style={styles.loginButton}
+          block  
+          style={styles.disabledLoginButton}
           disabled>
             <Text 
-              uppercase={false}>
+              uppercase={false}
+              style={styles.loginText}>
                 Loading...
+            </Text>
+        </Button>
+      )
+    }
+    else if(!this.completeField()) {
+      return (
+        <Button 
+          block 
+          style={styles.disabledLoginButton}
+          onPress={this.login}
+          disabled>
+            <Text 
+              uppercase={false}
+              style={styles.loginText}>
+                Login
             </Text>
         </Button>
       )
@@ -90,65 +129,16 @@ export default class Login extends React.Component {
     return (
       <Button 
         block 
-        dark
         style={styles.loginButton}
         onPress={this.login}>
           <Text 
-            uppercase={false}>
+            uppercase={false}
+            style={styles.loginText}>
               Login
           </Text>
       </Button>
     )
   };
-
-  renderForm = () => {
-    if(LoginStore.error) {
-      return (
-        <View>
-          <Item error style={{marginBottom: 10}}>
-            <Input
-                style={styles.input}
-                placeholder='Email or Username'
-                underlineColorAndroid='transparent'
-                onChangeText={(input) => this.setState({email_username: input})}
-             />
-          </Item>
-          <Item error style={{marginBottom: 10}}>
-            <Input
-                style={styles.input}
-                placeholder='Password'
-                secureTextEntry
-                underlineColorAndroid='transparent'
-                onChangeText={(input) => this.setState({password: input})}
-             />
-          </Item>
-          <Text style={styles.errorMessage}>{ LoginStore.error }</Text>
-        </View>
-      )
-    }
-    return (
-      <View>
-        <Item style={{marginBottom: 8}}>
-          <Input
-              style={styles.input}
-              placeholder='Email or Username'
-              underlineColorAndroid='transparent'
-              onChangeText={(input) => this.setState({email_username: input})}
-           />
-        </Item>
-
-        <Item style={{marginBottom: 8}}>
-          <Input
-              style={styles.input}
-              placeholder='Password'
-              secureTextEntry
-              underlineColorAndroid='transparent'
-              onChangeText={(input) => this.setState({password: input})}
-           />
-        </Item>
-      </View>
-    )
-  }
   
   navigateToRegister = () => {
     this.props.navigation.navigate('Register')
@@ -162,7 +152,7 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E7ECEF',
+    backgroundColor: "#1f2833",
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -171,37 +161,48 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
-    color: '#222222',
+    fontFamily: "Gotham Bold",
+    color: '#e5e6e7',
   },
   subtitle: {
     fontSize: 14,
     marginBottom: 30,
-    color: '#444444',
+    color: '#c5c6c7',
+    fontFamily: "Proxima Nova Light",
   },
   input: {
     width: responsiveWidth(80),
     height: 44,
     fontSize: 16,
     backgroundColor: 'white',
-    color: '#111111',
-  },
-  label: {
-    margin: 10,
-    color: '#111111',
+    color: '#1f2833',
+    fontFamily: "Proxima Nova Regular",
   },
   loginButton: {
     width: responsiveWidth(80),
+    backgroundColor: "#45a29e",
+  },
+  disabledLoginButton: {
+    width: responsiveWidth(80),
+    backgroundColor: "#b2d8d8",
+  },
+  loginText: {
+    fontFamily: "Proxima Nova Regular",
   },
   registerButton: {
     fontSize: 14,
-    color: '#222222',
+    color: '#e5e6e7',
     textDecorationLine: 'underline',
+    fontFamily: "Proxima Nova Regular",
+    textAlign: "center",
+    width: responsiveWidth(80),
   },
   errorMessage: {
     textAlign: "center",
     fontSize: 14,
     color: "#ef0202",
     marginBottom: 10,
+    fontFamily: "Proxima Nova Regular",
+    color: "#f64c72",
   },
 });

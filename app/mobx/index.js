@@ -8,3 +8,4 @@ export { default as ProfileStore } from './ProfileStore.js';
 export { default as NotificationStore } from './NotificationStore.js';
 export { default as RankingStore } from './RankingStore.js';
 export { default as UserProfileStore } from './UserProfileStore.js';
+export { default as SearchStore } from './SearchStore.js';

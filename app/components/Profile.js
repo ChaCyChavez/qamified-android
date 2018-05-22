@@ -46,23 +46,23 @@ export default class Profile extends React.Component {
 
   render() {
     const isAnswered = (isAnswered) => {
-      return (isAnswered ? <Text note>Answered</Text> : <Text note>Unanswered</Text>);
+      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>);
     };
 
-    var loading = <Spinner color='black' />
+    var loading = <Spinner color='#66fcf1' />
     var listItems = ProfileStore.profileFeed.map((item, index) => {
       return (
-        <Card key={index}>
-          <CardItem>
+        <Card style={styles.questions} key={index}>
+          <CardItem style={{backgroundColor: "transparent"}}>
             <Text
               style={styles.title}>
                 {item.title}
             </Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: "transparent"}}>
             { isAnswered(item.is_answered) }
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: "transparent"}}>
             <Left>
               <Thumbnail 
                 small
@@ -75,14 +75,14 @@ export default class Profile extends React.Component {
                   </Body>
             </Left>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: "transparent"}}>
             <Text style={styles.description}>{item.description}</Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: "transparent"}}>
             <Left>
               <Button
                 bordered
-                style={{borderColor: 'white'}}
+                style={{borderColor: 'transparent'}}
                 onPress={() => this.upvote(item)}>
                 <Icon 
                   name="ios-arrow-up" 
@@ -90,13 +90,13 @@ export default class Profile extends React.Component {
               </Button>
               <Button
                 bordered
-                style={{borderColor: 'white'}}
+                style={{borderColor: 'transparent'}}
                 onPress={() => this.downvote(item)}>
                 <Icon 
                   name="ios-arrow-down"
                   style={{fontSize: 28, color: this.isDownvoted(item.downvote) ? 'red' : 'grey'}}/>
               </Button>
-              <Text>{item.votes}</Text>
+              <Text style={styles.votes}>{item.votes}</Text>
             </Left>
             <Right>
               <Button
@@ -105,10 +105,11 @@ export default class Profile extends React.Component {
                 onPress={ () => this.viewQuest(item) }
                 iconRight>
                   <Text 
-                    uppercase={false}>
+                    uppercase={false}
+                    style={styles.readMore}>
                       Read more
                   </Text>
-                  <Icon name="ios-arrow-forward" />
+                  <Icon style={{color: "#66fcf1"}}name="ios-arrow-forward" />
               </Button>
             </Right>
           </CardItem>
@@ -120,24 +121,23 @@ export default class Profile extends React.Component {
       <View style={styles.container}>
         <ScrollView behavior="padding" style={styles.scrollView}>
           <Card style={styles.infoContainer}>
-            <CardItem>
-              <Thumbnail 
-                small
+            <CardItem style={{backgroundColor: "transparent"}}>
+              <Thumbnail
                 source={{ uri:this.state.avatar_url }} />
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.fullName}>
                   { UserStore.fullName }
               </Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.email}>
-                  { UserStore.user.email  } &#183;{ UserStore.user.institution  }
+                  { UserStore.user.email  } &#183; { UserStore.user.institution  }
               </Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.stats}>
                   { UserStore.user.points } &nbsp;
@@ -145,33 +145,33 @@ export default class Profile extends React.Component {
               </Text>
               <Text
                 style={styles.stats}>
-                  &#183; &nbsp;
+                  &nbsp; &#183;&nbsp;
                   Level &nbsp;
                   { UserStore.user.level }
               </Text>
               <Text
                 style={styles.stats}>
-                  &#183; &nbsp;
+                  &nbsp; &#183; &nbsp;
                   { UserStore.user.rank }
               </Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: "transparent"}}>
               { this.renderDescription() }
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: "transparent"}}>
               { this.renderButton() }
             </CardItem>
           </Card>
-          <Card>
-          <CardItem>
+          <Card style={styles.questions}>
+          <CardItem style={{backgroundColor: "transparent"}}>
             <Body style={{flexDirection: "row", justifyContent: "center"}}>
               <Button transparent onPress={()=>this.props.navigation.navigate('Achievements')}>
-                <Icon name="ios-trophy"/>
-                <Text uppercase={false}>Achievements</Text>
+                <Icon style={styles.buttonText} name="ios-trophy"/>
+                <Text style={styles.buttonText} uppercase={false}>Achievements</Text>
               </Button>
               <Button transparent onPress={()=>this.props.navigation.navigate('Todo')}>
-                <Icon name="ios-list-box"/>
-                <Text uppercase={false}>Todo</Text>
+                <Icon style={styles.buttonText} name="ios-list-box"/>
+                <Text style={styles.buttonText} uppercase={false}>Todo</Text>
               </Button>
             </Body>
           </CardItem>
@@ -233,7 +233,8 @@ export default class Profile extends React.Component {
           primary
           onPress={ () => { this.updateBio() } }>
             <Text 
-              uppercase={false}>
+              uppercase={false}
+              style={styles.buttonText}>
                Save
             </Text>
         </Button>
@@ -245,7 +246,8 @@ export default class Profile extends React.Component {
           primary
            onPress={() => {this.setState({editing: true})}}>
             <Text 
-              uppercase={false}>
+              uppercase={false}
+              style={styles.buttonText}>
                 Edit description
             </Text>
         </Button>
@@ -273,7 +275,6 @@ export default class Profile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E7ECEF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -281,11 +282,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: "#1f2833",
+    borderColor: 'transparent',
   },
   scrollView: {
     flex: 1,
     width: responsiveWidth(100),
-    backgroundColor: "#dddddd",
+    backgroundColor: "#0b0c10",
   },
   info: {
     flex: 1,
@@ -295,51 +298,70 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginBottom: 12,
     padding: 20,
-    backgroundColor: "white",
   },
   fullName: {
     textAlign: 'center',
     fontSize: 28,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   postFullName: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   username: {
     fontSize: 16,
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
   },
   stats: {
     fontSize: 16,
     color: "#222222",
     textAlign: 'center',
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   email: {
     fontSize: 16,
     textAlign: 'center',
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   bio: {
     textAlign: 'center',
-    fontSize: 16,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   questions: {
-    elevation: 1,
-    marginBottom: 12,
-    padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "#1f2833",
+    borderColor: 'transparent',
+  },
+  status: {
+    fontFamily: "Proxima Nova Light",
+    fontSize: 16,
+    color: "#c5c6c7",
+  },
+  votes: {
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
+  },
+  buttonText: {
+    color: "#66fcf1",
   },
   readMore: {
-    color: "blue",
+    color: "#66fcf1",
+    fontFamily: "Proxima Nova Regular",
   },
   title: {
-    fontWeight: 'bold',
+    fontFamily: "Gotham Bold",
     fontSize: 24,
+    color: "#e5e6e7",
   },
   description: {
     fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   }
 });

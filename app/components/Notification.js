@@ -46,13 +46,15 @@ export default class Notification extends React.Component {
             </Left>
             <Body>
               <Text
-                note>
+                note
+                style={styles.description}>
                   { item.description }
               </Text>
             </Body>
             <Right>
               <Text
-                note>
+                note
+                style={styles.time}>
                   { moment(item.date_created).fromNow() }
               </Text>
             </Right>
@@ -84,27 +86,21 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     width: responsiveWidth(100),
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    backgroundColor: "#0b0c10",
   },
   item: {
     marginLeft: 0,
-    backgroundColor: "white",
+    backgroundColor: "#1f2833",
     width: responsiveWidth(100)
   },
-  subtitleView: {
-    flexDirection: 'row',
-    paddingLeft: 10,
-    paddingTop: 5
+  description: {
+    fontFamily: "Proxima Nova Regular",
+    color: "#c5c6c7",
+    fontSize: 16,
   },
-  ratingImage: {
-    height: 19.21,
-    width: 100
-  },
-  ratingText: {
-    paddingLeft: 10,
-    color: 'grey'
+  time: {
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
+    fontSize: 14,
   }
 });

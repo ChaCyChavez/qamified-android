@@ -3,8 +3,7 @@ import { StyleSheet,
          TextInput,
          View,
          ScrollView } from 'react-native';
-import { List,
-         ListItem,
+import { ListItem,
          Thumbnail,
          Body,
          Left,
@@ -13,7 +12,9 @@ import { List,
          Button,
          Picker,
          Icon,
-         Item } from 'native-base'
+         Item,
+         Card,
+         CardItem } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -50,20 +51,23 @@ export default class Ranking extends React.Component {
         <ListItem
           avatar
           key={i}
-          style={styles.item}>
+          style={styles.item}
+          bordered>
             <Left>
               <Thumbnail small source={{uri:this.state.avatar_url}} />
             </Left>
             <Body>
-              <Text>{ item.username }</Text>
+              <Text style={styles.username}>{ item.username }</Text>
               <Text
-                note>
+                note
+                style={styles.pointsRank}>
                   { item.points + " points | " + item.rank }
               </Text>
             </Body>
             <Right>
               <Text
-                note>
+                note
+                style={styles.listRank}>
                   {`#${i + 1}`}
               </Text>
             </Right>
@@ -74,23 +78,34 @@ export default class Ranking extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
-          <Item style={{flex: 1, flexDirection: "row"}}>
-            <Left>
-            <Text>Sort by : </Text>
-            </Left>
-            <Right>
-            <Picker
-              mode="dropdown"
-              style={{ width: responsiveWidth(50) }}
-              selectedValue={this.state.selected}
-              onValueChange={this.onValueChange.bind(this)}
-            >
-              <Picker.Item label="Points" value="key0" />
-              <Picker.Item label="Rank" value="key1" />
-            </Picker>
-            </Right>
-          </Item>
+          <Card style={styles.card}>
+            <CardItem style={{backgroundColor: 'transparent', flex: 1, flexDirection: "row"}}>
+              <Left>
+              <Text style={styles.picker}>Sort by : </Text>
+              </Left>
+              <Right>
+              <Picker
+                mode="dropdown"
+                textStyle={{ color: "#5cb85c" }}
+                itemStyle={{
+                  backgroundColor: "#d3d3d3",
+                  marginLeft: 0,
+                  paddingLeft: 10
+                }}
+                itemTextStyle={{ color: '#788ad2' }}
+                style={{ width: responsiveWidth(50) }}
+                selectedValue={this.state.selected}
+                onValueChange={this.onValueChange.bind(this)}
+              >
+                <Picker.Item style={styles.picker} label="Points" value="key0" />
+                <Picker.Item style={styles.picker} label="Rank" value="key1" />
+              </Picker>
+              </Right>
+            </CardItem>
+          </Card>
+          <Card style={styles.card}>
           { ranking }
+          </Card>
         </ScrollView>
       </View>
     )
@@ -107,27 +122,34 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     width: responsiveWidth(100),
+    backgroundColor: "#0b0c10",
   },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+  card: {
+    backgroundColor: "#1f2833",
+    borderColor: 'transparent',
   },
   item: {
-    marginLeft: 0,
-    backgroundColor: "white",
-    width: responsiveWidth(100)
+    backgroundColor: "transparent",
+    width: responsiveWidth(90),
   },
-  subtitleView: {
-    flexDirection: 'row',
-    paddingLeft: 10,
-    paddingTop: 5
+  username: {
+    fontFamily: "Gotham Bold",
+    color: "#c5c6c7",
+    fontSize: 16,
   },
-  ratingImage: {
-    height: 19.21,
-    width: 100
+  pointsRank: {
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
+    fontSize: 14,
   },
-  ratingText: {
-    paddingLeft: 10,
-    color: 'grey'
-  }
+  listRank: {
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
+    fontSize: 14,
+  },
+  picker: {
+    color: "#c5c6c7",
+    fontFamily: "Proxima Nova Regular",
+    fontSize: 18,
+  },
 });

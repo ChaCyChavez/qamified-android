@@ -44,23 +44,24 @@ export default class Feed extends React.Component {
     var category = state.params ? state.params.category : "0";
 
     const isAnswered = (isAnswered) => {
-      return (isAnswered ? <Text note>Answered</Text> : <Text note>Unanswered</Text>);
+      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>);
     };
 
-    var loading = <Spinner color='black' />
+    var loading = <Spinner color='#66fcf1' />
     var listItems = FeedStore.quests.map((item, index) => {
       return (
-        <Card key={index}>
-          <CardItem>
+        <Card style={styles.questions} key={index}>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             <Text
               style={styles.title}>
                 {item.title}
             </Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             { isAnswered(item.is_answered) }
           </CardItem>
-          <CardItem button onPress={() => this.setUser(item.user_id)}>
+          <CardItem style={{backgroundColor: 'transparent'}}
+          button onPress={() => this.setUser(item.user_id)}>
             <Left>
               <Thumbnail 
                 small
@@ -73,15 +74,15 @@ export default class Feed extends React.Component {
                   </Body>
             </Left>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             <Text style={styles.description}>{item.description}</Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{backgroundColor: 'transparent'}}>
             <Left>
               <Button
                 bordered
                 onPress={() => this.upvote(item)}
-                style={{borderColor: 'white'}}>
+                style={{borderColor: 'transparent'}}>
                 <Icon 
                   name="ios-arrow-up" 
                   style={{fontSize: 28, color: this.isUpvoted(item.upvote) ? 'green' : 'gray'}}/>
@@ -89,24 +90,25 @@ export default class Feed extends React.Component {
               <Button
                 bordered
                 onPress={() => this.downvote(item)}
-                style={{borderColor: 'white'}}>
+                style={{borderColor: 'transparent'}}>
                 <Icon 
                   name="ios-arrow-down"
                   style={{fontSize: 28, color: this.isDownvoted(item.downvote) ? 'red' : 'gray'}}/>
               </Button>
-              <Text>{item.votes}</Text>
+              <Text style={styles.votes}>{item.votes}</Text>
             </Left>
             <Right>
               <Button
                 transparent
-                primary
                 onPress={ () => this.viewQuest(item) }
                 iconRight>
                   <Text 
-                    uppercase={false}>
+                    uppercase={false}
+                    style={styles.readMore}>
                       Read more
                   </Text>
-                  <Icon name="ios-arrow-forward" />
+                  <Icon style={{color: "#66fcf1"}}
+                  name="ios-arrow-forward" />
               </Button>
             </Right>
           </CardItem>
@@ -118,8 +120,8 @@ export default class Feed extends React.Component {
       <View style={styles.container}>
         <View style={styles.container}>
           <ScrollView style={styles.scrollView}>
-            <Card>
-              <CardItem>
+            <Card style={styles.questions}>
+              <CardItem style={{backgroundColor: "transparent"}}>
                 <Left>
                   <Thumbnail
                     small
@@ -129,7 +131,8 @@ export default class Feed extends React.Component {
                           transparent
                           onPress={() => this.props.navigation.navigate('CreateQuest')}>
                             <Text
-                              uppercase={false}>
+                              uppercase={false}
+                              style={styles.askQuestion}>
                                 Ask question...
                             </Text>
                         </Button>
@@ -186,56 +189,53 @@ export default class Feed extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E7ECEF',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  header: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    backgroundColor: "#222222",
-    margin: 0,
-  },
-  searchBar: {
-    width: responsiveWidth(75),
-    height: 35,
-    fontSize: 16,
-    backgroundColor: 'white',
-    padding: 8,
-    color: '#111111',
-  },
-  search: {
-    margin: 0,
-  },
-  headerIcon: {
-    width: responsiveWidth(10),
   },
   scrollView: { 
     flex: 1,
     width: responsiveWidth(100),
-    backgroundColor: "#dddddd",
+    backgroundColor: "#0b0c10",
   },
   questions: {
-    elevation: 1,
-    marginBottom: 12,
-    padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "#1f2833",
+    borderColor: 'transparent',
+  },
+  status: {
+    fontFamily: "Proxima Nova Light",
+    fontSize: 16,
+    color: "#c5c6c7",
   },
   full_name: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "Gotham Bold",
+    color: "#e5e6e7",
   },
   username: {
     fontSize: 16,
+    fontFamily: "Proxima Nova Light",
+    color: "#c5c6c7",
+  },
+  votes: {
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
   readMore: {
-    color: "blue",
+    color: "#66fcf1",
+    fontFamily: "Proxima Nova Regular",
+  },
+  askQuestion: {
+    color: "#66fcf1",
+    fontFamily: "Proxima Nova Regular",
   },
   title: {
-    fontWeight: 'bold',
-    fontSize: 24,
+    fontFamily: 'Gotham Bold',
+    fontSize: 26,
+    color: "#e5e6e7",
   },
   description: {
     fontSize: 18,
+    fontFamily: "Proxima Nova Regular",
+    color: "#e5e6e7",
   },
 });

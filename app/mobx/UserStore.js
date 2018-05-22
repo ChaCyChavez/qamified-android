@@ -1,19 +1,7 @@
 import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
 import FeedStore from './FeedStore.js';
-
-// First, checks if it isn't implemented yet.
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
-}
+import { ToastAndroid } from 'react-native';
 
 class UserStore {
   @observable
@@ -24,12 +12,6 @@ class UserStore {
 
   @observable
   error = ""
-
-  @observable
-  title = ""
-
-  @observable
-  description = ""
 
   @computed
   get fullName(): string {
@@ -95,6 +77,16 @@ class UserStore {
     const updates = {}
 
     updates[`/quest/${q._id}`] = q
+    updates[`/user/${this.user._id}/experience`] = this.user.experience + 30
+    this.user.experience += 30
+    var did_level_up = false
+    if(this.user.experience >= this.user.level_exp) {
+      updates[`/user/${this.user._id}/level`] = this.user.level + 1
+      this.user.level += 
+      updates[`/user/${this.user._id}/level_exp`] = (2 * this.user.level_exp) + Math.round(this.user.level_exp * 0.10)
+      this.user.level_exp += this.user.level_exp + Math.round(this.user.level_exp * 0.10)
+      did_level_up = true
+    }
 
     firebase.database()
       .ref()
@@ -104,8 +96,13 @@ class UserStore {
         this.error = "";
         this.title = ""
         this.description = ""
-        FeedStore.quests.push(q)
         navigation.navigate('Tab');
+        ToastAndroid.show('Quest posted successfully!', ToastAndroid.SHORT);
+        ToastAndroid.show('30 experience gained!', ToastAndroid.SHORT);
+        if(did_level_up) {
+          ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+          did_level_up = false
+        }
       })
       .catch((error) => {
         this.loading = false;

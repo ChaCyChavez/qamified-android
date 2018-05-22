@@ -16,6 +16,7 @@ import Todo from '../components/Todo.js';
 import Achievements from '../components/Achievements.js';
 import Ranking from '../components/Ranking.js';
 import UserProfile from '../components/UserProfile.js';
+import SearchResult from '../components/SearchResult.js';
 
 export const Stack = StackNavigator({
   Login: {
@@ -86,7 +87,7 @@ export const Tab = TabNavigator({
     upperCaseLabel: false,
     showIcon: true,
     style: {
-      backgroundColor: '#222222',
+      backgroundColor: '#45a29e',
     },
     tabStyle: {
       padding: 0
@@ -100,6 +101,7 @@ export const Tab = TabNavigator({
     labelStyle: {
       fontSize: 10,
       color: 'white',
+      fontFamily: "Proxima Nova Light",
     },
   }
 });
@@ -132,6 +134,8 @@ export const Base = StackNavigator({
       headerStyle: {
         backgroundColor: '#222222',
       }
+      ,
+      title: 'Create Quest',
     }
   },
   Todo: {
@@ -159,6 +163,16 @@ export const Base = StackNavigator({
       headerStyle: {
         backgroundColor: '#222222',
       }
+    }
+  },
+  SearchResult: {
+    screen: SearchResult,
+    navigationOptions: {
+      headerTintColor: '#ffffff',
+      headerStyle: {
+        backgroundColor: '#222222',
+      },
+      title: 'Search results'
     }
   },
 });

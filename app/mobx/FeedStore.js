@@ -21,12 +21,12 @@ class FeedStore {
     if (this.quests.length == 0) {
       firebase.database()
       .ref('/quest')
-      .on('value', (quests) => {
+      .on('child_added', (quests) => {
         if (quests) {
-          this.quests = []
-          quests.forEach(q => {
-            var quest = q.val()
-            quest._id =  q.key
+          // this.quests.splice(0,this.quests.length)
+          // quests.forEach(q => {
+            var quest = quests.val()
+            quest._id =  quests.key
             var upvotes = []
             var downvotes = []
             var solutions = []
@@ -54,7 +54,7 @@ class FeedStore {
             quest.downvote = downvotes
 
             this.quests.push(quest)
-          })
+          // })
           this.loading = false
         }
       })
