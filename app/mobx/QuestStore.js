@@ -33,6 +33,7 @@ class QuestStore {
       .ref('solution/').orderByChild("quest_id").equalTo(quest._id)
       .on('child_added', solutions => {
         if (solutions !== null) {
+          // uncomment if something happen
           // this.current_solutions.splice(0, this.current_solutions.length)
           // solutions.forEach(s => {
             var solution = solutions.val()

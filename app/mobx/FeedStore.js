@@ -21,8 +21,9 @@ class FeedStore {
     if (this.quests.length == 0) {
       firebase.database()
       .ref('/quest')
-      .on('child_added', (quests) => {
+      .on('child_added', (quests) => { // value
         if (quests) {
+          // uncomment
           // this.quests.splice(0,this.quests.length)
           // quests.forEach(q => {
             var quest = quests.val()
@@ -64,7 +65,7 @@ class FeedStore {
 
   voteNotification = (quest, liked) => {
     let n = {
-      description: UserStore.user.username + (liked ? " upvoted" : " downvoted") +  " your post.",
+      description: UserStore.user.username + (liked ? " upvoted" : " downvoted") +  " your post. You " + (liked ? " gained " : " lose ") + "30 points.",
       date_created: moment().format(),
       user_id: quest.user_id,
       quest_id: quest._id,
@@ -93,7 +94,7 @@ class FeedStore {
     if (quest.downvote && quest.downvote.includes(UserStore.user._id)) {
       const updates = {}
       updates[`/quest/${quest._id}/downvote/${UserStore.user._id}`] = null
-      updates[`/quest/${quest._id}/votes`] = quest.votes + 1
+      updates[`/quest/${quest._id}/votes`] = quest.votes + 1  
       
       quest.downvote = quest.downvote.filter(function(user) {
         return user != UserStore.user._id;
@@ -107,6 +108,13 @@ class FeedStore {
           this.error = ""
           quest.votes += 1
           this.voteNotification(quest, true)
+          firebase.database()
+            .ref('user').child(`${quest.user_id}`)
+            .transaction(user => {
+              user.points += 30
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false
@@ -127,7 +135,13 @@ class FeedStore {
           this.error = ""
           quest.votes += 1
           this.voteNotification(quest, true)
-          
+          firebase.database()
+            .ref('user').child(`${quest.user_id}`)
+            .transaction(user => {
+              user.points += 30
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false
@@ -139,6 +153,7 @@ class FeedStore {
   downvoteQuest = (quest) => {
 
     if (quest.upvote && quest.upvote.includes(UserStore.user._id)) {
+
       const updates = {}
       updates[`/quest/${quest._id}/upvote/${UserStore.user._id}`] = null
       updates[`/quest/${quest._id}/votes`] = quest.votes - 1
@@ -155,6 +170,13 @@ class FeedStore {
           this.error = ""
           quest.votes -= 1
           this.voteNotification(quest, false)
+          firebase.database()
+            .ref('user').child(`${quest.user_id}`)
+            .transaction(user => {
+              user.points -= 30
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false
@@ -176,6 +198,13 @@ class FeedStore {
           this.error = ""
           quest.votes -= 1
           this.voteNotification(quest, false)
+          firebase.database()
+            .ref('user').child(`${quest.user_id}`)
+            .transaction(user => {
+              user.points -= 30
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false

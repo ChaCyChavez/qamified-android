@@ -49,7 +49,7 @@ export default class Solution extends React.Component {
 
     const isCorrect = (is_correct) => {
       if (is_correct) {
-        return (<Icon name="ios-checkmark-circle" style={{fontSize: 24, color: "green"}}/>);
+        return (<Icon name="ios-checkmark-circle" style={{fontSize: 24, color: "#66fcf1"}}/>);
       }
     };
 
@@ -95,7 +95,7 @@ export default class Solution extends React.Component {
           </Left>
           <Body>
           </Body>
-            { this.renderCheckSolutionButton(this.props.solution) }
+            { this.renderCheckSolutionButton(QuestStore.current_quest, this.props.solution) }
           <Right>
             { this.renderDeleteSolutionButton(this.props.solution) }
           </Right>
@@ -156,8 +156,8 @@ export default class Solution extends React.Component {
     }
   }
 
-  renderCheckSolutionButton = (solution) => {
-    if(solution.is_answered && solution.user_id == UserStore.user.id) {
+  renderCheckSolutionButton = (quest, solution) => {
+    if(!quest.is_answered && quest.user_id == UserStore.user._id) {
       return (
         <Button
           bordered
@@ -165,7 +165,7 @@ export default class Solution extends React.Component {
           onPress={() => this.markAsSolution(solution)}>
           <Icon 
             name="ios-checkmark" 
-            style={{fontSize: 34}}/>
+            style={{fontSize: 34, color: "#66fcf1"}}/>
         </Button>
       )
     }

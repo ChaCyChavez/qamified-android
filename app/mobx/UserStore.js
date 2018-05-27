@@ -18,6 +18,11 @@ class UserStore {
     return `${this.user.first_name} ${this.user.middle_name.charAt(0)}. ${this.user.last_name}`
   }
 
+  @observable
+  ranks = [
+    "Beginner", "Intermediate", "Genius", "Prodigy", "Ace", "Beast", "Champion", "Master", "Grandmaster", "Legendary Grandmaster"
+  ]
+
   isLoggedIn = (navigation) => {
     this.loading = true
 

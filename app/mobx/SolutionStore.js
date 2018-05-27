@@ -89,7 +89,7 @@ class SolutionStore {
 
   voteNotification = (quest, liked) => {
     let n = {
-      description: UserStore.user.username + (liked ? " upvoted" : " downvoted") +  " your solution.",
+      description: UserStore.user.username + (liked ? " upvoted" : " downvoted") +  " your solution. You " + (liked ? " gain " : " lose ") + "40 points.",
       date_created: moment().format(),
       user_id: quest.user_id,
       quest_id: quest._id,
@@ -133,6 +133,14 @@ class SolutionStore {
           solution.votes += 1
 
           this.voteNotification(QuestStore.current_quest, true)
+
+          firebase.database()
+            .ref('user').child(`${solution.user_id}`)
+            .transaction(user => {
+              user.points += 40
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false
@@ -155,6 +163,14 @@ class SolutionStore {
           solution.votes += 1
 
           this.voteNotification(QuestStore.current_quest, true)
+
+          firebase.database()
+            .ref('user').child(`${solution.user_id}`)
+            .transaction(user => {
+              user.points += 40
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false
@@ -183,6 +199,14 @@ class SolutionStore {
           solution.votes -= 1
 
           this.voteNotification(QuestStore.current_quest, false)
+
+          firebase.database()
+            .ref('user').child(`${solution.user_id}`)
+            .transaction(user => {
+              user.points -= 40
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false
@@ -206,6 +230,14 @@ class SolutionStore {
           solution.votes -= 1
 
           this.voteNotification(QuestStore.current_quest, false)
+
+          firebase.database()
+            .ref('user').child(`${solution.user_id}`)
+            .transaction(user => {
+              user.points -= 40
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
         })
         .catch((error) => {
           this.loading = false
@@ -214,9 +246,36 @@ class SolutionStore {
     }
   }
 
+  markAsSolutionNotification = (quest) => {
+    let n = {
+      description: UserStore.user.username + " marked your solution as answer. You gain 80 points",
+      date_created: moment().format(),
+      user_id: quest.user_id,
+      quest_id: quest._id,
+    }
+    
+    const newQuestKey = firebase.database().ref().child('notification').push().key
+    n._id = newQuestKey
+
+    const updates = {}
+    updates[`/notification/${n._id}`] = n
+
+    firebase.database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        this.loading = false
+        this.error = ""
+      })
+      .catch(error => {
+        this.loading = false
+        this.error = error.message
+      })
+  }
+
   markAsSolution = solution => {
     const updates = {}
-    updates[`quest/${solution._id}/is_correct`] = true
+    updates[`solution/${solution._id}/is_correct`] = true
 
     firebase.database()
       .ref()
@@ -227,7 +286,7 @@ class SolutionStore {
         solution.is_correct = true
 
         const updates = {}
-        updates[`solution/${QuestStore.current_quest._id}/is_answered`] = true
+        updates[`quest/${QuestStore.current_quest._id}/is_answered`] = true
         firebase.database()
           .ref()
           .update(updates)
@@ -235,6 +294,16 @@ class SolutionStore {
             this.loading = false
             this.error = ""
             QuestStore.current_quest.is_answered = true
+
+            firebase.database()
+            .ref('user').child(`${solution.user_id}`)
+            .transaction(user => {
+              user.points += 80
+              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              return user
+            })
+
+            this.markAsSolutionNotification(QuestStore.current_quest)
           })
           .catch((error) => {
             this.loading = false
