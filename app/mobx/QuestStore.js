@@ -60,11 +60,13 @@ class QuestStore {
               .ref('reply/').orderByChild("solution_id").equalTo(solution._id)
               .on('value', replies => {
                 if (replies !== null) {
+                  var reps = []
                   replies.forEach(r => {
                     var reply = r.val()
 
-                    solution.reply.push(reply)
+                    reps.push(reply)
                   })
+                  solution.reply = reps
                 }
                 this.addSolution(solution)
               })
@@ -130,6 +132,8 @@ class QuestStore {
 
     updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + 40
     UserStore.user.experience += 40
+
+    // exp
     var did_level_up = false
     if(UserStore.user.experience >= UserStore.user.level_exp) {
       updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
@@ -137,6 +141,18 @@ class QuestStore {
       updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
       UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
       did_level_up = true
+    }
+
+    // todo
+    var index = this.inTodo("Solution")
+    if(index != -1) {
+      UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        UserStore.user.current_todo += 1
+        updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+      }
     }
 
     firebase.database()
@@ -161,6 +177,31 @@ class QuestStore {
         this.loading = false;
         this.error = error.message;
       })
+  }
+
+  inTodo = (question) => {
+    if(UserStore.user.current_todo > 5) {
+      return -1
+    }
+    
+    var requirements = UserStore.user.todos[UserStore.user.current_todo - 1].requirements
+    for(var i = 0; i < requirements.length; i++) {
+      if(requirements[i].requirement == question) {
+        return i
+      }
+    }
+    
+    return -1
+  } 
+
+  isDone = (todo) => {
+    for(var i = 0; i < todo.requirements.length; i++) {
+      if(todo.requirements[i].current < todo.requirements[i].no) {
+        return false
+      }
+    }
+
+    return true
   }
 
   deleteQuest = (navigation) => {

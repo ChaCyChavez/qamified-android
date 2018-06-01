@@ -33,22 +33,27 @@ class RegisterStore {
             .then((_user) => {
               user._id = _user.user.uid
 
-              const updates = {}
-              updates[`user/${user._id}`] = user
-
               firebase.database()
-                .ref()
-                .update(updates)
-                .then(() => {
-                  this.error = ""
-                  this.loading = false
-                  UserStore.user = user
-                  navigation.navigate('Tab');
-                })
-                .catch(error => {
-                  this.error = error.message
-                  this.loading = false
-                })
+              .ref('/todo')
+              .once('value', todos => {
+                user.todos = todos
+                const updates = {}
+                updates[`user/${user._id}`] = user
+
+                firebase.database()
+                  .ref()
+                  .update(updates)
+                  .then(() => {
+                    this.error = ""
+                    this.loading = false
+                    UserStore.initUser(user, navigation)
+                  })
+                  .catch(error => {
+                    this.error = error.message
+                    this.loading = false
+                  })
+              })
+              
             })
             .catch((error) => {
               this.loading = false;

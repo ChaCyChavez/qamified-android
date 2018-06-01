@@ -91,8 +91,23 @@ class FeedStore {
   }
 
   upvoteQuest = (quest) => {
+    const updates = {}
+    
+    // todo
+    //check if first time vote
+    var index = this.inTodo("Question")
+    if(index != -1) {
+      UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        UserStore.user.current_todo += 1
+        updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+      }
+    }
+
     if (quest.downvote && quest.downvote.includes(UserStore.user._id)) {
-      const updates = {}
+      
       updates[`/quest/${quest._id}/downvote/${UserStore.user._id}`] = null
       updates[`/quest/${quest._id}/votes`] = quest.votes + 1  
       
@@ -122,7 +137,6 @@ class FeedStore {
         })
     }
     else if(!(quest.upvote.includes(UserStore.user._id))) {
-      const updates = {}
       updates[`/quest/${quest._id}/upvote/${UserStore.user._id}`] = true
       updates[`/quest/${quest._id}/votes`] = quest.votes + 1
       quest.upvote.push(UserStore.user._id)
@@ -152,9 +166,22 @@ class FeedStore {
 
   downvoteQuest = (quest) => {
 
-    if (quest.upvote && quest.upvote.includes(UserStore.user._id)) {
+    const updates = {}
 
-      const updates = {}
+    // todo
+    //check if first time vote
+    var index = this.inTodo("Question")
+    if(index != -1) {
+      UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        UserStore.user.current_todo += 1
+        updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+      }
+    }
+
+    if (quest.upvote && quest.upvote.includes(UserStore.user._id)) {
       updates[`/quest/${quest._id}/upvote/${UserStore.user._id}`] = null
       updates[`/quest/${quest._id}/votes`] = quest.votes - 1
 
@@ -184,7 +211,6 @@ class FeedStore {
         })
     }
     else if(!(quest.downvote.includes(UserStore.user._id))) {
-      const updates = {}
       updates[`/quest/${quest._id}/downvote/${UserStore.user._id}`] = true
       updates[`/quest/${quest._id}/votes`] = quest.votes - 1
 
@@ -211,6 +237,31 @@ class FeedStore {
           this.error = error.message
         })
     }
+  }
+
+  inTodo = (question) => {
+    if(UserStore.user.current_todo > 5) {
+      return -1
+    }
+    
+    var requirements = UserStore.user.todos[UserStore.user.current_todo - 1].requirements
+    for(var i = 0; i < requirements.length; i++) {
+      if(requirements[i].requirement == question) {
+        return i
+      }
+    }
+    
+    return -1
+  } 
+
+  isDone = (todo) => {
+    for(var i = 0; i < todo.requirements.length; i++) {
+      if(todo.requirements[i].current < todo.requirements[i].no) {
+        return false
+      }
+    }
+
+    return true
   }
 
   removeQuest = quest => {

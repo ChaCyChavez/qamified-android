@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet,
+         ScrollView,
          KeyboardAvoidingView,
          View, } from 'react-native';
 import { responsiveHeight,
@@ -30,15 +31,14 @@ export default class Login extends React.Component {
   }
 
   componentDidMount() {
-    UserStore.isLoggedIn(this.props.navigation)
+    UserStore.checkUser(this.props.navigation)
   }
 
   render() {
     if(Object.keys(UserStore.user).length === 0){
       return (
-        <KeyboardAvoidingView 
-          behavior="padding" 
-          style={styles.container}>
+        <ScrollView style={{"backgroundColor": "#1f2833", height: responsiveHeight(100)}} contentContainerstyle={styles.scrollView}>
+          <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
             <Text 
               style={styles.title}>
                 QAmifiED
@@ -80,7 +80,8 @@ export default class Login extends React.Component {
                   </Text>
               </Button>
             </View>
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </ScrollView>
       )
     } else {
       return (
@@ -152,7 +153,14 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1f2833",
+    backgroundColor: '#1f2833',
+    alignItems: 'center',
+    height: responsiveHeight(100),
+    justifyContent: 'center',
+  },
+  scrollView: { 
+    flexGrow: 1,
+    backgroundColor: '#1f2833',
     alignItems: 'center',
     justifyContent: 'center',
   },

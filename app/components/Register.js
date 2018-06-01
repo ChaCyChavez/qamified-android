@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet,
          View,
-         KeyboardAvoidingView,
-         ScrollView } from 'react-native';
+         ScrollView,
+         KeyboardAvoidingView} from 'react-native';
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -10,7 +10,7 @@ import { Item,
          Input,
          Button, 
          Text,
-         Icon } from 'native-base';
+         Icon, } from 'native-base';
 import { observer } from 'mobx-react';
 import { RegisterStore } from '../mobx';
 import moment from 'moment';
@@ -36,36 +36,36 @@ export default class Register extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView 
-        behavior="padding"
-        style={styles.container}>
-          <View>
-            <Text 
-              style={styles.title }>
-                QAmifiED
-            </Text>
-            <Text
-              style={styles.subtitle}>
-                A Question and Answer Platform
-            </Text>
-          </View>
-          { this.renderForm() }
-          <View style={styles.buttonSection}>
-            { this.renderPageButton() }
-            { RegisterStore.error ? <Text style={styles.errorMessage}>{ RegisterStore.error }</Text> : null }
-            { this.renderRegisterButton() }
-          </View>
-        <Button 
-          block 
-          transparent
-          onPress={this.navigateToLogin}>
-            <Text 
-              uppercase={false}
-              style={styles.loginButton}>
-                Already a member? Login.
-            </Text>
-        </Button>
-      </KeyboardAvoidingView>
+      <ScrollView style={{"backgroundColor": "#1f2833", height: responsiveHeight(100)}} contentContainerstyle={styles.scrollView}>
+        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+            <View>
+              <Text 
+                style={styles.title }>
+                  QAmifiED
+              </Text>
+              <Text
+                style={styles.subtitle}>
+                  A Question and Answer Platform
+              </Text>
+            </View>
+            { this.renderForm() }
+            <View style={styles.buttonSection}>
+              { this.renderPageButton() }
+              { RegisterStore.error ? <Text style={styles.errorMessage}>{ RegisterStore.error }</Text> : null }
+              { this.renderRegisterButton() }
+            </View>
+          <Button 
+            block 
+            transparent
+            onPress={this.navigateToLogin}>
+              <Text 
+                uppercase={false}
+                style={styles.loginButton}>
+                  Already a member? Login.
+              </Text>
+          </Button>
+    </KeyboardAvoidingView>
+        </ScrollView>
     );
   };
 
@@ -272,6 +272,7 @@ export default class Register extends React.Component {
       rank: "Beginner",
       date_created: moment().format(),
       level_exp: 50,
+      current_todo: 1,
     }
     RegisterStore.register(this.props.navigation, user, this.state.password);
   };
@@ -280,6 +281,13 @@ export default class Register extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#1f2833',
+    alignItems: 'center',
+    height: responsiveHeight(100),
+    justifyContent: 'center',
+  },
+  scrollView: { 
+    flexGrow: 1,
     backgroundColor: '#1f2833',
     alignItems: 'center',
     justifyContent: 'center',

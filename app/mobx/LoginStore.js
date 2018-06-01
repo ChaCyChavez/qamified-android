@@ -11,7 +11,7 @@ class LoginStore {
 
   emailLogin = (navigation, cred) => {
     firebase.auth()
-      .signInWithEmailAndPassword(cred.email_username, cred.password)
+      .signInAndRetrieveDataWithEmailAndPassword(cred.email_username, cred.password)
       .then(() => {
         firebase.database()
           .ref('/user')
@@ -25,7 +25,7 @@ class LoginStore {
           })
         this.loading = false;
         this.error = ""
-        navigation.navigate('Tab');
+        UserStore.initUser(user, navigation)
       })
       .catch((error) => {
         this.loading = false;
@@ -44,10 +44,10 @@ class LoginStore {
           UserStore.user = user.val()
           firebase.auth()
             .signInAndRetrieveDataWithEmailAndPassword(UserStore.user.email, cred.password)
-            .then(() => {
+            .then((user) => {
               this.loading = false;
               this.error = ""
-              navigation.navigate('Tab');
+              UserStore.initUser(user, navigation)
             })
             .catch((error) => {
               UserStore.user = {}

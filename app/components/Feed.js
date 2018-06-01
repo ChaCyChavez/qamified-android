@@ -118,32 +118,29 @@ export default class Feed extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.container}>
-          <ScrollView style={styles.scrollView}>
-            <Card style={styles.questions}>
-              <CardItem style={{backgroundColor: "transparent"}}>
-                <Left>
-                  <Thumbnail
-                    small
-                    source={{ uri:'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }} />
-                      <Body>
-                        <Button
-                          transparent
-                          onPress={() => this.props.navigation.navigate('CreateQuest')}>
-                            <Text
-                              uppercase={false}
-                              style={styles.askQuestion}>
-                                Ask question...
-                            </Text>
-                        </Button>
-                      </Body>
-                </Left>
-              </CardItem>
-            </Card>
-            { FeedStore.loading ? loading : listItems }
-          </ScrollView>
-        </View>
-
+        <ScrollView style={styles.scrollView}>
+          <Card style={styles.questions}>
+            <CardItem style={{backgroundColor: "transparent"}}>
+              <Left>
+                <Thumbnail
+                  small
+                  source={{ uri:'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }} />
+                    <Body>
+                      <Button
+                        transparent
+                        onPress={() => this.props.navigation.navigate('CreateQuest')}>
+                          <Text
+                            uppercase={false}
+                            style={styles.askQuestion}>
+                              Ask question...
+                          </Text>
+                      </Button>
+                    </Body>
+              </Left>
+            </CardItem>
+          </Card>
+          { FeedStore.loading ? loading : listItems }
+        </ScrollView>
       </View>
     );
   }

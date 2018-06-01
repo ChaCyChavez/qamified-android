@@ -23,52 +23,65 @@ class UserStore {
     "Beginner", "Intermediate", "Genius", "Prodigy", "Ace", "Beast", "Champion", "Master", "Grandmaster", "Legendary Grandmaster"
   ]
 
-  isLoggedIn = (navigation) => {
+  checkUser = (navigation) => {
     this.loading = true
 
     firebase.auth()
       .onAuthStateChanged((user) => {
       if (user) {
-        firebase.database()
-          .ref('/user')
-          .orderByChild('email')
-          .equalTo(user.email)
-          .on('child_added', _user => {
-            if (_user.val() != null) {
-              this.user = _user.val()
-              var reps = []
-              var sols = []
-              firebase.database()
-                .ref(`/user/${_user.key}/reply`)
-                .once('value', (replies) => {
-                  if (replies) {
-                    replies.forEach(r => {
-                      var reply = r.key
-                      reps.push(reply)
-                    })
-                    this.user.reply = reps
-                    this.loading = false
-                  }
-                  firebase.database()
-                    .ref(`/user/${_user.key}/solution`)
-                    .once('value', (solutions) => {
-                      if (solutions) {
-                        solutions.forEach(s => {
-                          var solution = s.key
-                          sols.push(solution)
-                        })
-                        this.user.solution = sols
-                        this.loading = false
-                        navigation.navigate('Tab')
-                      }
-                    })
-                })
-            }
-          })
+        this.initUser(user, navigation)
       }
-
       this.loading = false
     })
+  }
+
+  initUser = (user, navigation) => {
+    firebase.database()
+      .ref('/user')
+      .orderByChild('email')
+      .equalTo(user.email)
+      .on('child_added', _user => {
+        if (_user.val() != null) {
+          this.user = _user.val()
+          var reps = []
+          var sols = []
+          var todos = []
+
+          for(var propt in this.user.todos) {
+            var todo = this.user.todos[propt]
+            todos.push(todo)
+          }
+
+          todos.sort(function(a,b) {return (a.date_created > b.date_created) ? 1 : ((b.date_created > a.date_created) ? -1 : 0);} ); 
+          this.user.todos = todos
+
+          // maybe can be optimize by not using firebase (see todos)
+          firebase.database()
+            .ref(`/user/${_user.key}/reply`)
+            .once('value', (replies) => {
+              if (replies) {
+                replies.forEach(r => {
+                  var reply = r.key
+                  reps.push(reply)
+                })
+                this.user.reply = reps
+              }
+              firebase.database()
+                .ref(`/user/${_user.key}/solution`)
+                .once('value', (solutions) => {
+                  if (solutions) {
+                    solutions.forEach(s => {
+                      var solution = s.key
+                      sols.push(solution)
+                    })
+                    this.user.solution = sols
+                    this.loading = false
+                    navigation.navigate('Tab')
+                  }
+                })
+            })
+        }
+      })
   }
 
   postQuest = (navigation, quest) => {
@@ -84,13 +97,27 @@ class UserStore {
     updates[`/quest/${q._id}`] = q
     updates[`/user/${this.user._id}/experience`] = this.user.experience + 30
     this.user.experience += 30
+    
+    // exp
     var did_level_up = false
     if(this.user.experience >= this.user.level_exp) {
       updates[`/user/${this.user._id}/level`] = this.user.level + 1
-      this.user.level += 
+      this.user.level += 1
       updates[`/user/${this.user._id}/level_exp`] = (2 * this.user.level_exp) + Math.round(this.user.level_exp * 0.10)
       this.user.level_exp += this.user.level_exp + Math.round(this.user.level_exp * 0.10)
       did_level_up = true
+    }
+
+    //todo
+    var index = this.inTodo("Question")
+    if(index != -1) {
+      this.user.todos[this.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${this.user._id}/todos/${this.user.todos[this.user.current_todo - 1]._id}/requirements/${index}/current`] = this.user.todos[this.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(this.user.todos[this.user.current_todo - 1])) {
+        this.user.current_todo += 1
+        updates[`/user/${this.user._id}/current_todo`] = this.user.current_todo
+      }
     }
 
     firebase.database()
@@ -115,13 +142,40 @@ class UserStore {
         this.title = ""
         this.description = ""
       })
-  };
+  }
+
+  inTodo = (question) => {
+    if(this.user.current_todo > 5) {
+      return -1
+    }
+    
+    var requirements = this.user.todos[this.user.current_todo - 1].requirements
+    for(var i = 0; i < requirements.length; i++) {
+      if(requirements[i].requirement == question) {
+        return i
+      }
+    }
+
+    return -1
+  } 
+
+  isDone = (todo) => {
+    for(var i = 0; i < todo.requirements.length; i++) {
+      if(todo.requirements[i].current < todo.requirements[i].no) {
+        return false
+      }
+    }
+
+    return true
+  }
 
   logOut = (navigation) => {
     firebase.auth()
       .signOut()
-    this.user = {}
-    navigation.navigate('Login')
+      .then(() => {
+        this.user = {}
+        navigation.navigate('Login')
+      })
   }
 }
 

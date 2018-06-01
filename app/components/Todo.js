@@ -14,7 +14,10 @@ import { List,
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
+import { observer } from 'mobx-react';
+import { UserStore } from '../mobx';
 
+@observer
 export default class Todo extends React.Component {
   constructor(props) {
     super(props)
@@ -25,50 +28,8 @@ export default class Todo extends React.Component {
   }
 
   render () {
-    const list = [
-      {
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },
-      {
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },
-      {
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },
-      {
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },
-    ]
 
-    var notifications = list.map((item, i) => {
+    var notifications = UserStore.user.todos.map((item, i) => {
       return (
         <ListItem
           avatar
@@ -78,18 +39,20 @@ export default class Todo extends React.Component {
               <Thumbnail source={{uri:this.state.avatar_url}} />
             </Left>
             <Body>
-              <Text style={styles.title}>Kumar Pratik</Text>
+              <Text style={styles.title}>{ item.title }</Text>
               <Text
                 note style={styles.description}>
-                  Doing what you like will always keep you happy . .
+                  { item.description }
               </Text>
-            </Body>
-            <Right>
+              <Text
+                note style={styles.description}>
+                  { this.renderStatus(item.requirements) }
+              </Text>
               <Text
                 note style={styles.status}>
-                  3:43 pm
+                  { this.isComplete(item.requirements) ? "Note done" : "Done" }
               </Text>
-            </Right>
+            </Body>
         </ListItem>
       );
     }, this);
@@ -101,6 +64,25 @@ export default class Todo extends React.Component {
         </ScrollView>
       </View>
     )
+  }
+
+  renderStatus = (requirements) => {
+    var requi = "\n"
+    requirements.forEach(req => {
+      requi += req.requirement + ": " + req.current + "/" + req.no + "\n"
+    })
+
+    return requi
+  }
+
+  isComplete = (requirements) => {
+    requirements.forEach(req => {
+      if(req.current != req.no) {
+        return false
+      }
+    })
+
+    return true
   }
 }
 

@@ -64,6 +64,18 @@ class SolutionStore {
       did_level_up = true
     }
 
+    //todo
+    var index = this.inTodo("Reply")
+    if(index != -1) {
+      UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        UserStore.user.current_todo += 1
+        updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+      }
+    }
+
     firebase.database()
       .ref()
       .update(updates)
@@ -115,8 +127,22 @@ class SolutionStore {
   }
 
   upvoteSolution = solution => {
+    const updates = {}
+
+    //todo
+    //check if first time vote
+    var index = this.inTodo("Solution")
+    if(index != -1) {
+      UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        UserStore.user.current_todo += 1
+        updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+      }
+    }
+
     if (solution.downvote && solution.downvote.includes(UserStore.user._id)) {
-      const updates = {}
       updates[`/solution/${solution._id}/downvote/${UserStore.user._id}`] = null
       updates[`/solution/${solution._id}/votes`] = solution.votes + 1
 
@@ -148,7 +174,6 @@ class SolutionStore {
         })
     }
     else if(!(solution.upvote.includes(UserStore.user._id))) {
-      const updates = {}
       updates[`/solution/${solution._id}/upvote/${UserStore.user._id}`] = true
       updates[`/solution/${solution._id}/votes`] = solution.votes + 1
 
@@ -180,9 +205,22 @@ class SolutionStore {
   }
 
   downvoteSolution = solution => {
+    const updates = {}
+
+    //todo
+    //check if first time vote
+    var index = this.inTodo("Solution")
+    if(index != -1) {
+      UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        UserStore.user.current_todo += 1
+        updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+      }
+    }
 
     if (solution.upvote && solution.upvote.includes(UserStore.user._id)) {
-      const updates = {}
       updates[`/solution/${solution._id}/upvote/${UserStore.user._id}`] = null
       updates[`/solution/${solution._id}/votes`] = solution.votes - 1
 
@@ -214,7 +252,6 @@ class SolutionStore {
         })
     }
     else if(!(solution.downvote.includes(UserStore.user._id))) {
-      const updates = {}
       updates[`/solution/${solution._id}/downvote/${UserStore.user._id}`] = true
       updates[`/solution/${solution._id}/votes`] = solution.votes - 1
 
@@ -246,6 +283,31 @@ class SolutionStore {
     }
   }
 
+  inTodo = (question) => {
+    if(UserStore.user.current_todo > 5) {
+      return -1
+    }
+    
+    var requirements = UserStore.user.todos[UserStore.user.current_todo - 1].requirements
+    for(var i = 0; i < requirements.length; i++) {
+      if(requirements[i].requirement == question) {
+        return i
+      }
+    }
+    
+    return -1
+  } 
+
+  isDone = (todo) => {
+    for(var i = 0; i < todo.requirements.length; i++) {
+      if(todo.requirements[i].current < todo.requirements[i].no) {
+        return false
+      }
+    }
+
+    return true
+  }
+
   markAsSolutionNotification = (quest) => {
     let n = {
       description: UserStore.user.username + " marked your solution as answer. You gain 80 points",
@@ -259,6 +321,19 @@ class SolutionStore {
 
     const updates = {}
     updates[`/notification/${n._id}`] = n
+
+    //todo
+    //check if first time vote
+    var index = this.inTodo("Solution")
+    if(index != -1) {
+      UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
+      updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
+      
+      if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        UserStore.user.current_todo += 1
+        updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+      }
+    }
 
     firebase.database()
       .ref()
