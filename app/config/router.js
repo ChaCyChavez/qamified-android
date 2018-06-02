@@ -10,7 +10,6 @@ import Quest from '../components/Quest.js';
 import CreateQuest from '../components/CreateQuest.js';
 import Profile from '../components/Profile.js';
 import Notification from '../components/Notification.js';
-import SideMenu from '../components/SideMenu.js';
 import MainHeader from '../components/MainHeader.js';
 import Todo from '../components/Todo.js';
 import Achievements from '../components/Achievements.js';
@@ -34,21 +33,6 @@ export const Stack = StackNavigator({
     },
   },
 });
-
-export const Drawer = DrawerNavigator({
-  Category_1: {
-     screen: props => <Feed {...props}/>,
-  },
-  Category_2: {
-     screen: props => <Feed {...props}/>,
-  },
-  Category_3: {
-     screen: props => <Feed {...props}/>,
-  }
-}, {
-  contentComponent: SideMenu,
-});
-
 
 export const Tab = TabNavigator({
   Feed: {
@@ -133,8 +117,7 @@ export const Base = StackNavigator({
       headerTintColor: '#ffffff',
       headerStyle: {
         backgroundColor: '#222222',
-      }
-      ,
+      },
       title: 'Create Quest',
     }
   },
@@ -144,7 +127,8 @@ export const Base = StackNavigator({
       headerTintColor: '#ffffff',
       headerStyle: {
         backgroundColor: '#222222',
-      }
+      },
+      title: 'Todo'
     }
   },
   Achievements: {
@@ -153,7 +137,8 @@ export const Base = StackNavigator({
       headerTintColor: '#ffffff',
       headerStyle: {
         backgroundColor: '#222222',
-      }
+      },
+      title: 'Achievements'
     }
   },
   UserProfile: {

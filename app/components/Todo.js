@@ -28,39 +28,42 @@ export default class Todo extends React.Component {
   }
 
   render () {
-
-    var notifications = UserStore.user.todos.map((item, i) => {
-      return (
-        <ListItem
-          avatar
-          key={i}
-          style={styles.item}>
-            <Left>
-              <Thumbnail source={{uri:this.state.avatar_url}} />
-            </Left>
-            <Body>
-              <Text style={styles.title}>{ item.title }</Text>
-              <Text
-                note style={styles.description}>
-                  { item.description }
-              </Text>
-              <Text
-                note style={styles.description}>
-                  { this.renderStatus(item.requirements) }
-              </Text>
-              <Text
-                note style={styles.status}>
-                  { this.isComplete(item.requirements) ? "Note done" : "Done" }
-              </Text>
-            </Body>
-        </ListItem>
-      );
+    var counter = 0
+    var todos = UserStore.user.todos.map((item, i) => {
+      if(i > UserStore.user.current_todo) {
+        counter += 1
+        return (
+          <ListItem
+            avatar
+            key={i}
+            style={styles.item}>
+              <Left>
+                <Thumbnail source={{uri:this.state.avatar_url}} />
+              </Left>
+              <Body>
+                <Text style={styles.title}>{ item.title }</Text>
+                <Text
+                  note style={styles.description}>
+                    { item.description }
+                </Text>
+                <Text
+                  note style={styles.description}>
+                    { this.renderStatus(item.requirements) }
+                </Text>
+                <Text
+                  note style={styles.status}>
+                    { this.isComplete(item.requirements) ? "Note done" : "Done" }
+                </Text>
+              </Body>
+          </ListItem>
+        );
+      }
     }, this);
 
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
-            { notifications }
+            { counter > 0 ? todos : <Text style={styles.noQuest}>No quest at the moment</Text> }
         </ScrollView>
       </View>
     )
@@ -127,4 +130,11 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Light",
     color: "#c5c6c7",
   },
+  noQuest: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    color: "#252627",
+    fontSize: 28,
+  }
 });

@@ -44,10 +44,10 @@ export default class Todo extends React.Component {
               <Thumbnail source={{uri:this.state.avatar_url}} />
             </Left>
             <Body>
-              <Text style={styles.title}>Kumar Pratik</Text>
+              <Text style={styles.title}>{ item.title }</Text>
               <Text
                 note style={styles.description}>
-                  { item.title }
+                  { item.full_name }
               </Text>
             </Body>
             <Right>

@@ -52,7 +52,7 @@ export default class Quest extends React.Component {
     if(itemsLength > 0) {
       solutions = QuestStore.current_solutions.map((item, index) => {
         return (
-          <Solution solution={item} key={index}/>
+          <Solution solution={item} key={index} navigation={this.props.navigation}/>
         );
       }, this);
     }

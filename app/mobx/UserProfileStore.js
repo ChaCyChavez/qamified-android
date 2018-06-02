@@ -13,6 +13,9 @@ class UserProfileStore {
   @observable
   profileFeed = []
 
+  @observable
+  open = false
+
   @computed
   get fullName(): string {
     return `${this.current_user.first_name} ${this.current_user.middle_name.charAt(0)}. ${this.current_user.last_name}`

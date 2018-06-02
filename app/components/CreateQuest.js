@@ -15,7 +15,8 @@ import { Text,
          Button,
          Icon,
          Input,
-         Item } from 'native-base';
+         Item,
+         Picker } from 'native-base';
 import { observer } from 'mobx-react';
 import { UserStore } from '../mobx';
 import moment from 'moment';
@@ -27,8 +28,15 @@ export default class CreateQuest extends React.Component {
     super(props);
     this.state = {
       title: "",
-      description: ""
+      description: "",
+      selected: "Algorithms"
     }
+  }
+
+  onValueChange(value) {
+    this.setState({
+      selected: value
+    });
   }
 
   render() {
@@ -66,6 +74,19 @@ export default class CreateQuest extends React.Component {
                       placeholderTextColor="#959697"
                       onChangeText={(input) => {this.setState({description: input})}}/>
                   </Item>
+                </CardItem>
+                <CardItem style={{backgroundColor: 'transparent'}}>
+                  <Picker
+                    mode="dropdown"
+                    selectedValue={this.state.selected}
+                    onValueChange={this.onValueChange.bind(this)}
+                    style={{color: "white"}}
+                  >
+                    <Picker.Item color="#0b0c10" label="Algorithms" value="Algorithms" />
+                    <Picker.Item color="#0b0c10" label="Programming Languages" value="Programming Languages" />
+                    <Picker.Item color="#0b0c10" label="Software Development" value="Software Development" />
+                    <Picker.Item color="#0b0c10" label="Database" value="Database" />
+                  </Picker>
                 </CardItem>
                 <CardItem style={{backgroundColor: 'transparent'}}>
                   { this.renderErrorMessage() }
@@ -133,6 +154,7 @@ export default class CreateQuest extends React.Component {
       date_created: moment().format(),
       title: this.state.title,
       description: this.state.description,
+      category: this.state.selected,
       votes: 0,
       user_id: UserStore.user._id,
       is_answered: false,
@@ -156,7 +178,6 @@ export default class CreateQuest extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E7ECEF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -198,5 +219,5 @@ const styles = StyleSheet.create({
     width: responsiveWidth(90),
     backgroundColor: "#b2d8d8",
     borderColor: 'transparent',
-  },
+  }
 });

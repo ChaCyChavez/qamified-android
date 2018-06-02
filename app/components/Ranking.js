@@ -81,24 +81,18 @@ export default class Ranking extends React.Component {
           <Card style={styles.card}>
             <CardItem style={{backgroundColor: 'transparent', flex: 1, flexDirection: "row"}}>
               <Left>
-              <Text style={styles.picker}>Sort by : </Text>
+              <Text style={styles.sortBy}>Sort by : </Text>
               </Left>
               <Right>
               <Picker
                 mode="dropdown"
                 textStyle={{ color: "#5cb85c" }}
-                itemStyle={{
-                  backgroundColor: "#d3d3d3",
-                  marginLeft: 0,
-                  paddingLeft: 10
-                }}
-                itemTextStyle={{ color: '#788ad2' }}
-                style={{ width: responsiveWidth(50) }}
+                style={{ width: responsiveWidth(50), color: "white" }}
                 selectedValue={this.state.selected}
                 onValueChange={this.onValueChange.bind(this)}
               >
-                <Picker.Item style={styles.picker} label="Points" value="key0" />
-                <Picker.Item style={styles.picker} label="Rank" value="key1" />
+                <Picker.Item color="#0b0c10" label="Points" value="key0" />
+                <Picker.Item color="#0b0c10" label="Rank" value="key1" />
               </Picker>
               </Right>
             </CardItem>
@@ -147,9 +141,8 @@ const styles = StyleSheet.create({
     color: "#c5c6c7",
     fontSize: 14,
   },
-  picker: {
-    color: "#c5c6c7",
-    fontFamily: "Proxima Nova Regular",
-    fontSize: 18,
-  },
+  sortBy: {
+    color: "white",
+    fontFamily: "Proxima Nova Regular"
+  }
 });

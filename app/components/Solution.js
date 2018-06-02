@@ -22,7 +22,8 @@ import Reply from './Reply.js';
 import { observer } from 'mobx-react';
 import { SolutionStore,
          UserStore,
-         QuestStore } from '../mobx';
+         QuestStore,
+         UserProfileStore } from '../mobx';
 import moment from 'moment';
 
 @observer
@@ -42,7 +43,7 @@ export default class Solution extends React.Component {
     if(this.props.solution.reply) {
       var reply = this.props.solution.reply.map(function(item, index) {
         return (
-          <Reply reply={item} key={index}/>
+          <Reply reply={item} key={index} navigation={this.props.navigation}/>
         );
       }, this);
     }
@@ -55,19 +56,7 @@ export default class Solution extends React.Component {
 
     return (
       <Card style={styles.questions}>
-        <CardItem style={{backgroundColor: 'transparent'}}>
-          <Left>
-            <Thumbnail
-              small
-              source={{ uri:this.state.avatar_url }} />
-                <Body>
-                  <View>
-                    <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
-                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
-                  </View>
-                </Body>
-          </Left>
-        </CardItem>
+        { this.renderUserInfo() }
         <CardItem style={{backgroundColor: 'transparent'}}>
           <View>
           <Text style={styles.description}> { isCorrect(this.props.solution.is_correct) } { this.props.solution.description }</Text>
@@ -119,6 +108,42 @@ export default class Solution extends React.Component {
 
   completeField = () => {
     return this.state.reply ? true : false
+  }
+
+  renderUserInfo = () => {
+    if(UserProfileStore.open) {
+      return (
+        <CardItem style={{backgroundColor: 'transparent'}}>
+          <Left>
+            <Thumbnail
+              small
+              source={{ uri:this.state.avatar_url }} />
+                <Body>
+                  <View>
+                    <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
+                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
+                  </View>
+                </Body>
+          </Left>
+        </CardItem>
+      )
+    }
+    return (
+      <CardItem style={{backgroundColor: 'transparent'}}
+        button onPress={() => this.setUser(this.props.user_id)}>
+          <Left>
+            <Thumbnail
+              small
+              source={{ uri:this.state.avatar_url }} />
+                <Body>
+                  <View>
+                    <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
+                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
+                  </View>
+                </Body>
+          </Left>
+        </CardItem>
+    )
   }
 
   renderReplyButton = () => {
@@ -221,6 +246,10 @@ export default class Solution extends React.Component {
       ],
       { cancelable: true }
     )
+  }
+
+  setUser = (user_id) => {
+    UserProfileStore.setUser(user_id, this.props.navigation)
   }
 }
 

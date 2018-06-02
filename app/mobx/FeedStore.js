@@ -16,50 +16,97 @@ class FeedStore {
   @observable
   quests = []
 
-  initFeed = () => {
+  initFeed = (category) => {
     this.loading = true
-    if (this.quests.length == 0) {
-      firebase.database()
-      .ref('/quest')
-      .on('child_added', (quests) => { // value
-        if (quests) {
-          // uncomment
-          // this.quests.splice(0,this.quests.length)
-          // quests.forEach(q => {
-            var quest = quests.val()
-            quest._id =  quests.key
-            var upvotes = []
-            var downvotes = []
-            var solutions = []
+    // if (this.quests.length == 0) {
+      if(!category) {
+        this.quests.splice(0,this.quests.length)
+        firebase.database()
+        .ref('/quest')
+        .on('child_added', (quests) => { // value
+          if (quests) {
+            // uncomment
+            // this.quests.splice(0,this.quests.length)
+            // quests.forEach(q => {
+              var quest = quests.val()
+              quest._id =  quests.key
+              var upvotes = []
+              var downvotes = []
+              var solutions = []
 
-            if(quest.solution) {
-              Object.keys(quest.solution).forEach(s => {
-                solutions.push(s)
-              })
-            }
+              if(quest.solution) {
+                Object.keys(quest.solution).forEach(s => {
+                  solutions.push(s)
+                })
+              }
 
-            if(quest.upvote) {
-              Object.keys(quest.upvote).forEach(u => {
-                upvotes.push(u)
-              })
-            }
+              if(quest.upvote) {
+                Object.keys(quest.upvote).forEach(u => {
+                  upvotes.push(u)
+                })
+              }
 
-            if(quest.downvote) {
-              Object.keys(quest.downvote).forEach(d => {
-                downvotes.push(d)
-              })
-            }
+              if(quest.downvote) {
+                Object.keys(quest.downvote).forEach(d => {
+                  downvotes.push(d)
+                })
+              }
 
-            quest.solution = solutions
-            quest.upvote = upvotes
-            quest.downvote = downvotes
+              quest.solution = solutions
+              quest.upvote = upvotes
+              quest.downvote = downvotes
 
-            this.quests.push(quest)
-          // })
-          this.loading = false
-        }
-      })
-    }
+              this.quests.push(quest)
+            // })
+            this.loading = false
+          }
+        })
+      } else {
+        this.quests.splice(0,this.quests.length)
+        firebase.database()
+        .ref('/quest')
+        .orderByChild('category')
+        .equalTo(category)
+        .on('child_added', (quests) => { // value
+          if (quests) {
+            // uncomment
+            // this.quests.splice(0,this.quests.length)
+            // quests.forEach(q => {
+              var quest = quests.val()
+              quest._id =  quests.key
+              var upvotes = []
+              var downvotes = []
+              var solutions = []
+
+              if(quest.solution) {
+                Object.keys(quest.solution).forEach(s => {
+                  solutions.push(s)
+                })
+              }
+
+              if(quest.upvote) {
+                Object.keys(quest.upvote).forEach(u => {
+                  upvotes.push(u)
+                })
+              }
+
+              if(quest.downvote) {
+                Object.keys(quest.downvote).forEach(d => {
+                  downvotes.push(d)
+                })
+              }
+
+              quest.solution = solutions
+              quest.upvote = upvotes
+              quest.downvote = downvotes
+
+              this.quests.push(quest)
+            // })
+            this.loading = false
+          }
+        })
+      }
+    // }
     this.loading = false
   }
 

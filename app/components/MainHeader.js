@@ -14,15 +14,17 @@ import { ActionSheet,
          Input,
          Button,
          Icon } from 'native-base';
-import SideMenu from './SideMenu.js';
 import { UserStore,
-         SearchStore } from '../mobx';
+         SearchStore,
+         FeedStore } from '../mobx';
 
-var BUTTONS = [{ text: "Option 0", icon: "american-football", iconColor: "#2c8ef4" },
-  { text: "Option 1", icon: "analytics", iconColor: "#f42ced" },
-  { text: "Option 2", icon: "aperture", iconColor: "#ea943b" },
-  { text: "Logout", icon: "trash", iconColor: "#fa213b" },
-  { text: "Cancel", icon: "close", iconColor: "#25de5b" }];
+var BUTTONS = [{ text: "All", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+  { text: "Algorithms", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+  { text: "Programming Languages", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+  { text: "Software Development", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+  { text: "Database", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+  { text: "Logout", icon: "ios-log-out", iconColor: "#fa213b" },
+  { text: "Cancel", icon: "ios-close", iconColor: "#fa213b" }];
 var DESTRUCTIVE_INDEX = 3;
 var CANCEL_INDEX = 4;
 
@@ -54,7 +56,7 @@ export default class MainHeader extends React.Component {
                 )}>
                   <Icon name="ios-menu" style={styles.headerIcon}/>
               </Button>
-              <Input style={styles.searchInput} placeholder="Search"
+              <Input style={styles.searchInput} placeholder="Search keyword"
                 onChangeText={(input) => {this.setState({query: input})}} />   
               { this.renderSearchButton() }
             </Item>
@@ -64,6 +66,12 @@ export default class MainHeader extends React.Component {
   checkClicked = (buttonClicked) => {
     if(buttonClicked.text === "Logout") {
       UserStore.logOut(this.props.navigation)
+    }
+    else if(buttonClicked.text === "All") {
+      FeedStore.initFeed("")
+    }
+    else {
+      FeedStore.initFeed(buttonClicked.text)
     }
   }
 

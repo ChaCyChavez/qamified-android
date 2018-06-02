@@ -39,6 +39,11 @@ export default class UserProfile extends React.Component {
 
   componentDidMount() {
     UserProfileStore.initProfileFeed()
+    UserProfileStore.open = true
+  }
+
+  componentWillUnmount() {
+    UserProfileStore.open = false
   }
 
   render() {

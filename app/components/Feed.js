@@ -36,7 +36,7 @@ export default class Feed extends React.Component {
   }
 
   componentDidMount() {
-    FeedStore.initFeed()
+    FeedStore.initFeed("")
   }
 
   render() {
