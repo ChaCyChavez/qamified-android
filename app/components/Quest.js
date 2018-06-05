@@ -23,8 +23,11 @@ import Solution from './Solution.js';
 import { observer } from 'mobx-react';
 import { QuestStore,
          UserStore,
-         FeedStore } from '../mobx';
+         FeedStore,
+         UserProfileStore } from '../mobx';
 import moment from 'moment';
+import images from '../../assets/img/images';
+import firebase from 'react-native-firebase'
 
 @observer
 
@@ -36,7 +39,6 @@ export default class Quest extends React.Component {
     this.postSolution = this.postSolution.bind(this)
     this.state = {
       solution: "",
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
     }
   };
 
@@ -44,8 +46,8 @@ export default class Quest extends React.Component {
 
     let itemsLength = QuestStore.current_solutions ? QuestStore.current_solutions.length : 0;
 
-    const isAnswered = (isAnswered) => {
-      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>);
+    const status = (isAnswered, isDuplicate) => {
+      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""}</Text>);
     };
 
     var solutions = []
@@ -69,21 +71,9 @@ export default class Quest extends React.Component {
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
-              { isAnswered(QuestStore.current_quest.is_answered) }
+              { status(QuestStore.current_quest.is_answered, QuestStore.current_quest.is_duplicate) }
             </CardItem>
-            <CardItem style={{backgroundColor: 'transparent'}}>
-              <Left>
-                <Thumbnail
-                  small 
-                  source={{ uri:this.state.avatar_url }} />
-                    <Body>
-                      <View>
-                        <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
-                        <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
-                      </View>
-                    </Body>
-              </Left>
-            </CardItem>
+            { this.renderUserInfo() }
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text style={styles.description}>{ QuestStore.current_quest.description }</Text>
             </CardItem>
@@ -107,7 +97,12 @@ export default class Quest extends React.Component {
                 </Button>
                 <Text style={styles.votes}>{ QuestStore.current_quest.votes }</Text>
               </Left>
-              { this.renderDeleteQuestButton() }
+              <Body>
+              </Body>
+              { this.renderFlagButton() }
+              <Right>
+                { this.renderDeleteQuestButton() }
+              </Right>
             </CardItem>
           </Card>
           <Card style={styles.questions}>
@@ -121,7 +116,7 @@ export default class Quest extends React.Component {
               <Left>
                 <Thumbnail  
                   small
-                  source={{ uri:this.state.avatar_url }} />
+                  source={images[UserStore.user.avatar]} />
                     <Body>
                       <View>
                         <Text style={styles.full_name}>{ UserStore.fullName }</Text>
@@ -151,6 +146,42 @@ export default class Quest extends React.Component {
     );
   }
 
+  renderUserInfo = () => {
+    if(UserProfileStore.open) {
+      return (
+        <CardItem style={{backgroundColor: 'transparent'}}>
+          <Left>
+            <Thumbnail
+              small 
+              source={images[QuestStore.current_quest.user_avatar]} />
+                <Body>
+                  <View>
+                    <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
+                    <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
+                  </View>
+                </Body>
+          </Left>
+        </CardItem>
+      )
+    }
+    return (
+      <CardItem style={{backgroundColor: 'transparent'}}
+        button onPress={() => this.setUser(item.user_id)}>
+        <Left>
+          <Thumbnail
+            small 
+            source={images[QuestStore.current_quest.user_avatar]} />
+              <Body>
+                <View>
+                  <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
+                  <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
+                </View>
+              </Body>
+        </Left>
+      </CardItem>
+    )
+  }
+
   isUpvoted = (upvote) => {
     if(!upvote) {
       return false
@@ -171,19 +202,32 @@ export default class Quest extends React.Component {
     }
   }
 
+  renderFlagButton = () => {
+    if(!(QuestStore.current_quest.is_duplicate)) {
+      return (
+        <Button
+          bordered
+          style={{borderColor: 'transparent'}}
+          onPress={() => this.flagAsDuplicate()}>
+          <Icon 
+            name="ios-flag" 
+            style={{fontSize: 24, color: "#66fcf1"}}/>
+        </Button>
+      )
+    }
+  }
+
   renderDeleteQuestButton = () => {
     if(QuestStore.current_quest.user_id == UserStore.user._id) {
       return (
-        <Right>
-          <Button
-            bordered
-            style={{borderColor: 'transparent'}}
-            onPress={() => this.delete(QuestStore.current_quest)}>
-            <Icon 
-              name="ios-trash" 
-              style={{fontSize: 24, color: "#66fcf1"}}/>
-          </Button>
-        </Right>
+        <Button
+          bordered
+          style={{borderColor: 'transparent'}}
+          onPress={() => this.delete(QuestStore.current_quest)}>
+          <Icon 
+            name="ios-trash" 
+            style={{fontSize: 24, color: "#66fcf1"}}/>
+        </Button>
       )
     }
   }
@@ -246,16 +290,27 @@ export default class Quest extends React.Component {
       user_id: UserStore.user._id,
       username: UserStore.user.username,
       full_name: UserStore.fullName,
-      reply: []
+      reply: [],
+      user_avatar: UserStore.user.avatar
     }
+
+    firebase.analytics()
+      .logEvent('POST_SOLUTION', {})
+
     QuestStore.postSolution(solution, this);
   };
 
   upvote = (quest) => {
+    firebase.analytics()
+      .logEvent('UPVOTE_QUEST', {})
+
     FeedStore.upvoteQuest(quest)
   };
 
   downvote = (quest) => {
+    firebase.analytics()
+      .logEvent('DOWNVOTE_QUEST', {})
+
     FeedStore.downvoteQuest(quest)
   }
 
@@ -265,10 +320,39 @@ export default class Quest extends React.Component {
       'Are you sure?',
       [
         {text: 'CANCEL', onPress: () => {}},
-        {text: 'YES', onPress: () => QuestStore.deleteQuest(this.props.navigation)},
+        {text: 'YES', onPress: () => {
+            firebase.analytics()
+              .logEvent('DELETE_QUEST', {})
+            QuestStore.deleteQuest(this.props.navigation)
+          }
+        },
       ],
       { cancelable: true }
     )
+  }
+
+  flagAsDuplicate = () => {
+    Alert.alert(
+      'Flag as duplicate',
+      'Are you sure?',
+      [
+        {text: 'CANCEL', onPress: () => {}},
+        {text: 'YES', onPress: () => {
+            firebase.analytics()
+              .logEvent('FLAG_QUEST', {})
+            QuestStore.flagAsDuplicate()
+          }
+        },
+      ],
+      { cancelable: true }
+    )
+  }
+
+  setUser = (user_id) => {
+    firebase.analytics()
+      .logEvent('VIEW_USER', {})
+
+    UserProfileStore.setUser(user_id, this.props.navigation)
   }
 
 }

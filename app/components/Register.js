@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet,
          View,
          ScrollView,
-         KeyboardAvoidingView} from 'react-native';
+         KeyboardAvoidingView,
+         TouchableHighlight } from 'react-native';
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -10,10 +11,12 @@ import { Item,
          Input,
          Button, 
          Text,
-         Icon, } from 'native-base';
+         Icon, 
+         Thumbnail } from 'native-base';
 import { observer } from 'mobx-react';
 import { RegisterStore } from '../mobx';
 import moment from 'moment';
+import images from '../../assets/img/images';
 
 @observer
 
@@ -31,6 +34,7 @@ export default class Register extends React.Component {
       institution: "",
 
       page: 1,
+      avatar: "man"
     }
   };
 
@@ -142,6 +146,20 @@ export default class Register extends React.Component {
                   onChangeText={(input) => this.setState({password: input})}
                   value={this.state.password}
                />
+          </Item>
+          <Item style={styles.chooseAvatar}>
+            <TouchableHighlight onPress={() => this.setState({avatar: "man"})} style={{margin: 2, backgroundColor: (this.state.avatar == "man") ? "white" : "transparent"}}>
+              <Thumbnail source={images['man']} />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={() => this.setState({avatar: "boy"})} style={{margin: 2, backgroundColor: (this.state.avatar == "boy") ? "white" : "transparent"}}>
+              <Thumbnail source={images['boy']} />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={() => this.setState({avatar: "woman"})} style={{margin: 2, backgroundColor: (this.state.avatar == "woman") ? "white" : "transparent"}}>
+              <Thumbnail source={images['woman']} />
+            </TouchableHighlight>
+            <TouchableHighlight onPress={() => this.setState({avatar: "girl"})} style={{margin: 2, backgroundColor: (this.state.avatar == "girl") ? "white" : "transparent"}}>
+              <Thumbnail source={images['girl']} />
+            </TouchableHighlight>
           </Item>
           
       </View>
@@ -273,6 +291,7 @@ export default class Register extends React.Component {
       date_created: moment().format(),
       level_exp: 50,
       current_todo: 1,
+      avatar: this.state.avatar
     }
     RegisterStore.register(this.props.navigation, user, this.state.password);
   };
@@ -366,4 +385,8 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Regular",
     color: "#f64c72",
   },
+  chooseAvatar: {
+    borderColor: "transparent",
+    justifyContent: "center",
+  }
 });

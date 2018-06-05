@@ -20,6 +20,8 @@ import { Text,
 import { observer } from 'mobx-react';
 import { UserStore } from '../mobx';
 import moment from 'moment';
+import images from '../../assets/img/images';
+import firebase from 'react-native-firebase'
 
 @observer
 
@@ -49,7 +51,7 @@ export default class CreateQuest extends React.Component {
                   <Left>
                     <Thumbnail 
                       small
-                      source={{ uri:'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }} />
+                      source={images[UserStore.user.avatar]} />
                         <Body>
                           <Text style={styles.full_name}>{ UserStore.fullName }</Text>
                           <Text style={styles.username} note>{ "@" + UserStore.user.username }</Text>
@@ -161,7 +163,12 @@ export default class CreateQuest extends React.Component {
       username: UserStore.user.username,
       full_name: UserStore.fullName,
       solutions: [],
+      user_avatar: UserStore.user.avatar,
+      is_duplicate: false,
     }
+
+    firebase.analytics()
+      .logEvent('POST_QUEST', {})
 
     UserStore.postQuest(this.props.navigation, quest)
   };

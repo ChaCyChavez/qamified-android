@@ -16,28 +16,26 @@ import { responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
 import { observer } from 'mobx-react';
 import { UserStore } from '../mobx';
+import images from '../../assets/img/images'
 
 @observer
 export default class Achievements extends React.Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    }
   }
 
   render () {
-
+    var counter = 0
     var achievements = UserStore.user.todos.map((item, i) => {
-      if(i < UserStore.user.current_todo) {
+      if(i < UserStore.user.current_todo - 1) {
+        counter += 1
         return (
           <ListItem
             avatar
             key={i}
             style={styles.item}>
               <Left>
-                <Thumbnail source={{uri:this.state.avatar_url}} />
+                <Thumbnail small square source={images['trophy']} />
               </Left>
               <Body>
                 <Text style={styles.title}>{ item.title }</Text>
@@ -62,7 +60,7 @@ export default class Achievements extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
-            { achievements }
+            { counter > 0 ? achievements : <Text style={styles.noAchievement}>No achievements yet</Text> }
         </ScrollView>
       </View>
     )
@@ -129,4 +127,11 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Light",
     color: "#c5c6c7",
   },
+  noAchievement: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    color: "#252627",
+    fontSize: 28,
+  }
 });

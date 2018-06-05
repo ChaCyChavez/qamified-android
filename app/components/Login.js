@@ -94,7 +94,7 @@ export default class Login extends React.Component {
 
   completeField = () => {
     return (this.state.email_username &&
-            this.state.password) ? true : false;
+            this.state.password.length >= 8) ? true : false;
   }
 
   renderLoginButton = () => {

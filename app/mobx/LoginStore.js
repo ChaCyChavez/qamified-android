@@ -16,7 +16,7 @@ class LoginStore {
         firebase.database()
           .ref('/user')
           .orderByChild('email')
-          .equalTo(user.email_username)
+          .equalTo(cred.email_username)
           .limitToFirst(1)
           .on('child_added', (user) => {
             if (user) {
@@ -29,7 +29,7 @@ class LoginStore {
       })
       .catch((error) => {
         this.loading = false;
-        this.error = "Login failed"
+        this.error = error.message
       })
   }
 

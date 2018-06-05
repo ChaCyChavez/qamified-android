@@ -25,6 +25,8 @@ import { UserProfileStore,
          QuestStore,
          FeedStore } from '../mobx';
 import moment from 'moment';
+import firebase from 'react-native-firebase'
+import images from '../../assets/img/images'
 
 @observer
 
@@ -32,9 +34,6 @@ export default class UserProfile extends React.Component {
   constructor(props) {
 
     super(props);
-    this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    };
   }
 
   componentDidMount() {
@@ -67,7 +66,7 @@ export default class UserProfile extends React.Component {
           <CardItem style={{backgroundColor: 'transparent'}}>
             <Left>
               <Thumbnail
-                source={{ uri:this.state.avatar_url }} />
+                source={{ uri:this.item.user_avatar }} />
                   <Body>
                     <View>
                       <Text style={styles.postFullName} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
@@ -125,7 +124,7 @@ export default class UserProfile extends React.Component {
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Thumbnail 
                 small
-                source={{ uri:this.state.avatar_url }} />
+                source={images[UserProfileStore.current_user.avatar]} />
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
@@ -248,14 +247,23 @@ export default class UserProfile extends React.Component {
   }
 
   viewQuest = (quest) => {
+    firebase.analytics()
+      .logEvent('VIEW_QUEST', {})
+
     QuestStore.setCurrentQuest(quest, this.props.navigation);
   }
 
   upvote = (quest) => {
+    firebase.analytics()
+      .logEvent('UPVOTE_QUEST', {})
+
     FeedStore.upvoteQuest(quest)
   }
 
   downvote = (quest) => {
+    firebase.analytics()
+      .logEvent('DOWNVOTE_QUEST', {})
+
     FeedStore.downvoteQuest(quest)
   }
 }

@@ -18,16 +18,13 @@ import { responsiveWidth,
 import { SearchStore,
          QuestStore } from '../mobx';
 import { observer } from 'mobx-react';
+import images from '../../assets/img/images'
 
 @observer
 
 export default class Todo extends React.Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    }
   }
 
   render () {
@@ -41,7 +38,7 @@ export default class Todo extends React.Component {
           button
           onPress={() => { this.getQuest(item) }}>
             <Left>
-              <Thumbnail source={{uri:this.state.avatar_url}} />
+              <Thumbnail source={images['conversation']} />
             </Left>
             <Body>
               <Text style={styles.title}>{ item.title }</Text>

@@ -14,6 +14,12 @@ class NotificationStore {
   @observable
   notifications = []
 
+  @observable
+  new_notif = false
+
+  @observable
+  init = true
+
   inList = (n_id) => {
     this.notifications.forEach(notification => {
       if(notification._id == n_id){
@@ -25,24 +31,47 @@ class NotificationStore {
 
   initNotifications = () => {
     this.notifications = []
+    this.init = true
     firebase.database()
       .ref('notification/').orderByChild("user_id").equalTo(UserStore.user._id)
-      .on('value', notifications => {
-        notifications.forEach(n => {
+      .on('child_added', n => {
+        // notifications.forEach(n => {
           var notification = n.val()
           notification._id = n.key
 
           if(!this.inList(notification._id)) {
+            this.new_notif = true
             this.notifications.unshift(notification)
           }
-        })
+        // })
       })
   }
 
-  getQuest = (quest_id, navigation) => {
+  hasUnreadNotif = () => {
+    for(var i = 0; i < this.notifications.length; i++) {
+      if(!this.notifications[i].is_read) {
+        return true
+      }
+    }
+    return false
+  }
+
+  getQuest = (notif, navigation) => {
     FeedStore.quests.forEach(quest => {
-      if(quest._id === quest_id) {
-        QuestStore.setCurrentQuest(quest, navigation);
+      if(quest._id === notif.quest_id) {
+        if(notif.is_read == false) {
+          notif.is_read = true
+          const updates = {}
+          updates[`${notif._id}/is_read`] = true
+          firebase.database()
+            .ref('/notification')
+            .update(updates)
+            .then(() => {
+              QuestStore.setCurrentQuest(quest, navigation);
+            })
+        } else {
+          QuestStore.setCurrentQuest(quest, navigation);
+        }
       }
     })
   }

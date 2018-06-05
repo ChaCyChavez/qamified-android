@@ -16,6 +16,8 @@ import Achievements from '../components/Achievements.js';
 import Ranking from '../components/Ranking.js';
 import UserProfile from '../components/UserProfile.js';
 import SearchResult from '../components/SearchResult.js';
+import firebase from 'react-native-firebase';
+import { NotificationStore } from '../mobx';
 
 export const Stack = StackNavigator({
   Login: {
@@ -60,13 +62,33 @@ export const Tab = TabNavigator({
     screen: Notification,
     navigationOptions: {
       tabBarLabel: 'Notification',
-      tabBarIcon: ({ tintColor }) => <Icon name="ios-notifications" size={25} style={styles.tabIcon} />
+      tabBarIcon: ({ tintColor }) => (
+        <View>
+          <Icon name="ios-notifications" size={25} style={styles.tabIcon} />
+          {
+            NotificationStore.hasUnreadNotif() ?
+                <View style={styles.badge}>
+                  <Text style={styles.badge_text}>!</Text>
+                </View> :
+                null
+          }
+        </View>)
     },
   },
 },
 {
   tabBarPosition: 'bottom',
   animationEnabled: true,
+  navigationOptions: ({ navigation }) => ({
+    tabBarOnPress: (scene, jumpToIndex) => {
+      firebase.analytics()
+        .logEvent("VIEW_" + navigation.state.key.toUpperCase())
+      if(navigation.state.key === "Notification") {
+        NotificationStore.new_notif = false
+      }
+      navigation.navigate(navigation.state.key)
+    },
+  }),
   tabBarOptions: {
     upperCaseLabel: false,
     showIcon: true,
@@ -87,7 +109,8 @@ export const Tab = TabNavigator({
       color: 'white',
       fontFamily: "Proxima Nova Light",
     },
-  }
+  },
+  
 });
 
 export const Base = StackNavigator({
@@ -168,4 +191,20 @@ const styles = StyleSheet.create({
   tabIcon: {
     color: "white",
   },
+  badge: {
+    position: 'absolute',
+    right: -3,
+    top: 3,
+    backgroundColor: 'red',
+    borderRadius: 12,
+    width: 12,
+    height: 12,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  badge_text: {
+    color: 'white',
+    fontFamily: "Gothic Bold",
+    fontSize: 12,
+  }
 });

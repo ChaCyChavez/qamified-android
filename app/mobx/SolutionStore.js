@@ -21,6 +21,7 @@ class SolutionStore {
       date_created: moment().format(),
       user_id: quest.user_id,
       quest_id: quest._id,
+      is_read: false
     }
 
     const newQuestKey = firebase.database().ref().child('notification').push().key
@@ -71,8 +72,29 @@ class SolutionStore {
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        var todo = UserStore.user.todos[UserStore.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
+        UserStore.user.experience += todo.experience
+
+        UserStore.user.points += todo.points
+        updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
+
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
+
+        if(UserStore.user.experience >= UserStore.user.level_exp) {
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+          UserStore.user.level += 1
+          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -91,7 +113,9 @@ class SolutionStore {
           did_level_up = false
         }
 
-        this.replyNotification(QuestStore.current_quest)
+        if(reply.user_id != UserStore.user._id) {
+          this.replyNotification(QuestStore.current_quest)
+        }
       })
       .catch((error) => {
         this.loading = false
@@ -105,6 +129,7 @@ class SolutionStore {
       date_created: moment().format(),
       user_id: quest.user_id,
       quest_id: quest._id,
+      is_read: false
     }
     
     const newQuestKey = firebase.database().ref().child('notification').push().key
@@ -128,6 +153,7 @@ class SolutionStore {
 
   upvoteSolution = solution => {
     const updates = {}
+    var did_level_up = false
 
     //todo
     //check if first time vote
@@ -137,8 +163,29 @@ class SolutionStore {
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        var todo = UserStore.user.todos[UserStore.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
+        UserStore.user.experience += todo.experience
+
+        UserStore.user.points += todo.points
+        updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
+
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
+
+        if(UserStore.user.experience >= UserStore.user.level_exp) {
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+          UserStore.user.level += 1
+          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -158,7 +205,9 @@ class SolutionStore {
           this.error = ""
           solution.votes += 1
 
-          this.voteNotification(QuestStore.current_quest, true)
+          if(solution.user_id != UserStore.user._id) {
+            this.voteNotification(QuestStore.current_quest, true)
+          }
 
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
@@ -167,6 +216,10 @@ class SolutionStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false
@@ -187,7 +240,9 @@ class SolutionStore {
           this.error = ""
           solution.votes += 1
 
-          this.voteNotification(QuestStore.current_quest, true)
+          if(solution.user_id != UserStore.user._id) {
+            this.voteNotification(QuestStore.current_quest, true)
+          }
 
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
@@ -196,6 +251,10 @@ class SolutionStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false
@@ -206,7 +265,7 @@ class SolutionStore {
 
   downvoteSolution = solution => {
     const updates = {}
-
+    var did_level_up = false
     //todo
     //check if first time vote
     var index = this.inTodo("Solution")
@@ -215,8 +274,29 @@ class SolutionStore {
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        var todo = UserStore.user.todos[UserStore.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
+        UserStore.user.experience += todo.experience
+
+        UserStore.user.points += todo.points
+        updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
+
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
+
+        if(UserStore.user.experience >= UserStore.user.level_exp) {
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+          UserStore.user.level += 1
+          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -236,7 +316,9 @@ class SolutionStore {
           this.error = ""
           solution.votes -= 1
 
-          this.voteNotification(QuestStore.current_quest, false)
+          if(solution.user_id != UserStore.user._id) {
+            this.voteNotification(QuestStore.current_quest, false)
+          }
 
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
@@ -245,6 +327,10 @@ class SolutionStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false
@@ -266,7 +352,9 @@ class SolutionStore {
           this.error = ""
           solution.votes -= 1
 
-          this.voteNotification(QuestStore.current_quest, false)
+          if(solution.user_id != UserStore.user._id) {
+            this.voteNotification(QuestStore.current_quest, false)
+          }
 
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
@@ -275,6 +363,10 @@ class SolutionStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false
@@ -314,6 +406,7 @@ class SolutionStore {
       date_created: moment().format(),
       user_id: quest.user_id,
       quest_id: quest._id,
+      is_read: false
     }
     
     const newQuestKey = firebase.database().ref().child('notification').push().key
@@ -321,6 +414,8 @@ class SolutionStore {
 
     const updates = {}
     updates[`/notification/${n._id}`] = n
+
+    var did_level_up = false
 
     //todo
     //check if first time vote
@@ -330,8 +425,29 @@ class SolutionStore {
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        var todo = UserStore.user.todos[UserStore.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
+        UserStore.user.experience += todo.experience
+
+        UserStore.user.points += todo.points
+        updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
+
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
+
+        if(UserStore.user.experience >= UserStore.user.level_exp) {
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+          UserStore.user.level += 1
+          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -341,6 +457,10 @@ class SolutionStore {
       .then(() => {
         this.loading = false
         this.error = ""
+        if(did_level_up) {
+          ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+          did_level_up = false
+        }
       })
       .catch(error => {
         this.loading = false
@@ -371,14 +491,16 @@ class SolutionStore {
             QuestStore.current_quest.is_answered = true
 
             firebase.database()
-            .ref('user').child(`${solution.user_id}`)
-            .transaction(user => {
-              user.points += 80
-              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
-              return user
-            })
+              .ref('user').child(`${solution.user_id}`)
+              .transaction(user => {
+                user.points += 80
+                user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+                return user
+              })
 
-            this.markAsSolutionNotification(QuestStore.current_quest)
+            if(solution.user_id != UserStore.user._id) {
+              this.markAsSolutionNotification(QuestStore.current_quest)
+            }
           })
           .catch((error) => {
             this.loading = false

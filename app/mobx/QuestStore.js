@@ -97,6 +97,7 @@ class QuestStore {
       date_created: moment().format(),
       user_id: quest.user_id,
       quest_id: quest._id,
+      is_read: false
     }
 
     const newQuestKey = firebase.database().ref().child('notification').push().key
@@ -130,8 +131,8 @@ class QuestStore {
     updates[`/user/${s.user_id}/solution/${newSolutionKey}`] = true
     updates[`/solution/${s._id}`] = s
 
-    updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + 40
     UserStore.user.experience += 40
+    updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience
 
     // exp
     var did_level_up = false
@@ -150,8 +151,29 @@ class QuestStore {
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        var todo = UserStore.user.todos[UserStore.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
+        UserStore.user.experience += todo.experience
+
+        UserStore.user.points += todo.points
+        updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
+
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
+
+        if(UserStore.user.experience >= UserStore.user.level_exp) {
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+          UserStore.user.level += 1
+          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -163,7 +185,10 @@ class QuestStore {
         this.error = "";
         _this.setState({solution: ""})
 
-        this.solutionNotification(this.current_quest)
+        if(solution.user_id != UserStore.user._id) {
+          this.solutionNotification(this.current_quest)
+        }
+        
 
         ToastAndroid.show('Solution posted successfully!', ToastAndroid.SHORT);
         ToastAndroid.show('40 experience gained!', ToastAndroid.SHORT);
@@ -208,26 +233,27 @@ class QuestStore {
     this.current_solutions.forEach(solution => {
 
       if (solution.reply.length > 0) {
-        solution.reply.forEach(reply => {
-          firebase.database()
-            .ref('/reply')
-            .child(reply._id)
-            .remove()
-            .then(() => {
-              const updates = {}
+        firebase.database()
+          .ref('/reply')
+          .orderByChild('solution_id')
+          .equalTo(solution._id)
+          .once('value', reps => {
+            const updates = {}
+            reps.foreEach(r => {
+              update[`/reply/${r.key}`] = null
               updates[`/user/${UserStore.user._id}/reply/${reply._id}`] = null
-
-              firebase.database()
-                .ref()
-                .update(updates)
-                .then(() => {
-                  this.removeReply(solution, reply)
-                })
-                .catch(error => console.error(error))
             })
-            .catch(error => {console.error(error)})
-        })
+
+            firebase.database()
+              .ref()
+              .update(updates)
+              .then(() => {
+                this.removeReply(solution, reply)
+              })
+          })
       }
+
+
       firebase.database()
         .ref('/solution')
         .child(solution._id)
@@ -246,6 +272,21 @@ class QuestStore {
         })
         .catch(error => {console.error(error)})  
     })
+
+    firebase.database()
+      .ref('/notification')
+      .orderByChild('quest_id')
+      .equalTo(this.current_quest._id)
+      .once('value', notifs => {
+        const updates = {}
+        notifs.forEach(n => {
+          updates[n.key] = null
+        })
+
+        firebase.database()
+          .ref('/notification')
+          .update(updates)
+      })
 
     firebase.database()
       .ref('/quest')
@@ -279,6 +320,21 @@ class QuestStore {
         break
       }
     }
+  }
+
+  flagAsDuplicate = () => {
+    const updates = {}
+    updates[`quest/${this.current_quest._id}/is_duplicate`] = true
+
+    firebase.database()
+      .ref()
+      .update(updates)
+      .then(() => {
+        ToastAndroid.show('Succesfully flaged a quest', ToastAndroid.SHORT);
+      })
+      .catch(error => {
+        this.error = error.message
+      })
   }
 }
 

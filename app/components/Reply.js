@@ -20,6 +20,7 @@ import { Text,
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import { UserProfileStore } from '../mobx';
+import firebase from 'react-native-firebase'
 
 @observer
 
@@ -28,7 +29,6 @@ export default class Reply extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
       error: "",
       answer_input: "",
       comment_input: "",
@@ -49,6 +49,8 @@ export default class Reply extends React.Component {
   }
 
   setUser = (user_id) => {
+    firebase.analytics()
+      .logEvent('VIEW_USER', {})
     UserProfileStore.setUser(user_id, this.props.navigation)
   }
 }

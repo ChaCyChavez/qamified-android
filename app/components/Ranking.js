@@ -19,8 +19,11 @@ import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
 import { observer } from 'mobx-react';
-import { RankingStore } from '../mobx';
+import { RankingStore,
+         UserProfileStore } from '../mobx';
 import moment from 'moment';
+import images from '../../assets/img/images'
+import firebase from 'react-native-firebase';
 
 @observer
 
@@ -28,8 +31,7 @@ export default class Ranking extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      selected: "key1",
+      selected: "points",
     }
   }
 
@@ -52,9 +54,10 @@ export default class Ranking extends React.Component {
           avatar
           key={i}
           style={styles.item}
-          bordered>
+          bordered
+          button onPress={() => this.setUser(item.user_id)}>
             <Left>
-              <Thumbnail small source={{uri:this.state.avatar_url}} />
+              <Thumbnail small source={images[item.avatar]} />
             </Left>
             <Body>
               <Text style={styles.username}>{ item.username }</Text>
@@ -62,6 +65,11 @@ export default class Ranking extends React.Component {
                 note
                 style={styles.pointsRank}>
                   { item.points + " points | " + item.rank }
+              </Text>
+              <Text
+                note
+                style={styles.pointsRank}>
+                  { item.experience + " experience | Level " + item.level }
               </Text>
             </Body>
             <Right>
@@ -91,8 +99,8 @@ export default class Ranking extends React.Component {
                 selectedValue={this.state.selected}
                 onValueChange={this.onValueChange.bind(this)}
               >
-                <Picker.Item color="#0b0c10" label="Points" value="key0" />
-                <Picker.Item color="#0b0c10" label="Rank" value="key1" />
+                <Picker.Item color="#0b0c10" label="Points" value="points" />
+                <Picker.Item color="#0b0c10" label="Experience" value="experience" />
               </Picker>
               </Right>
             </CardItem>
@@ -103,6 +111,13 @@ export default class Ranking extends React.Component {
         </ScrollView>
       </View>
     )
+  }
+
+  setUser = (user_id) => {
+    firebase.analytics()
+      .logEvent('VIEW_USER', {})
+
+    UserProfileStore.setUser(user_id, this.props.navigation)
   }
 }
 

@@ -2,6 +2,7 @@ import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
 import UserStore from './UserStore.js';
 import moment from 'moment';
+import { ToastAndroid } from 'react-native'
 
 class FeedStore {
   @observable
@@ -116,6 +117,7 @@ class FeedStore {
       date_created: moment().format(),
       user_id: quest.user_id,
       quest_id: quest._id,
+      is_read: false
     }
     
     const newQuestKey = firebase.database().ref().child('notification').push().key
@@ -139,6 +141,7 @@ class FeedStore {
 
   upvoteQuest = (quest) => {
     const updates = {}
+    var did_level_up = false
     
     // todo
     //check if first time vote
@@ -148,8 +151,29 @@ class FeedStore {
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        var todo = UserStore.user.todos[UserStore.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
+        UserStore.user.experience += todo.experience
+
+        UserStore.user.points += todo.points
+        updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
+
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
+
+        if(UserStore.user.experience >= UserStore.user.level_exp) {
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+          UserStore.user.level += 1
+          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -169,7 +193,9 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes += 1
-          this.voteNotification(quest, true)
+          if(quest.user_id != UserStore.user._id) {
+            this.voteNotification(quest, true)
+          }
           firebase.database()
             .ref('user').child(`${quest.user_id}`)
             .transaction(user => {
@@ -177,6 +203,10 @@ class FeedStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false
@@ -195,7 +225,9 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes += 1
-          this.voteNotification(quest, true)
+          if(quest.user_id != UserStore.user._id) {
+            this.voteNotification(quest, true)
+          }
           firebase.database()
             .ref('user').child(`${quest.user_id}`)
             .transaction(user => {
@@ -203,6 +235,10 @@ class FeedStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false
@@ -212,8 +248,8 @@ class FeedStore {
   }
 
   downvoteQuest = (quest) => {
-
     const updates = {}
+    var did_level_up = false
 
     // todo
     //check if first time vote
@@ -223,8 +259,29 @@ class FeedStore {
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(UserStore.user.todos[UserStore.user.current_todo - 1])) {
+        var todo = UserStore.user.todos[UserStore.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
+
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
+        UserStore.user.experience += todo.experience
+
+        UserStore.user.points += todo.points
+        updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
+
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
+
+        if(UserStore.user.experience >= UserStore.user.level_exp) {
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
+          UserStore.user.level += 1
+          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -243,7 +300,9 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes -= 1
-          this.voteNotification(quest, false)
+          if(quest.user_id != UserStore.user._id) {
+            this.voteNotification(quest, false)
+          }
           firebase.database()
             .ref('user').child(`${quest.user_id}`)
             .transaction(user => {
@@ -251,6 +310,10 @@ class FeedStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false
@@ -270,7 +333,9 @@ class FeedStore {
           this.loading = false
           this.error = ""
           quest.votes -= 1
-          this.voteNotification(quest, false)
+          if(quest.user_id != UserStore.user._id) {
+            this.voteNotification(quest, false)
+          }
           firebase.database()
             .ref('user').child(`${quest.user_id}`)
             .transaction(user => {
@@ -278,6 +343,10 @@ class FeedStore {
               user.rank = UserStore.ranks[Math.floor(user.points / 100)]
               return user
             })
+          if(did_level_up) {
+            ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+            did_level_up = false
+          }
         })
         .catch((error) => {
           this.loading = false

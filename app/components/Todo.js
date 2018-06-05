@@ -16,21 +16,18 @@ import { responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
 import { observer } from 'mobx-react';
 import { UserStore } from '../mobx';
+import images from '../../assets/img/images'
 
 @observer
 export default class Todo extends React.Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    }
   }
 
   render () {
     var counter = 0
     var todos = UserStore.user.todos.map((item, i) => {
-      if(i > UserStore.user.current_todo) {
+      if(i >= UserStore.user.current_todo - 1) {
         counter += 1
         return (
           <ListItem
@@ -38,7 +35,7 @@ export default class Todo extends React.Component {
             key={i}
             style={styles.item}>
               <Left>
-                <Thumbnail source={{uri:this.state.avatar_url}} />
+                <Thumbnail small square source={images['quest']} />
               </Left>
               <Body>
                 <Text style={styles.title}>{ item.title }</Text>

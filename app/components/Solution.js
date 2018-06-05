@@ -25,6 +25,8 @@ import { SolutionStore,
          QuestStore,
          UserProfileStore } from '../mobx';
 import moment from 'moment';
+import images from '../../assets/img/images'
+import firebase from 'react-native-firebase'
 
 @observer
 
@@ -33,7 +35,6 @@ export default class Solution extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
       reply: "",
     }
   };
@@ -117,7 +118,7 @@ export default class Solution extends React.Component {
           <Left>
             <Thumbnail
               small
-              source={{ uri:this.state.avatar_url }} />
+              source={images[this.props.solution.user_avatar]} />
                 <Body>
                   <View>
                     <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
@@ -131,18 +132,18 @@ export default class Solution extends React.Component {
     return (
       <CardItem style={{backgroundColor: 'transparent'}}
         button onPress={() => this.setUser(this.props.user_id)}>
-          <Left>
-            <Thumbnail
-              small
-              source={{ uri:this.state.avatar_url }} />
-                <Body>
-                  <View>
-                    <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
-                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
-                  </View>
-                </Body>
-          </Left>
-        </CardItem>
+        <Left>
+          <Thumbnail
+            small
+            source={images[this.props.solution.user_avatar]} />
+              <Body>
+                <View>
+                  <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
+                  <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
+                </View>
+              </Body>
+        </Left>
+      </CardItem>
     )
   }
 
@@ -221,18 +222,31 @@ export default class Solution extends React.Component {
       username: UserStore.user.username,
       full_name: UserStore.fullName,
     }
+
+    firebase.analytics()
+      .logEvent('POST_REPLY', {})
+
     SolutionStore.postReply(reply, this.props.solution, this)
   };
 
   upvote = solution => {
+    firebase.analytics()
+      .logEvent('UPVOTE_SOLUTOION', {})
+
     SolutionStore.upvoteSolution(solution)
   };
 
   downvote = solution => {
+    firebase.analytics()
+      .logEvent('DOWNVOTE_SOLUTION', {})
+
     SolutionStore.downvoteSolution(solution)
   }
 
   markAsSolution = solution => {
+    firebase.analytics()
+      .logEvent('MARK_SOLUTION', {})
+
     SolutionStore.markAsSolution(solution)
   }
 
@@ -242,13 +256,21 @@ export default class Solution extends React.Component {
       'Are you sure?',
       [
         {text: 'CANCEL', onPress: () => {}},
-        {text: 'YES', onPress: () => SolutionStore.deleteSolution(solution)},
+        {text: 'YES', onPress: () => {
+            firebase.analytics()
+              .logEvent('DELETE_SOLUTION', {})
+            SolutionStore.deleteSolution(solution)
+          }
+        },
       ],
       { cancelable: true }
     )
   }
 
   setUser = (user_id) => {
+    firebase.analytics()
+      .logEvent('VIEW_USER', {})
+
     UserProfileStore.setUser(user_id, this.props.navigation)
   }
 }

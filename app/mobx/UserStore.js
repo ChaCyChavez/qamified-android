@@ -25,10 +25,10 @@ class UserStore {
 
   checkUser = (navigation) => {
     this.loading = true
-
+    this.user = {}
     firebase.auth()
       .onAuthStateChanged((user) => {
-      if (user) {
+      if (user != null) {
         this.initUser(user, navigation)
       }
       this.loading = false
@@ -115,8 +115,29 @@ class UserStore {
       updates[`/user/${this.user._id}/todos/${this.user.todos[this.user.current_todo - 1]._id}/requirements/${index}/current`] = this.user.todos[this.user.current_todo - 1].requirements[index].current 
       
       if(this.isDone(this.user.todos[this.user.current_todo - 1])) {
+        var todo = this.user.todos[this.user.current_todo - 1]
+        ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+        ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
         this.user.current_todo += 1
         updates[`/user/${this.user._id}/current_todo`] = this.user.current_todo
+
+        updates[`/user/${this.user._id}/experience`] = this.user.experience + todo.experience
+        this.user.experience += todo.experience
+
+        this.user.points += todo.points
+        updates[`/user/${this.user._id}/points`] = this.user.points
+
+        this.user.rank = this.ranks[Math.floor(this.user.points / 100)]
+        updates[`/user/${this.user._id}/rank`] = this.user.rank
+
+        if(this.user.experience >= this.user.level_exp) {
+          updates[`/user/${this.user._id}/level`] = this.user.level + 1
+          this.user.level += 1
+          updates[`/user/${this.user._id}/level_exp`] = (2 * this.user.level_exp) + Math.round(this.user.level_exp * 0.10)
+          this.user.level_exp += this.user.level_exp + Math.round(this.user.level_exp * 0.10)
+          did_level_up = true
+        }
       }
     }
 
@@ -173,7 +194,6 @@ class UserStore {
     firebase.auth()
       .signOut()
       .then(() => {
-        this.user = {}
         navigation.navigate('Login')
       })
   }

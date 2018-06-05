@@ -17,15 +17,13 @@ import { responsiveWidth,
 import { observer } from 'mobx-react';
 import { NotificationStore } from '../mobx';
 import moment from 'moment';
+import images from '../../assets/img/images'
 
 @observer
 
 export default class Notification extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    }
   }
 
   componentDidMount() {
@@ -33,16 +31,18 @@ export default class Notification extends React.Component {
   }
 
   render () {
+    var counter = 0
     var notifications = NotificationStore.notifications.map((item, i) => {
+      counter += 1
       return (
         <ListItem
           avatar
           key={i}
-          style={styles.item}
+          style={item.is_read ? styles.item : styles.item_unread}
           button
-          onPress={() => { this.getQuest(item.quest_id) }}>
+          onPress={() => { this.getQuest(item) }}>
             <Left>
-              <Thumbnail small source={{uri:this.state.avatar_url}} />
+              <Thumbnail square small source={images['conversation']} />
             </Left>
             <Body>
               <Text
@@ -65,7 +65,7 @@ export default class Notification extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
-            { notifications }
+            { counter > 0 ? notifications : <Text style={styles.noNotification}>No notifications yet</Text> }
         </ScrollView>
       </View>
     )
@@ -90,7 +90,14 @@ const styles = StyleSheet.create({
   },
   item: {
     marginLeft: 0,
+    paddingLeft: 10,
     backgroundColor: "#1f2833",
+    width: responsiveWidth(100)
+  },
+  item_unread: {
+    marginLeft: 0,
+    paddingLeft: 10,
+    backgroundColor: "#3f4853",
     width: responsiveWidth(100)
   },
   description: {
@@ -102,5 +109,12 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Light",
     color: "#c5c6c7",
     fontSize: 14,
+  },
+  noNotification: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    color: "#252627",
+    fontSize: 28,
   }
 });
