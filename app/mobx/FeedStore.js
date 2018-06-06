@@ -21,16 +21,15 @@ class FeedStore {
     this.loading = true
     // if (this.quests.length == 0) {
       if(!category) {
-        this.quests.splice(0,this.quests.length)
+        // this.quests.splice(0,this.quests.length)
         firebase.database()
         .ref('/quest')
-        .on('child_added', (quests) => { // value
+        .on('value', (quests) => { // value
           if (quests) {
-            // uncomment
-            // this.quests.splice(0,this.quests.length)
-            // quests.forEach(q => {
-              var quest = quests.val()
-              quest._id =  quests.key
+            var qs = []
+            quests.forEach(q => {
+              var quest = q.val()
+              quest._id =  q.key
               var upvotes = []
               var downvotes = []
               var solutions = []
@@ -57,24 +56,25 @@ class FeedStore {
               quest.upvote = upvotes
               quest.downvote = downvotes
 
-              this.quests.push(quest)
-            // })
+              qs.unshift(quest)
+            })
+            this.quests = qs
             this.loading = false
           }
         })
       } else {
-        this.quests.splice(0,this.quests.length)
+        // this.quests.splice(0,this.quests.length)
         firebase.database()
         .ref('/quest')
         .orderByChild('category')
         .equalTo(category)
-        .on('child_added', (quests) => { // value
+        .on('value', (quests) => { // value
           if (quests) {
             // uncomment
-            // this.quests.splice(0,this.quests.length)
-            // quests.forEach(q => {
-              var quest = quests.val()
-              quest._id =  quests.key
+            var qs = []
+            quests.forEach(q => {
+              var quest = q.val()
+              quest._id =  q.key
               var upvotes = []
               var downvotes = []
               var solutions = []
@@ -101,8 +101,9 @@ class FeedStore {
               quest.upvote = upvotes
               quest.downvote = downvotes
 
-              this.quests.push(quest)
-            // })
+              qs.unshift(quest)
+            })
+            this.quests = qs
             this.loading = false
           }
         })

@@ -42,16 +42,16 @@ export default class Register extends React.Component {
     return (
       <ScrollView style={{"backgroundColor": "#1f2833", height: responsiveHeight(100)}} contentContainerstyle={styles.scrollView}>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-            <View>
-              <Text 
-                style={styles.title }>
-                  QAmifiED
-              </Text>
-              <Text
-                style={styles.subtitle}>
-                  A Question and Answer Platform
-              </Text>
-            </View>
+            <Thumbnail
+              source={images['qamified-logo']} />
+            <Text 
+              style={styles.title }>
+                QAmifiED
+            </Text>
+            <Text
+              style={styles.subtitle}>
+                A Question and Answer Platform
+            </Text>
             { this.renderForm() }
             <View style={styles.buttonSection}>
               { this.renderPageButton() }
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    fontSize: 30,
+    fontSize: 20,
     fontFamily: "Gotham Bold",
     color: "#e5e6e7",
   },

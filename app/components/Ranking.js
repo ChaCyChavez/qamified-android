@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet,
          TextInput,
          View,
-         ScrollView } from 'react-native';
+         ScrollView,
+         RefreshControl } from 'react-native';
 import { ListItem,
          Thumbnail,
          Body,
@@ -14,7 +15,8 @@ import { ListItem,
          Icon,
          Item,
          Card,
-         CardItem } from 'native-base'
+         CardItem,
+         Spinner } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -39,6 +41,10 @@ export default class Ranking extends React.Component {
     RankingStore.initRanking()
   }
 
+  _onRefresh() {
+    RankingStore.initRanking()
+  }
+
   onValueChange(value) {
     this.setState({
       selected: value
@@ -48,6 +54,7 @@ export default class Ranking extends React.Component {
   }
 
   render () {
+    var loading = <Spinner color='#66fcf1' />
     var ranking = RankingStore.users.map((item, i) => {
       return (
         <ListItem
@@ -55,7 +62,7 @@ export default class Ranking extends React.Component {
           key={i}
           style={styles.item}
           bordered
-          button onPress={() => this.setUser(item.user_id)}>
+          button onPress={() => this.setUser(item._id)}>
             <Left>
               <Thumbnail small source={images[item.avatar]} />
             </Left>
@@ -85,7 +92,13 @@ export default class Ranking extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}
+          refreshControl={
+            <RefreshControl
+              refreshing={RankingStore.loading}
+              onRefresh={this._onRefresh.bind(this)}
+            />}
+        >
           <Card style={styles.card}>
             <CardItem style={{backgroundColor: 'transparent', flex: 1, flexDirection: "row"}}>
               <Left>
@@ -106,7 +119,7 @@ export default class Ranking extends React.Component {
             </CardItem>
           </Card>
           <Card style={styles.card}>
-          { ranking }
+          { RankingStore.loading ? loading : ranking }
           </Card>
         </ScrollView>
       </View>

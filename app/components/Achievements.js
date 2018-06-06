@@ -10,7 +10,8 @@ import { List,
          Left,
          Right,
          Text,
-         Button } from 'native-base'
+         Button,
+         Icon } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -60,7 +61,10 @@ export default class Achievements extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
-            { counter > 0 ? achievements : <Text style={styles.noAchievement}>No achievements yet</Text> }
+            { counter > 0 ? achievements : <View>
+                <Icon style={{textAlign: 'center', fontSize: 40, marginTop: 10, color: "#252627"}} name="ios-ribbon" />
+                <Text style={styles.noAchievement}>Oops, complete todos in order to have achievements.</Text>
+                </View> }
         </ScrollView>
       </View>
     )

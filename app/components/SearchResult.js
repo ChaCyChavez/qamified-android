@@ -38,7 +38,7 @@ export default class Todo extends React.Component {
           button
           onPress={() => { this.getQuest(item) }}>
             <Left>
-              <Thumbnail source={images['conversation']} />
+              <Thumbnail square small source={images['conversation']} />
             </Left>
             <Body>
               <Text style={styles.title}>{ item.title }</Text>
@@ -67,7 +67,6 @@ export default class Todo extends React.Component {
   }
 
   getQuest = (quest) => {
-    console.error(quest)
     QuestStore.setCurrentQuest(quest, this.props.navigation);
   }
 }

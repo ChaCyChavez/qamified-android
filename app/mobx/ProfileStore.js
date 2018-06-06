@@ -25,27 +25,27 @@ class ProfileStore {
 
   initProfileFeed = () => {
     this.loading = true
-    if (this.profileFeed.length == 0) {
+    this.profileFeed = []
 
+    FeedStore.quests.forEach(quest => {
+      if(quest.user_id == UserStore.user._id) {
+        if(!this.alreadyExist(quest._id)) {
+          this.profileFeed.push(quest)
+        }
+      }
+    })
+
+    UserStore.user.solution.forEach(s_id => {
       FeedStore.quests.forEach(quest => {
-        if(quest.user_id == UserStore.user._id) {
+        if(quest.solution.includes(s_id)) {
           if(!this.alreadyExist(quest._id)) {
             this.profileFeed.push(quest)
           }
         }
       })
-
-      UserStore.user.solution.forEach(s_id => {
-        FeedStore.quests.forEach(quest => {
-          if(quest.solution.includes(s_id)) {
-            if(!this.alreadyExist(quest._id)) {
-              this.profileFeed.push(quest)
-            }
-          }
-        })
-      })
-      setTimeout(() => {this.loading = false}, 1000)
-    }
+    })
+    
+    setTimeout(() => {this.loading = false}, 1000)
   }
 
   updateBio = (profile) => {

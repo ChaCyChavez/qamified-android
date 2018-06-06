@@ -13,10 +13,12 @@ import { Drawer,
          Input,
          Item,
          Icon,
-         Spinner} from 'native-base';
+         Spinner,
+         Thumbnail } from 'native-base';
 import { observer } from 'mobx-react';
 import { LoginStore,
          UserStore } from '../mobx';
+import images from '../../assets/img/images';
 
 @observer
 
@@ -35,10 +37,28 @@ export default class Login extends React.Component {
   }
 
   render() {
-    if(Object.keys(UserStore.user).length === 0){
+    if (UserStore.loading) {
+      return (
+        <View style={styles.container}>
+          <Thumbnail
+              source={images['qamified-logo']} />
+          <Text 
+            style={styles.title}>
+              QAmifiED
+          </Text>
+          <Text 
+            style={styles.subtitle}>
+              A Question and Answer Platform
+          </Text>
+          <Spinner small color='#66fcf1'/>
+        </View>
+      )
+    } else {
       return (
         <ScrollView style={{"backgroundColor": "#1f2833", height: responsiveHeight(100)}} contentContainerstyle={styles.scrollView}>
           <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+            <Thumbnail
+                source={images['qamified-logo']} />
             <Text 
               style={styles.title}>
                 QAmifiED
@@ -82,12 +102,6 @@ export default class Login extends React.Component {
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
-      )
-    } else {
-      return (
-        <View style={styles.container}>
-          <Spinner color='#66fcf1'/>
-        </View>
       )
     }
   }
@@ -168,7 +182,7 @@ const styles = StyleSheet.create({
     width: responsiveWidth(80)
   },
   title: {
-    fontSize: 30,
+    fontSize: 20,
     fontFamily: "Gotham Bold",
     color: '#e5e6e7',
   },

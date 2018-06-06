@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet,
          View,
-         ScrollView } from 'react-native';
+         ScrollView,
+         RefreshControl } from 'react-native';
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -34,6 +35,10 @@ export default class Feed extends React.Component {
   }
 
   componentDidMount() {
+    FeedStore.initFeed("")
+  }
+
+  _onRefresh() {
     FeedStore.initFeed("")
   }
 
@@ -116,7 +121,13 @@ export default class Feed extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}
+          refreshControl={
+            <RefreshControl
+              refreshing={FeedStore.loading}
+              onRefresh={this._onRefresh.bind(this)}
+            />}
+          >
           <Card style={styles.questions}>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Left>

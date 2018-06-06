@@ -69,27 +69,26 @@ class UserProfileStore {
 
   initProfileFeed = () => {
     this.loading = true
-    if (this.profileFeed.length == 0) {
+    this.profileFeed = []
+    
+    FeedStore.quests.forEach(quest => {
+      if(quest.user_id == this.current_user._id) {
+        if(!this.alreadyExist(quest.id)) {
+          this.profileFeed.unshift(quest)
+        }
+      }
+    })
 
+    this.current_user.solution.forEach(s_id => {
       FeedStore.quests.forEach(quest => {
-        if(quest.user_id == this.current_user._id) {
+        if(quest.solution.includes(s_id)) {
           if(!this.alreadyExist(quest.id)) {
-            this.profileFeed.push(quest)
+            this.profileFeed.unshift(quest)
           }
         }
       })
-
-      this.current_user.solution.forEach(s_id => {
-        FeedStore.quests.forEach(quest => {
-          if(quest.solution.includes(s_id)) {
-            if(!this.alreadyExist(quest.id)) {
-              this.profileFeed.push(quest)
-            }
-          }
-        })
-      })
-      setTimeout(() => {this.loading = false}, 2000)
-    }
+    })
+    setTimeout(() => {this.loading = false}, 2000)
   }
 }
 

@@ -268,9 +268,9 @@ class QuestStore {
             .then(() => {
               this.removeSolution(solution)
             })
-            .catch(error => console.error(error))
+            .catch(error => this.error = error.message)
         })
-        .catch(error => {console.error(error)})  
+        .catch(error => {this.error = error.message})  
     })
 
     firebase.database()

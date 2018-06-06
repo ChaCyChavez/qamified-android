@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet,
          TextInput,
          View,
-         ScrollView } from 'react-native';
+         ScrollView,
+         RefreshControl } from 'react-native';
 import { List,
          ListItem,
          Thumbnail,
@@ -10,7 +11,8 @@ import { List,
          Left,
          Right,
          Text,
-         Button } from 'native-base'
+         Button,
+         Icon } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -27,6 +29,10 @@ export default class Notification extends React.Component {
   }
 
   componentDidMount() {
+    NotificationStore.initNotifications()
+  }
+
+  _onRefresh () {
     NotificationStore.initNotifications()
   }
 
@@ -64,8 +70,17 @@ export default class Notification extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-            { counter > 0 ? notifications : <Text style={styles.noNotification}>No notifications yet</Text> }
+        <ScrollView style={styles.scrollView}
+          refreshControl={
+            <RefreshControl
+              refreshing={NotificationStore.loading}
+              onRefresh={this._onRefresh.bind(this)}
+            />}
+        >
+            { counter > 0 ? notifications : <View>
+                <Icon style={{textAlign: 'center', fontSize: 40, marginTop: 10, color: "#252627"}} name="ios-sad" />
+                <Text style={styles.noNotification}>Oops, there's nothing to see here.</Text>
+                </View> }
         </ScrollView>
       </View>
     )
@@ -111,10 +126,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   noNotification: {
-    marginTop: 10,
     textAlign: 'center',
     fontFamily: "Gotham Bold",
     color: "#252627",
     fontSize: 28,
+    padding: 10,
   }
+
 });

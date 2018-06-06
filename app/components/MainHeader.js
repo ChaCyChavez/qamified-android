@@ -20,7 +20,7 @@ import { UserStore,
 
 var BUTTONS = [{ text: "All", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Algorithms", icon: "ios-bookmark", iconColor: "#2c8ef4" },
-  { text: "Programming Languages", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+  { text: "Languages/Frameworks", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Software Development", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Database", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Logout", icon: "ios-log-out", iconColor: "#fa213b" },
@@ -44,7 +44,7 @@ export default class MainHeader extends React.Component {
           hasTabs={!!this.props.hasTabs}>
             <Item>
               <Button transparent 
-                style={styles.menuButton}onPress={() => 
+                style={styles.menuButton} onPress={() => 
                 ActionSheet.show(
                   {
                     options: BUTTONS,

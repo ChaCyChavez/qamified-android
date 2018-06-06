@@ -14,27 +14,20 @@ class RankingStore {
   @observable
   users = []
 
-  inList = (user_id) => {
-    this.users.forEach(user => {
-      if(user._id === user_id) {
-        return true
-      }
-    })
-    return false
-  }
-
   initRanking = () => {
+    this.loading = true
+    this.users = []
     firebase.database()
       .ref('user/')
       .orderByChild('points')
       .on('value', users => {
+        this.users = []
         users.forEach(n => {
           var user = n.val()
           user._id = n.key
-          if(!this.inList(user._id)) {
-            this.users.unshift(user)
-          }
+          this.users.unshift(user)
         })
+        this.loading = false
       })
   }
 

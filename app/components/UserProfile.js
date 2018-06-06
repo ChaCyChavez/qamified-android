@@ -32,8 +32,11 @@ import images from '../../assets/img/images'
 
 export default class UserProfile extends React.Component {
   constructor(props) {
-
     super(props);
+
+    this.state = {
+      editing: false,
+    }
   }
 
   componentDidMount() {
@@ -66,7 +69,8 @@ export default class UserProfile extends React.Component {
           <CardItem style={{backgroundColor: 'transparent'}}>
             <Left>
               <Thumbnail
-                source={{ uri:this.item.user_avatar }} />
+                small
+                source={ images[item.user_avatar]} />
                   <Body>
                     <View>
                       <Text style={styles.postFullName} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
@@ -122,8 +126,8 @@ export default class UserProfile extends React.Component {
         <ScrollView behavior="padding" style={styles.scrollView}>
           <Card style={styles.infoContainer}>
             <CardItem style={{backgroundColor: 'transparent'}}>
-              <Thumbnail 
-                small
+              <Thumbnail
+
                 source={images[UserProfileStore.current_user.avatar]} />
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
@@ -135,7 +139,7 @@ export default class UserProfile extends React.Component {
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.email}>
-                  { UserProfileStore.current_user.email } &#183; { UserProfileStore.current_user.email }
+                  { UserProfileStore.current_user.email } &#183; { UserProfileStore.current_user.institution }
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
@@ -158,9 +162,6 @@ export default class UserProfile extends React.Component {
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
               { this.renderDescription() }
-            </CardItem>
-            <CardItem style={{backgroundColor: 'transparent'}}>
-              { this.renderButton() }
             </CardItem>
           </Card>
           <View>
@@ -192,59 +193,13 @@ export default class UserProfile extends React.Component {
   }
 
   renderDescription = () => {
-    if(this.state.editing) {
-      return(
-         <Input
-            autoFocus={true}
-            style={styles.bio}
-            value={this.state.bio}
-            multiline={true}
-            placeholder="Add description"
-            onChangeText={(input) => {this.setState({bio: input})}}/>
-      )
-    } else {
-      return(
-        <Text 
-          style={styles.bio}>
-          { UserProfileStore.current_user.description }
-        </Text>
-      )
-    }
+    return(
+      <Text 
+        style={styles.bio}>
+        { UserProfileStore.current_user.description }
+      </Text>
+    )
   };
-
-  renderButton = () => {
-    if(this.state.editing) {
-      return(
-        <Button
-          transparent
-          primary
-          onPress={ () => { this.updateBio() } }>
-            <Text 
-              uppercase={false}
-              style={styles.buttonText}>
-               Save
-            </Text>
-        </Button>
-      )
-    } else {
-      return(
-        <Button
-          transparent
-          primary
-           onPress={() => {this.setState({editing: true})}}>
-            <Text 
-              uppercase={false}
-              style={styles.buttonText}>
-                Edit description
-            </Text>
-        </Button>
-      )
-    }
-  }
-
-  updateBio = () => {
-    ProfileStore.updateBio(this)
-  }
 
   viewQuest = (quest) => {
     firebase.analytics()

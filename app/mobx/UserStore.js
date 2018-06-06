@@ -15,7 +15,7 @@ class UserStore {
 
   @computed
   get fullName(): string {
-    return `${this.user.first_name} ${this.user.middle_name.charAt(0)}. ${this.user.last_name}`
+    return `${this.user.first_name} ${this.user.middle_name ? this.user.middle_name.charAt(0) : ""}. ${this.user.last_name}`
   }
 
   @observable
@@ -30,12 +30,15 @@ class UserStore {
       .onAuthStateChanged((user) => {
       if (user != null) {
         this.initUser(user, navigation)
+      } else {
+        setTimeout(() => {this.loading = false}, 5000)
       }
-      this.loading = false
+      
     })
   }
 
   initUser = (user, navigation) => {
+    this.loading = true
     firebase.database()
       .ref('/user')
       .orderByChild('email')
@@ -75,7 +78,7 @@ class UserStore {
                       sols.push(solution)
                     })
                     this.user.solution = sols
-                    this.loading = false
+                    setTimeout(() => {this.loading = false}, 5000)
                     navigation.navigate('Tab')
                   }
                 })

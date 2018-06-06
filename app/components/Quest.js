@@ -35,8 +35,6 @@ export default class Quest extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.postSolution = this.postSolution.bind(this)
     this.state = {
       solution: "",
     }

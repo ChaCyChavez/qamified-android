@@ -17,9 +17,6 @@ class NotificationStore {
   @observable
   new_notif = false
 
-  @observable
-  init = true
-
   inList = (n_id) => {
     this.notifications.forEach(notification => {
       if(notification._id == n_id){
@@ -31,7 +28,6 @@ class NotificationStore {
 
   initNotifications = () => {
     this.notifications = []
-    this.init = true
     firebase.database()
       .ref('notification/').orderByChild("user_id").equalTo(UserStore.user._id)
       .on('child_added', n => {

@@ -530,9 +530,9 @@ class SolutionStore {
               .then(() => {
                 this.removeReply(solution, reply)
               })
-              .catch(error => console.error(error))
+              .catch(error => this.error = error.message)
           })
-          .catch(error => {console.error(error)})
+          .catch(error => {this.error = error.message})
       })
     }
     firebase.database()

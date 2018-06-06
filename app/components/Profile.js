@@ -4,7 +4,8 @@ import { StyleSheet,
          ScrollView,
          View,
          TouchableHighlight,
-         Modal } from 'react-native';
+         Modal,
+         RefreshControl } from 'react-native';
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -42,6 +43,10 @@ export default class Profile extends React.Component {
   }
 
   componentDidMount() {
+    ProfileStore.initProfileFeed()
+  }
+
+  _onRefresh() {
     ProfileStore.initProfileFeed()
   }
 
@@ -120,7 +125,13 @@ export default class Profile extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ScrollView behavior="padding" style={styles.scrollView}>
+        <ScrollView behavior="padding" style={styles.scrollView}
+          refreshControl={
+            <RefreshControl
+              refreshing={ProfileStore.loading}
+              onRefresh={this._onRefresh.bind(this)}
+            />}
+        >
           <Card style={styles.infoContainer}>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Thumbnail
@@ -178,7 +189,10 @@ export default class Profile extends React.Component {
           </CardItem>
           </Card>
           <View>
-            { ProfileStore.loading ? loading : listItems }
+            { ProfileStore.loading ? loading : ( listItems.length > 0 ? listItems : <View>
+                <Icon style={{textAlign: 'center', fontSize: 40, marginTop: 10, color: "#252627"}} name="ios-sad" />
+                <Text style={styles.noQuests}>Oops, there's nothing to see here.</Text>
+                </View>) }
           </View>
         </ScrollView>
       </View>
@@ -387,5 +401,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Proxima Nova Regular",
     color: "#e5e6e7",
+  },
+    noQuests: {
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    color: "#252627",
+    fontSize: 28,
+    padding: 10,
   }
 });

@@ -85,7 +85,7 @@ export default class CreateQuest extends React.Component {
                     style={{color: "white"}}
                   >
                     <Picker.Item color="#0b0c10" label="Algorithms" value="Algorithms" />
-                    <Picker.Item color="#0b0c10" label="Programming Languages" value="Programming Languages" />
+                    <Picker.Item color="#0b0c10" label="Languages/Frameworks" value="Languages/Frameworks" />
                     <Picker.Item color="#0b0c10" label="Software Development" value="Software Development" />
                     <Picker.Item color="#0b0c10" label="Database" value="Database" />
                   </Picker>
