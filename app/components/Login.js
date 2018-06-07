@@ -41,7 +41,7 @@ export default class Login extends React.Component {
       return (
         <View style={styles.container}>
           <Thumbnail
-              source={images['qamified-logo']} />
+              square source={images['qamified-logo']} />
           <Text 
             style={styles.title}>
               QAmifiED
@@ -58,7 +58,7 @@ export default class Login extends React.Component {
         <ScrollView style={{"backgroundColor": "#1f2833", height: responsiveHeight(100)}} contentContainerstyle={styles.scrollView}>
           <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
             <Thumbnail
-                source={images['qamified-logo']} />
+                square source={images['qamified-logo']} />
             <Text 
               style={styles.title}>
                 QAmifiED

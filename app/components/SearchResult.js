@@ -22,7 +22,7 @@ import images from '../../assets/img/images'
 
 @observer
 
-export default class Todo extends React.Component {
+export default class SearchResult extends React.Component {
   constructor(props) {
     super(props)
   }

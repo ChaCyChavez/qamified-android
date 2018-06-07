@@ -386,6 +386,7 @@ const styles = StyleSheet.create({
     color: "#e5e6e7",
   },
   buttonText: {
+    fontFamily: "Proxima Nova Regular",
     color: "#66fcf1",
   },
   readMore: {

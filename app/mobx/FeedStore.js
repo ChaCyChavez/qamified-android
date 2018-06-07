@@ -382,9 +382,9 @@ class FeedStore {
   }
 
   removeQuest = quest => {
-    for(let i = 0; i < quests.length; i++) {
+    for(let i = 0; i < this.quests.length; i++) {
       if(quests[i]._id == quest._id) {
-        quests.splice(i, 1)
+        this.quests.splice(i, 1)
       }
     }
   }

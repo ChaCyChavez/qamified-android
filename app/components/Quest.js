@@ -44,8 +44,8 @@ export default class Quest extends React.Component {
 
     let itemsLength = QuestStore.current_solutions ? QuestStore.current_solutions.length : 0;
 
-    const status = (isAnswered, isDuplicate) => {
-      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""}</Text>);
+    const status = (isAnswered, isDuplicate, category) => {
+      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183; {category}</Text>);
     };
 
     var solutions = []
@@ -69,7 +69,7 @@ export default class Quest extends React.Component {
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
-              { status(QuestStore.current_quest.is_answered, QuestStore.current_quest.is_duplicate) }
+              { status(QuestStore.current_quest.is_answered, QuestStore.current_quest.is_duplicate, QuestStore.current_quest.category) }
             </CardItem>
             { this.renderUserInfo() }
             <CardItem style={{backgroundColor: 'transparent'}}>

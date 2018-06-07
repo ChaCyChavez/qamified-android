@@ -2,6 +2,7 @@ import { observable, computed } from 'mobx';
 import firebase from 'react-native-firebase';
 import UserStore from './UserStore';
 import FeedStore from './FeedStore';
+import { ToastAndroid } from 'react-native';
 
 class UserProfileStore {
   @observable
@@ -89,6 +90,29 @@ class UserProfileStore {
       })
     })
     setTimeout(() => {this.loading = false}, 2000)
+  }
+
+  reportUser = (r) => {
+    const updates = {}
+    firebase.database()
+      .ref('user').child(`${this.current_user._id}`)
+      .transaction(user => {
+        if(user.report) {
+          user.report.push({
+            report: r,
+            user_id: UserStore.user._id
+          })
+        } else {
+          var report = [{
+            report: r,
+            user_id: UserStore.user._id
+          }]
+
+          user.report = report
+        }
+        return user
+      })
+    ToastAndroid.show("Successfully reported", ToastAndroid.SHORT)
   }
 }
 

@@ -46,8 +46,8 @@ export default class Feed extends React.Component {
     const {state} = this.props.navigation;
     var category = state.params ? state.params.category : "0";
 
-    const isAnswered = (isAnswered) => {
-      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>);
+    const status = (isAnswered, isDuplicate, category) => {
+      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183; {category}</Text>);
     };
 
     var loading = <Spinner color='#66fcf1' />
@@ -61,7 +61,7 @@ export default class Feed extends React.Component {
             </Text>
           </CardItem>
           <CardItem style={{backgroundColor: 'transparent'}}>
-            { isAnswered(item.is_answered) }
+            { status(item.is_answered, item.is_duplicate, item.category) }
           </CardItem>
           <CardItem style={{backgroundColor: 'transparent'}}
           button onPress={() => this.setUser(item.user_id)}>

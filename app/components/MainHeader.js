@@ -44,16 +44,7 @@ export default class MainHeader extends React.Component {
           hasTabs={!!this.props.hasTabs}>
             <Item>
               <Button transparent 
-                style={styles.menuButton} onPress={() => 
-                ActionSheet.show(
-                  {
-                    options: BUTTONS,
-                    cancelButtonIndex: CANCEL_INDEX,
-                    destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                    title: "Categories"
-                  },
-                  buttonIndex => { this.checkClicked(BUTTONS[buttonIndex]) }
-                )}>
+                style={styles.menuButton} onPress={() => this.props.navigation.navigate('Menu')}>
                   <Icon name="ios-menu" style={styles.headerIcon}/>
               </Button>
               <Input style={styles.searchInput} placeholder="Search keyword"

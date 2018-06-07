@@ -295,8 +295,9 @@ class QuestStore {
       .then(() => {
         this.loading = false;
         this.error = "";
-        navigation.navigate("Tab")
         FeedStore.removeQuest(quest)
+        const {goBack} = navigation
+        goBack()
       })
       .catch(error => {
         this.loading = false;

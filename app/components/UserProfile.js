@@ -3,8 +3,7 @@ import { StyleSheet,
          TextInput,
          ScrollView,
          View,
-         TouchableHighlight,
-         Modal } from 'react-native';
+         TouchableHighlight } from 'react-native';
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -19,23 +18,30 @@ import { Text,
          Icon,
          Item,
          Input,
-         Spinner } from 'native-base';
+         Spinner,
+         ActionSheet } from 'native-base';
 import { observer } from 'mobx-react';
 import { UserProfileStore,
          QuestStore,
-         FeedStore } from '../mobx';
+         FeedStore,
+         UserStore } from '../mobx';
 import moment from 'moment';
 import firebase from 'react-native-firebase'
 import images from '../../assets/img/images'
 
-@observer
 
+@observer
 export default class UserProfile extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       editing: false,
+      buttons: [{ text: "False Information", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+                { text: "Trolling", icon: "ios-bookmark", iconColor: "#2c8ef4" },
+                { text: "Spamming", icon: "ios-bookmark", iconColor: "#2c8ef4" }],
+      destructiveIndex: 3,
+      cancelIndex: 4,
     }
   }
 
@@ -163,6 +169,17 @@ export default class UserProfile extends React.Component {
             <CardItem style={{backgroundColor: 'transparent'}}>
               { this.renderDescription() }
             </CardItem>
+            {
+              (UserProfileStore.current_user._id != UserStore.user._id) ?
+                (
+                  <CardItem style={{backgroundColor: 'transparent'}}>
+                    <Button transparent onPress={() => this.report()}>
+                      <Text style={styles.buttonText} uppercase={false}>Report this player</Text>
+                    </Button>
+                  </CardItem>
+                ) : null
+            }
+            
           </Card>
           <View>
             { UserProfileStore.loading ? loading : listItems }
@@ -220,6 +237,22 @@ export default class UserProfile extends React.Component {
       .logEvent('DOWNVOTE_QUEST', {})
 
     FeedStore.downvoteQuest(quest)
+  }
+
+  report = () => {
+    ActionSheet.show(
+      {
+        options: this.state.buttons,
+        cancelButtonIndex: this.state.cancelIndex,
+        destructiveButtonIndex: this.state.destructiveIndex,
+        title: "Report because"
+      },
+      buttonIndex => { this.checkClicked(this.state.buttons[buttonIndex]) }
+    )
+  }
+
+  checkClicked = (clicked) => {
+    UserProfileStore.reportUser(clicked.text)
   }
 }
 
@@ -287,6 +320,7 @@ const styles = StyleSheet.create({
     color: "#e5e6e7",
   },
   buttonText: {
+    fontFamily: "Proxima Nova Regular",
     color: "#66fcf1",
   },
   title: {

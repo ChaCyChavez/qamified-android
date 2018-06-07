@@ -48,10 +48,6 @@ export default class Achievements extends React.Component {
                   note style={styles.description}>
                     { this.renderStatus(item.requirements) }
                 </Text>
-                <Text
-                  note style={styles.status}>
-                    { this.isComplete(item.requirements) ? "Note done" : "Done" }
-                </Text>
               </Body>
           </ListItem>
         );
@@ -77,16 +73,6 @@ export default class Achievements extends React.Component {
     })
 
     return requi
-  }
-
-  isComplete = (requirements) => {
-    requirements.forEach(req => {
-      if(req.current != req.no) {
-        return false
-      }
-    })
-
-    return true
   }
 }
 

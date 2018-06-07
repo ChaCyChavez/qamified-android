@@ -16,6 +16,7 @@ import Achievements from '../components/Achievements.js';
 import Ranking from '../components/Ranking.js';
 import UserProfile from '../components/UserProfile.js';
 import SearchResult from '../components/SearchResult.js';
+import Menu from '../components/Menu.js';
 import firebase from 'react-native-firebase';
 import { NotificationStore } from '../mobx';
 
@@ -40,14 +41,14 @@ export const Tab = TabNavigator({
   Feed: {
     screen: Feed,
     navigationOptions: {
-      tabBarLabel: 'Feed',
+      tabBarLabel: 'Board',
       tabBarIcon: ({ tintColor }) => <Icon name="ios-home" size={25} style={styles.tabIcon} />,
     },
   },
   Profile: {
     screen: Profile,
     navigationOptions: {
-      tabBarLabel: 'Profile',
+      tabBarLabel: 'Headquarter',
       tabBarIcon: ({ tintColor }) => <Icon name="ios-person" size={25} style={styles.tabIcon} />,
     },
   },
@@ -181,6 +182,16 @@ export const Base = StackNavigator({
         backgroundColor: '#222222',
       },
       title: 'Search results'
+    }
+  },
+  Menu: {
+    screen: Menu,
+    navigationOptions: {
+      headerTintColor: '#ffffff',
+      headerStyle: {
+        backgroundColor: '#222222',
+      },
+      title: 'Menu'
     }
   },
 });

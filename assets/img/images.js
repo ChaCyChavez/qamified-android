@@ -5,5 +5,6 @@ export default {
   'girl': require('./girl.png'),
   'quest': require('./quest.png'),
   'conversation': require('./conversation.png'),
-  'qamified-logo': require('./qamified-logo.png')
+  'qamified-logo': require('./qamified-logo.png'),
+  'trophy': require('./trophy.png')
 }
