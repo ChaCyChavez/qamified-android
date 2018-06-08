@@ -206,6 +206,10 @@
 		47783BCED2CE4E4BB634A532 /* Proxima Nova Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 034951D800814B38979FE72B /* Proxima Nova Regular.otf */; };
 		1FF27F9296F4485EBDE98976 /* Proxima Nova Thin Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1B5E71FAD8458A8ECAB260 /* Proxima Nova Thin Italic.otf */; };
 		E105189C254D41A2ACEA7D6C /* Proxima Nova Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 787AD1A764EB4E85A2636869 /* Proxima Nova Thin.otf */; };
+		4CB20566360947829A085FCE /* Courier Prime Bold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8696D742047A4D2E91BE26A8 /* Courier Prime Bold Italic.ttf */; };
+		D9909156F2F74B308FBD14F1 /* Courier Prime Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5952CC7391024D36A4A9EDFD /* Courier Prime Bold.ttf */; };
+		D54671F2E28B4477BFAEB7E7 /* Courier Prime Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 44A26422AE5C43F8A92591D1 /* Courier Prime Italic.ttf */; };
+		B01F8DB690EA417D82A99B45 /* Courier Prime.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7A5CEAEA9A84D1590DABC15 /* Courier Prime.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -676,6 +680,10 @@
 		034951D800814B38979FE72B /* Proxima Nova Regular.otf */ = {isa = PBXFileReference; name = "Proxima Nova Regular.otf"; path = "../assets/fonts/Proxima Nova Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		7F1B5E71FAD8458A8ECAB260 /* Proxima Nova Thin Italic.otf */ = {isa = PBXFileReference; name = "Proxima Nova Thin Italic.otf"; path = "../assets/fonts/Proxima Nova Thin Italic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		787AD1A764EB4E85A2636869 /* Proxima Nova Thin.otf */ = {isa = PBXFileReference; name = "Proxima Nova Thin.otf"; path = "../assets/fonts/Proxima Nova Thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8696D742047A4D2E91BE26A8 /* Courier Prime Bold Italic.ttf */ = {isa = PBXFileReference; name = "Courier Prime Bold Italic.ttf"; path = "../assets/fonts/Courier Prime Bold Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5952CC7391024D36A4A9EDFD /* Courier Prime Bold.ttf */ = {isa = PBXFileReference; name = "Courier Prime Bold.ttf"; path = "../assets/fonts/Courier Prime Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		44A26422AE5C43F8A92591D1 /* Courier Prime Italic.ttf */ = {isa = PBXFileReference; name = "Courier Prime Italic.ttf"; path = "../assets/fonts/Courier Prime Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D7A5CEAEA9A84D1590DABC15 /* Courier Prime.ttf */ = {isa = PBXFileReference; name = "Courier Prime.ttf"; path = "../assets/fonts/Courier Prime.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1136,6 +1144,10 @@
 				034951D800814B38979FE72B /* Proxima Nova Regular.otf */,
 				7F1B5E71FAD8458A8ECAB260 /* Proxima Nova Thin Italic.otf */,
 				787AD1A764EB4E85A2636869 /* Proxima Nova Thin.otf */,
+				8696D742047A4D2E91BE26A8 /* Courier Prime Bold Italic.ttf */,
+				5952CC7391024D36A4A9EDFD /* Courier Prime Bold.ttf */,
+				44A26422AE5C43F8A92591D1 /* Courier Prime Italic.ttf */,
+				D7A5CEAEA9A84D1590DABC15 /* Courier Prime.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1756,6 +1768,10 @@
 				47783BCED2CE4E4BB634A532 /* Proxima Nova Regular.otf in Resources */,
 				1FF27F9296F4485EBDE98976 /* Proxima Nova Thin Italic.otf in Resources */,
 				E105189C254D41A2ACEA7D6C /* Proxima Nova Thin.otf in Resources */,
+				4CB20566360947829A085FCE /* Courier Prime Bold Italic.ttf in Resources */,
+				D9909156F2F74B308FBD14F1 /* Courier Prime Bold.ttf in Resources */,
+				D54671F2E28B4477BFAEB7E7 /* Courier Prime Italic.ttf in Resources */,
+				B01F8DB690EA417D82A99B45 /* Courier Prime.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -75,7 +75,7 @@ class UserProfileStore {
     FeedStore.quests.forEach(quest => {
       if(quest.user_id == this.current_user._id) {
         if(!this.alreadyExist(quest.id)) {
-          this.profileFeed.unshift(quest)
+          this.profileFeed.push(quest)
         }
       }
     })
@@ -84,7 +84,7 @@ class UserProfileStore {
       FeedStore.quests.forEach(quest => {
         if(quest.solution.includes(s_id)) {
           if(!this.alreadyExist(quest.id)) {
-            this.profileFeed.unshift(quest)
+            this.profileFeed.push(quest)
           }
         }
       })
