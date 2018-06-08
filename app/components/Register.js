@@ -1,22 +1,22 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          View,
          ScrollView,
          KeyboardAvoidingView,
-         TouchableHighlight } from 'react-native';
+         TouchableHighlight } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Item,
          Input,
          Button, 
          Text,
          Icon, 
-         Thumbnail } from 'native-base';
-import { observer } from 'mobx-react';
-import { RegisterStore } from '../mobx';
-import moment from 'moment';
-import images from '../../assets/img/images';
+         Thumbnail } from 'native-base'
+import { observer } from 'mobx-react'
+import { RegisterStore } from '../mobx'
+import moment from 'moment'
+import images from '../../assets/img/images'
 
 @observer
 
@@ -36,7 +36,7 @@ export default class Register extends React.Component {
       page: 1,
       avatar: "man"
     }
-  };
+  }
 
   render() {
     return (
@@ -70,8 +70,8 @@ export default class Register extends React.Component {
           </Button>
     </KeyboardAvoidingView>
         </ScrollView>
-    );
-  };
+    )
+  }
 
   renderPageButton = () => {
     if(this.state.page === 1) {
@@ -80,12 +80,12 @@ export default class Register extends React.Component {
             <Button small disabled style={styles.disabledNextPrevButton}>
               <Icon name="arrow-back" size={24} color="white"/>
             </Button>
-            <Text> &nbsp; </Text>
+            <Text> &nbsp </Text>
             <Button small onPress={this.nextPage}  style={styles.nextPrevButton}>
               <Icon name="arrow-forward" size={24} color="white"/>
             </Button>
         </View>
-      );
+      )
     }
     else {
       return (
@@ -93,22 +93,22 @@ export default class Register extends React.Component {
             <Button small onPress={this.backPage} style={styles.nextPrevButton}>
               <Icon name="arrow-back" size={24} color="white"/>
             </Button>
-            <Text> &nbsp; </Text>
+            <Text> &nbsp </Text>
             <Button small disabled style={styles.disabledNextPrevButton}>
               <Icon name="arrow-forward" size={24} color="white"/>
             </Button>
         </View>
-      );
+      )
     }
-  };
+  }
 
   nextPage = () => {
     this.setState({page: 2})
-  };
+  }
 
   backPage = () => {
     this.setState({page: 1})
-  };
+  }
 
   renderForm = () => {
     if(this.state.page === 1) {
@@ -213,7 +213,7 @@ export default class Register extends React.Component {
       </View>
       )
     }
-  };
+  }
 
   completeField = () => {
     return (this.state.first_name &&
@@ -222,8 +222,8 @@ export default class Register extends React.Component {
             this.state.institution &&
             this.state.email &&
             this.state.username &&
-            this.state.password) ? true : false;
-  };
+            this.state.password) ? true : false
+  }
 
   renderRegisterButton = () => {
     if(RegisterStore.loading) {
@@ -268,11 +268,11 @@ export default class Register extends React.Component {
           </Text>
       </Button>
     )
-  };
+  }
 
   navigateToLogin = () => {
-    this.props.navigation.navigate('Login');
-  };
+    this.props.navigation.navigate('Login')
+  }
 
   register = () => {
     var user = {
@@ -293,8 +293,8 @@ export default class Register extends React.Component {
       current_todo: 1,
       avatar: this.state.avatar
     }
-    RegisterStore.register(this.props.navigation, user, this.state.password);
-  };
+    RegisterStore.register(this.props.navigation, user, this.state.password)
+  }
 }
 
 const styles = StyleSheet.create({
@@ -389,4 +389,4 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     justifyContent: "center",
   }
-});
+})

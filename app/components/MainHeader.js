@@ -1,22 +1,22 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          Text,
          TextInput,
-         View } from 'react-native';
-import { NavigationActions } from 'react-navigation';
+         View } from 'react-native'
+import { NavigationActions } from 'react-navigation'
 import { responsiveWidth,
          responsiveHeight,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { ActionSheet,
          Container,
          Header,
          Item,
          Input,
          Button,
-         Icon } from 'native-base';
+         Icon } from 'native-base'
 import { UserStore,
          SearchStore,
-         FeedStore } from '../mobx';
+         FeedStore } from '../mobx'
 
 var BUTTONS = [{ text: "All", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Algorithms", icon: "ios-bookmark", iconColor: "#2c8ef4" },
@@ -24,16 +24,16 @@ var BUTTONS = [{ text: "All", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Software Development", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Database", icon: "ios-bookmark", iconColor: "#2c8ef4" },
   { text: "Logout", icon: "ios-log-out", iconColor: "#fa213b" },
-  { text: "Cancel", icon: "ios-close", iconColor: "#fa213b" }];
-var DESTRUCTIVE_INDEX = 3;
-var CANCEL_INDEX = 4;
+  { text: "Cancel", icon: "ios-close", iconColor: "#fa213b" }]
+var DESTRUCTIVE_INDEX = 3
+var CANCEL_INDEX = 4
 
 export default class MainHeader extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       query: "",
-    };
+    }
   }
   
   render() { 
@@ -52,7 +52,7 @@ export default class MainHeader extends React.Component {
               { this.renderSearchButton() }
             </Item>
         </Header>
-    );
+    )
   }
   checkClicked = (buttonClicked) => {
     if(buttonClicked.text === "Logout") {
@@ -78,7 +78,7 @@ export default class MainHeader extends React.Component {
   }
 
   search = () => {
-    SearchStore.search(this.state.query, this.props.navigation);
+    SearchStore.search(this.state.query, this.props.navigation)
   }
 }
 
@@ -107,5 +107,5 @@ const styles = StyleSheet.create({
   menuButton: {
     backgroundColor: '#e5e6e7',
   }
-});
+})
 

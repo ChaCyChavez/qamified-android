@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          View,
          ScrollView,
          KeyboardAvoidingView,
-         Alert } from 'react-native';
+         Alert } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Text,
          Left,
          Right,
@@ -17,28 +17,28 @@ import { Text,
          Button,
          Item,
          Input,
-         Icon } from 'native-base';
-import Reply from './Reply.js';
-import { observer } from 'mobx-react';
+         Icon } from 'native-base'
+import Reply from './Reply.js'
+import { observer } from 'mobx-react'
 import { SolutionStore,
          UserStore,
          QuestStore,
-         UserProfileStore } from '../mobx';
-import moment from 'moment';
+         UserProfileStore } from '../mobx'
+import moment from 'moment'
 import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
-import Markdown from 'react-native-markdown-renderer';
+import Markdown from 'react-native-markdown-renderer'
 
 @observer
 
 export default class Solution extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       reply: "",
     }
-  };
+  }
 
   render() {
     var reply = []
@@ -46,15 +46,15 @@ export default class Solution extends React.Component {
       var reply = this.props.solution.reply.map(function(item, index) {
         return (
           <Reply reply={item} key={index} navigation={this.props.navigation}/>
-        );
-      }, this);
+        )
+      }, this)
     }
 
     const isCorrect = (is_correct) => {
       if (is_correct) {
-        return (<Icon name="ios-checkmark-circle" style={{fontSize: 24, color: "#66fcf1"}}/>);
+        return (<Icon name="ios-checkmark-circle" style={{fontSize: 24, color: "#66fcf1"}}/>)
       }
-    };
+    }
 
     return (
       <Card style={styles.questions}>
@@ -124,7 +124,7 @@ export default class Solution extends React.Component {
                 <Body>
                   <View>
                     <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
-                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
+                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183 { moment(this.props.solution.date_created).fromNow() }</Text>
                   </View>
                 </Body>
           </Left>
@@ -141,7 +141,7 @@ export default class Solution extends React.Component {
               <Body>
                 <View>
                   <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
-                  <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
+                  <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183 { moment(this.props.solution.date_created).fromNow() }</Text>
                 </View>
               </Body>
         </Left>
@@ -229,14 +229,14 @@ export default class Solution extends React.Component {
       .logEvent('POST_REPLY', {})
 
     SolutionStore.postReply(reply, this.props.solution, this)
-  };
+  }
 
   upvote = solution => {
     firebase.analytics()
       .logEvent('UPVOTE_SOLUTOION', {})
 
     SolutionStore.upvoteSolution(solution)
-  };
+  }
 
   downvote = solution => {
     firebase.analytics()
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Regular",
     color: "#e5e6e7",
   }
-});
+})
 
 
 export const markdownStyles = StyleSheet.create({
@@ -484,4 +484,4 @@ export const markdownStyles = StyleSheet.create({
   image: {
     flex: 1,
   },
-});
+})

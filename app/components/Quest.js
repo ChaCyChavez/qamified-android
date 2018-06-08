@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          View,
          ScrollView,
          KeyboardAvoidingView,
-         Alert } from 'react-native';
+         Alert } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Text,
          Left,
          Right,
@@ -18,44 +18,44 @@ import { Text,
          Item,
          Input,
          Icon,
-         Spinner } from 'native-base';
-import Solution from './Solution.js';
-import { observer } from 'mobx-react';
+         Spinner } from 'native-base'
+import Solution from './Solution.js'
+import { observer } from 'mobx-react'
 import { QuestStore,
          UserStore,
          FeedStore,
-         UserProfileStore } from '../mobx';
-import moment from 'moment';
-import images from '../../assets/img/images';
+         UserProfileStore } from '../mobx'
+import moment from 'moment'
+import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
-import Markdown from 'react-native-markdown-renderer';
+import Markdown from 'react-native-markdown-renderer'
 
 @observer
 
 export default class Quest extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       solution: "",
     }
-  };
+  }
 
   render() {
 
-    let itemsLength = QuestStore.current_solutions ? QuestStore.current_solutions.length : 0;
+    let itemsLength = QuestStore.current_solutions ? QuestStore.current_solutions.length : 0
 
     const status = (isAnswered, isDuplicate, category) => {
-      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183; {category}</Text>);
-    };
+      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183 {category}</Text>)
+    }
 
     var solutions = []
     if(itemsLength > 0) {
       solutions = QuestStore.current_solutions.map((item, index) => {
         return (
           <Solution solution={item} key={index} navigation={this.props.navigation}/>
-        );
-      }, this);
+        )
+      }, this)
     }
 
     return (
@@ -142,7 +142,7 @@ export default class Quest extends React.Component {
         </KeyboardAvoidingView> 
         </ScrollView>
       </View>
-    );
+    )
   }
 
   renderUserInfo = () => {
@@ -156,7 +156,7 @@ export default class Quest extends React.Component {
                 <Body>
                   <View>
                     <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
-                    <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
+                    <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183 { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
                   </View>
                 </Body>
           </Left>
@@ -173,7 +173,7 @@ export default class Quest extends React.Component {
               <Body>
                 <View>
                   <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
-                  <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
+                  <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183 { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
                 </View>
               </Body>
         </Left>
@@ -276,7 +276,7 @@ export default class Quest extends React.Component {
           </Text>
       </Button>
     )
-  };
+  }
 
   postSolution = () => {
     var currDate = new Date()
@@ -296,15 +296,15 @@ export default class Quest extends React.Component {
     firebase.analytics()
       .logEvent('POST_SOLUTION', {})
 
-    QuestStore.postSolution(solution, this);
-  };
+    QuestStore.postSolution(solution, this)
+  }
 
   upvote = (quest) => {
     firebase.analytics()
       .logEvent('UPVOTE_QUEST', {})
 
     FeedStore.upvoteQuest(quest)
-  };
+  }
 
   downvote = (quest) => {
     firebase.analytics()
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#b2d8d8",
     borderColor: 'transparent',
   },
-});
+})
 
 export const markdownStyles = StyleSheet.create({
   root: {},
@@ -588,4 +588,4 @@ export const markdownStyles = StyleSheet.create({
   image: {
     flex: 1,
   },
-});
+})

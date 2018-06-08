@@ -1,14 +1,14 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          TextInput,
          ScrollView,
          View,
          TouchableHighlight,
          Modal,
-         RefreshControl } from 'react-native';
+         RefreshControl } from 'react-native'
 import { responsiveWidth,
          responsiveHeight,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Text,
          Left,
          Right,
@@ -20,13 +20,13 @@ import { Text,
          Icon,
          Item,
          Input,
-         Spinner } from 'native-base';
-import { observer } from 'mobx-react';
+         Spinner } from 'native-base'
+import { observer } from 'mobx-react'
 import { UserStore,
          ProfileStore,
          QuestStore,
-         FeedStore } from '../mobx';
-import moment from 'moment';
+         FeedStore } from '../mobx'
+import moment from 'moment'
 import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
 import Markdown from 'react-native-markdown-renderer'
@@ -36,11 +36,11 @@ import Markdown from 'react-native-markdown-renderer'
 export default class Profile extends React.Component {
   constructor(props) {
 
-    super(props);
+    super(props)
     this.state = {
       editing: false,
       bio: UserStore.user.description,
-    };
+    }
   }
 
   componentDidMount() {
@@ -53,8 +53,8 @@ export default class Profile extends React.Component {
 
   render() {
     const isAnswered = (isAnswered) => {
-      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>);
-    };
+      return (isAnswered ? <Text note style={styles.status}>Answered</Text> : <Text note style={styles.status}>Unanswered</Text>)
+    }
 
     var loading = <Spinner color='#66fcf1' />
     var listItems = ProfileStore.profileFeed.map((item, index) => {
@@ -77,7 +77,7 @@ export default class Profile extends React.Component {
                   <Body>
                     <View>
                       <Text style={styles.postFullName} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username } &#183; { moment(item.date_created).fromNow() }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183 { moment(item.date_created).fromNow() }</Text>
                     </View>
                   </Body>
             </Left>
@@ -121,8 +121,8 @@ export default class Profile extends React.Component {
             </Right>
           </CardItem>
         </Card>
-      );
-    }, this);
+      )
+    }, this)
 
     return (
       <View style={styles.container}>
@@ -147,24 +147,24 @@ export default class Profile extends React.Component {
             <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.email}>
-                  { UserStore.user.email  } &#183; { UserStore.user.institution  }
+                  { UserStore.user.email  } &#183 { UserStore.user.institution  }
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.stats}>
-                  { UserStore.user.points } &nbsp;
+                  { UserStore.user.points } &nbsp
                   { UserStore.user.points > 1 ? "points" : "point" }
               </Text>
               <Text
                 style={styles.stats}>
-                  &nbsp; &#183;&nbsp;
-                  Level &nbsp;
+                  &nbsp &#183&nbsp
+                  Level &nbsp
                   { UserStore.user.level }
               </Text>
               <Text
                 style={styles.stats}>
-                  &nbsp; &#183; &nbsp;
+                  &nbsp &#183 &nbsp
                   { UserStore.user.rank }
               </Text>
             </CardItem>
@@ -197,8 +197,8 @@ export default class Profile extends React.Component {
           </View>
         </ScrollView>
       </View>
-    );
-  };
+    )
+  }
 
   isUpvoted = (upvote) => {
     if(!upvote) {
@@ -239,7 +239,7 @@ export default class Profile extends React.Component {
         </Text>
       )
     }
-  };
+  }
 
   renderButton = () => {
     if(this.state.editing) {
@@ -279,7 +279,7 @@ export default class Profile extends React.Component {
     firebase.analytics()
       .logEvent('VIEW_QUEST', {})
 
-    QuestStore.setCurrentQuest(quest, this.props.navigation);
+    QuestStore.setCurrentQuest(quest, this.props.navigation)
   }
 
   upvote = (quest) => {
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     padding: 10,
   }
-});
+})
 
 export const markdownStyles = StyleSheet.create({
   root: {},
@@ -570,4 +570,4 @@ export const markdownStyles = StyleSheet.create({
   image: {
     flex: 1,
   },
-});
+})

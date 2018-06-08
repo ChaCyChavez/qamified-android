@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          View,
          ScrollView,
-         RefreshControl } from 'react-native';
+         RefreshControl } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Text,
          Left,
          Right,
@@ -17,22 +17,22 @@ import { Text,
          Icon,
          Input,
          Item,
-         Spinner } from 'native-base';
-import { observer } from 'mobx-react';
+         Spinner } from 'native-base'
+import { observer } from 'mobx-react'
 import { QuestStore,
          UserStore,
          FeedStore,
-         UserProfileStore } from '../mobx';
-import moment from 'moment';
+         UserProfileStore } from '../mobx'
+import moment from 'moment'
 import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
-import Markdown from 'react-native-markdown-renderer';
+import Markdown from 'react-native-markdown-renderer'
 
 @observer
 
 export default class Feed extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   componentDidMount() {
@@ -44,12 +44,12 @@ export default class Feed extends React.Component {
   }
 
   render() {
-    const {state} = this.props.navigation;
-    var category = state.params ? state.params.category : "0";
+    const {state} = this.props.navigation
+    var category = state.params ? state.params.category : "0"
 
     const status = (isAnswered, isDuplicate, category) => {
-      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183; {category}</Text>);
-    };
+      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183 {category}</Text>)
+    }
 
     var loading = <Spinner color='#66fcf1' />
     var listItems = FeedStore.quests.map((item, index) => {
@@ -73,7 +73,7 @@ export default class Feed extends React.Component {
                   <Body>
                     <View>
                       <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username } &#183; { moment(item.date_created).fromNow() }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183 { moment(item.date_created).fromNow() }</Text>
                     </View>
                   </Body>
             </Left>
@@ -117,8 +117,8 @@ export default class Feed extends React.Component {
             </Right>
           </CardItem>
         </Card>
-      );
-    }, this);
+      )
+    }, this)
 
     return (
       <View style={styles.container}>
@@ -152,7 +152,7 @@ export default class Feed extends React.Component {
           { FeedStore.loading ? loading : listItems }
         </ScrollView>
       </View>
-    );
+    )
   }
 
   isUpvoted = (upvote) => {
@@ -179,7 +179,7 @@ export default class Feed extends React.Component {
     firebase.analytics()
       .logEvent('VIEW_QUEST', {})
 
-    QuestStore.setCurrentQuest(quest, this.props.navigation);
+    QuestStore.setCurrentQuest(quest, this.props.navigation)
   }
 
   upvote = (quest) => {
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Regular",
     color: "#e5e6e7",
   },
-});
+})
 
 
 export const markdownStyles = StyleSheet.create({
@@ -417,4 +417,4 @@ export const markdownStyles = StyleSheet.create({
   image: {
     flex: 1,
   },
-});
+})

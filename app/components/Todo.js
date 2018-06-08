@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          TextInput,
          View,
-         ScrollView } from 'react-native';
+         ScrollView } from 'react-native'
 import { List,
          ListItem,
          Thumbnail,
@@ -13,9 +13,9 @@ import { List,
          Button } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
-import { observer } from 'mobx-react';
-import { UserStore } from '../mobx';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
+import { observer } from 'mobx-react'
+import { UserStore } from '../mobx'
 import images from '../../assets/img/images'
 
 @observer
@@ -49,9 +49,9 @@ export default class Todo extends React.Component {
                 </Text>
               </Body>
           </ListItem>
-        );
+        )
       }
-    }, this);
+    }, this)
 
     return (
       <View style={styles.container}>
@@ -120,4 +120,4 @@ const styles = StyleSheet.create({
     color: "#252627",
     fontSize: 28,
   }
-});
+})

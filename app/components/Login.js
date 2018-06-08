@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          ScrollView,
          KeyboardAvoidingView,
-         View, } from 'react-native';
+         View, } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Drawer,
          Text,
          Button,
@@ -14,11 +14,11 @@ import { Drawer,
          Item,
          Icon,
          Spinner,
-         Thumbnail } from 'native-base';
-import { observer } from 'mobx-react';
+         Thumbnail } from 'native-base'
+import { observer } from 'mobx-react'
 import { LoginStore,
-         UserStore } from '../mobx';
-import images from '../../assets/img/images';
+         UserStore } from '../mobx'
+import images from '../../assets/img/images'
 
 @observer
 
@@ -108,7 +108,7 @@ export default class Login extends React.Component {
 
   completeField = () => {
     return (this.state.email_username &&
-            this.state.password.length >= 8) ? true : false;
+            this.state.password.length >= 8) ? true : false
   }
 
   renderLoginButton = () => {
@@ -153,14 +153,14 @@ export default class Login extends React.Component {
           </Text>
       </Button>
     )
-  };
+  }
   
   navigateToRegister = () => {
     this.props.navigation.navigate('Register')
   }
 
   login = () => {
-    LoginStore.login(this.props.navigation, this.state);
+    LoginStore.login(this.props.navigation, this.state)
   }
 }
 
@@ -227,4 +227,4 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Regular",
     color: "#f64c72",
   },
-});
+})

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          TextInput,
          View,
-         ScrollView } from 'react-native';
+         ScrollView } from 'react-native'
 import { List,
          ListItem,
          Thumbnail,
@@ -13,11 +13,11 @@ import { List,
          Button } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 
 import { SearchStore,
-         QuestStore } from '../mobx';
-import { observer } from 'mobx-react';
+         QuestStore } from '../mobx'
+import { observer } from 'mobx-react'
 import images from '../../assets/img/images'
 
 @observer
@@ -54,8 +54,8 @@ export default class SearchResult extends React.Component {
               </Text>
             </Right>
         </ListItem>
-      );
-    }, this);
+      )
+    }, this)
 
     return (
       <View style={styles.container}>
@@ -67,7 +67,7 @@ export default class SearchResult extends React.Component {
   }
 
   getQuest = (quest) => {
-    QuestStore.setCurrentQuest(quest, this.props.navigation);
+    QuestStore.setCurrentQuest(quest, this.props.navigation)
   }
 }
 
@@ -112,4 +112,4 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Light",
     color: "#c5c6c7",
   },
-});
+})

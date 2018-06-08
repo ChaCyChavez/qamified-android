@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          TextInput,
          View,
          ScrollView,
-         RefreshControl } from 'react-native';
+         RefreshControl } from 'react-native'
 import { List,
          ListItem,
          Thumbnail,
@@ -15,10 +15,10 @@ import { List,
          Icon } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
-import { observer } from 'mobx-react';
-import { NotificationStore } from '../mobx';
-import moment from 'moment';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
+import { observer } from 'mobx-react'
+import { NotificationStore } from '../mobx'
+import moment from 'moment'
 import images from '../../assets/img/images'
 
 @observer
@@ -65,8 +65,8 @@ export default class Notification extends React.Component {
               </Text>
             </Right>
         </ListItem>
-      );
-    }, this);
+      )
+    }, this)
 
     return (
       <View style={styles.container}>
@@ -87,7 +87,7 @@ export default class Notification extends React.Component {
   }
 
   getQuest = (quest_id) => {
-    NotificationStore.getQuest(quest_id, this.props.navigation);
+    NotificationStore.getQuest(quest_id, this.props.navigation)
   }
 }
 
@@ -133,4 +133,4 @@ const styles = StyleSheet.create({
     padding: 10,
   }
 
-});
+})

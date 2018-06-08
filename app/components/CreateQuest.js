@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          View,
-         ScrollView } from 'react-native';
+         ScrollView } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Text,
          Left,
          Right,
@@ -16,18 +16,18 @@ import { Text,
          Icon,
          Input,
          Item,
-         Picker } from 'native-base';
-import { observer } from 'mobx-react';
-import { UserStore } from '../mobx';
-import moment from 'moment';
-import images from '../../assets/img/images';
+         Picker } from 'native-base'
+import { observer } from 'mobx-react'
+import { UserStore } from '../mobx'
+import moment from 'moment'
+import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
 
 @observer
 
 export default class CreateQuest extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       title: "",
       description: "",
@@ -38,7 +38,7 @@ export default class CreateQuest extends React.Component {
   onValueChange(value) {
     this.setState({
       selected: value
-    });
+    })
   }
 
   render() {
@@ -100,13 +100,14 @@ export default class CreateQuest extends React.Component {
           </ScrollView>
         </View>
       </View>
-    );
+    )
   }
 
   completeField = () => {
     return (this.state.title &&
             this.state.description) ? true : false
   }
+  
   renderPostButton = () => {
     if(UserStore.loading) {
       return (
@@ -148,10 +149,10 @@ export default class CreateQuest extends React.Component {
           </Text>
       </Button>
     )
-  };
+  }
 
   postQuest = () => {
-    var currDate = new Date();
+    var currDate = new Date()
     var quest = {
       date_created: moment().format(),
       title: this.state.title,
@@ -171,7 +172,7 @@ export default class CreateQuest extends React.Component {
       .logEvent('POST_QUEST', {})
 
     UserStore.postQuest(this.props.navigation, quest)
-  };
+  }
 
   renderErrorMessage = () => {
     if(UserStore.error) {
@@ -179,7 +180,7 @@ export default class CreateQuest extends React.Component {
         <Text>{UserStore.error}</Text>
       )
     }
-  };
+  }
 }
 
 const styles = StyleSheet.create({
@@ -227,4 +228,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#b2d8d8",
     borderColor: 'transparent',
   }
-});
+})

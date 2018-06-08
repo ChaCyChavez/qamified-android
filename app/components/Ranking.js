@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet,
          TextInput,
          View,
          ScrollView,
-         RefreshControl } from 'react-native';
+         RefreshControl } from 'react-native'
 import { ListItem,
          Thumbnail,
          Body,
@@ -19,13 +19,13 @@ import { ListItem,
          Spinner } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
-         responsiveFontSize } from 'react-native-responsive-dimensions';
-import { observer } from 'mobx-react';
+         responsiveFontSize } from 'react-native-responsive-dimensions'
+import { observer } from 'mobx-react'
 import { RankingStore,
-         UserProfileStore } from '../mobx';
-import moment from 'moment';
+         UserProfileStore } from '../mobx'
+import moment from 'moment'
 import images from '../../assets/img/images'
-import firebase from 'react-native-firebase';
+import firebase from 'react-native-firebase'
 
 @observer
 
@@ -48,7 +48,7 @@ export default class Ranking extends React.Component {
   onValueChange(value) {
     this.setState({
       selected: value
-    });
+    })
 
     RankingStore.sortRanking(value)
   }
@@ -87,8 +87,8 @@ export default class Ranking extends React.Component {
               </Text>
             </Right>
         </ListItem>
-      );
-    }, this);
+      )
+    }, this)
 
     return (
       <View style={styles.container}>
@@ -173,4 +173,4 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "Proxima Nova Regular"
   }
-});
+})
