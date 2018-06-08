@@ -40,17 +40,15 @@ class RankingStore {
   }
 
   sortRanking = (category) => {
-    this.users = []
     firebase.database()
       .ref('user/')
       .orderByChild(category)
       .on('value', users => {
+        this.users = []
         users.forEach(n => {
           var user = n.val()
           user._id = n.key
-          if(!this.inList(user._id)) {
-            this.users.unshift(user)
-          }
+          this.users.unshift(user)
         })
       })
   }
