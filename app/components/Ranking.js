@@ -4,8 +4,7 @@ import { StyleSheet,
          View,
          ScrollView,
          RefreshControl,
-         TouchableOpacity,
-         BackHandler } from 'react-native'
+         TouchableOpacity } from 'react-native'
 import { ListItem,
          Thumbnail,
          Body,
@@ -42,16 +41,7 @@ export default class Ranking extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
-  handleBackButton() {
-    BackHandler.exitApp()
-  }
-
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     RankingStore.initRanking()
   }
 

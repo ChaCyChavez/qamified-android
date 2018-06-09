@@ -1,7 +1,7 @@
-import { observable, computed } from 'mobx';
-import firebase from 'react-native-firebase';
-import UserStore from './UserStore.js';
-import moment from 'moment';
+import { observable, computed } from 'mobx'
+import firebase from 'react-native-firebase'
+import UserStore from './UserStore.js'
+import moment from 'moment'
 import { ToastAndroid } from 'react-native'
 
 class FeedStore {
@@ -17,98 +17,95 @@ class FeedStore {
   @observable
   quests = []
 
-  initFeed = (category) => {
+  initFeed = (category, navigation) => {
     this.loading = true
-    // if (this.quests.length == 0) {
-      if(!category) {
-        // this.quests.splice(0,this.quests.length)
-        firebase.database()
-        .ref('/quest')
-        .on('value', (quests) => { // value
-          if (quests) {
-            var qs = []
-            quests.forEach(q => {
-              var quest = q.val()
-              quest._id =  q.key
-              var upvotes = []
-              var downvotes = []
-              var solutions = []
+    if(!category) {
+      firebase.database()
+      .ref('/quest')
+      .on('value', (quests) => { // value
+        if (quests) {
+          var qs = []
+          quests.forEach(q => {
+            var quest = q.val()
+            quest._id =  q.key
+            var upvotes = []
+            var downvotes = []
+            var solutions = []
 
-              if(quest.solution) {
-                Object.keys(quest.solution).forEach(s => {
-                  solutions.push(s)
-                })
-              }
+            if(quest.solution) {
+              Object.keys(quest.solution).forEach(s => {
+                solutions.push(s)
+              })
+            }
 
-              if(quest.upvote) {
-                Object.keys(quest.upvote).forEach(u => {
-                  upvotes.push(u)
-                })
-              }
+            if(quest.upvote) {
+              Object.keys(quest.upvote).forEach(u => {
+                upvotes.push(u)
+              })
+            }
 
-              if(quest.downvote) {
-                Object.keys(quest.downvote).forEach(d => {
-                  downvotes.push(d)
-                })
-              }
+            if(quest.downvote) {
+              Object.keys(quest.downvote).forEach(d => {
+                downvotes.push(d)
+              })
+            }
 
-              quest.solution = solutions
-              quest.upvote = upvotes
-              quest.downvote = downvotes
+            quest.solution = solutions
+            quest.upvote = upvotes
+            quest.downvote = downvotes
 
-              qs.unshift(quest)
-            })
-            this.quests = qs
-            this.loading = false
-          }
-        })
-      } else {
-        // this.quests.splice(0,this.quests.length)
-        firebase.database()
-        .ref('/quest')
-        .orderByChild('category')
-        .equalTo(category)
-        .on('value', (quests) => { // value
-          if (quests) {
-            // uncomment
-            var qs = []
-            quests.forEach(q => {
-              var quest = q.val()
-              quest._id =  q.key
-              var upvotes = []
-              var downvotes = []
-              var solutions = []
+            qs.unshift(quest)
+          })
+          this.quests = qs
+          this.loading = false
+        }
+      })
+    } else {
+      // this.quests.splice(0,this.quests.length)
+      firebase.database()
+      .ref('/quest')
+      .orderByChild('category')
+      .equalTo(category)
+      .on('value', (quests) => { // value
+        if (quests) {
+          // uncomment
+          var qs = []
+          quests.forEach(q => {
+            var quest = q.val()
+            quest._id =  q.key
+            var upvotes = []
+            var downvotes = []
+            var solutions = []
 
-              if(quest.solution) {
-                Object.keys(quest.solution).forEach(s => {
-                  solutions.push(s)
-                })
-              }
+            if(quest.solution) {
+              Object.keys(quest.solution).forEach(s => {
+                solutions.push(s)
+              })
+            }
 
-              if(quest.upvote) {
-                Object.keys(quest.upvote).forEach(u => {
-                  upvotes.push(u)
-                })
-              }
+            if(quest.upvote) {
+              Object.keys(quest.upvote).forEach(u => {
+                upvotes.push(u)
+              })
+            }
 
-              if(quest.downvote) {
-                Object.keys(quest.downvote).forEach(d => {
-                  downvotes.push(d)
-                })
-              }
+            if(quest.downvote) {
+              Object.keys(quest.downvote).forEach(d => {
+                downvotes.push(d)
+              })
+            }
 
-              quest.solution = solutions
-              quest.upvote = upvotes
-              quest.downvote = downvotes
+            quest.solution = solutions
+            quest.upvote = upvotes
+            quest.downvote = downvotes
 
-              qs.unshift(quest)
-            })
-            this.quests = qs
-            this.loading = false
-          }
-        })
-      }
-    // }
+            qs.unshift(quest)
+          })
+          this.quests = qs
+          this.loading = false
+        }
+      })
+    }
     this.loading = false
 
     var did_level_up = false
@@ -116,7 +113,7 @@ class FeedStore {
       .ref(`user/${UserStore.user._id}`)
       .transaction(user => {
         if (user.last_open != null) {
-          if (moment(user.last_open).diff(moment().format(), 'days') == 0) {
+          if (moment(user.last_open).diff(moment().format(), 'days') == -1) {
             UserStore.user.todos[5].requirements[0].current += 1
             user.todos[UserStore.user.todos[5]._id].requirements[0].current = UserStore.user.todos[5].requirements[0].current
             

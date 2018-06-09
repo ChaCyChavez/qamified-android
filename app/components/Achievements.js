@@ -28,7 +28,7 @@ export default class Achievements extends React.Component {
   render () {
     var counter = 0
     var achievements = UserStore.user.todos.map((item, i) => {
-      if(i < UserStore.user.current_todo - 1 || (item.title == "Perfect Week" && (item.requirements[0].current >= item.requirements[0].no))) {
+      if(this.isDone(item)) {
         counter += 1
         return (
           <ListItem
@@ -36,7 +36,7 @@ export default class Achievements extends React.Component {
             key={i}
             style={styles.item}>
               <Left>
-                <Thumbnail small square source={images['trophy']} />
+                <Thumbnail small square source={images['trophy_' + (i + 1)]} />
               </Left>
               <Body>
                 <Text style={styles.title}>{ item.title }</Text>
@@ -64,6 +64,15 @@ export default class Achievements extends React.Component {
         </ScrollView>
       </View>
     )
+  }
+
+  isDone = (todo) => {
+    for(var i = 0; i < todo.requirements.length; i++) {
+      if(todo.requirements[i].current < todo.requirements[i].no) {
+        return false
+      }
+    }
+    return true
   }
 
   renderStatus = (requirements) => {

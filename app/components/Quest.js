@@ -163,7 +163,7 @@ export default class Quest extends React.Component {
     <ScrollView>
       <Card style={{ flex: 1, backgroundColor: "white"}}>
         <CardItem>
-          <Text style={styles.tipHeader}>Tip: Leaderboard</Text>
+          <Text style={styles.tipHeader}>Tip: Posting Solution</Text>
         </CardItem>
         <CardItem>
           <Body style={{width: responsiveWidth(40)}}>

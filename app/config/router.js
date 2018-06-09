@@ -21,23 +21,6 @@ import firebase from 'react-native-firebase';
 import { NotificationStore,
          UserStore } from '../mobx';
 
-export const Stack = StackNavigator({
-  Login: {
-    screen: Login,
-    navigationOptions: {
-		  title: 'Login',
-      header: null,
-    },
-	},
-  Register: {
-    screen: Register,
-    navigationOptions: {
-      title: 'Register',
-      header: null,
-    },
-  },
-});
-
 export const Tab = TabNavigator({
   Feed: {
     screen: Feed,
@@ -115,8 +98,19 @@ export const Tab = TabNavigator({
 });
 
 export const Base = StackNavigator({
-  Stack: {
-    screen: Stack,
+  Login: {
+    screen: Login,
+    navigationOptions: {
+      title: 'Login',
+      header: null,
+    },
+  },
+  Register: {
+    screen: Register,
+    navigationOptions: {
+      title: 'Register',
+      header: null,
+    },
   },
   Tab: {
     screen: Tab,

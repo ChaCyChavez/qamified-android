@@ -4,8 +4,7 @@ import { StyleSheet,
          ScrollView,
          RefreshControl,
          AppRegistry,
-         TouchableOpacity,
-         BackHandler } from 'react-native'
+         TouchableOpacity } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions'
@@ -42,16 +41,7 @@ export default class Feed extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
-  handleBackButton() {
-    BackHandler.exitApp()
-  }
-
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     FeedStore.initFeed("")
   }
 

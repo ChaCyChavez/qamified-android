@@ -4,8 +4,7 @@ import { StyleSheet,
          ScrollView,
          View,
          TouchableOpacity,
-         RefreshControl,
-         BackHandler } from 'react-native'
+         RefreshControl } from 'react-native'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions'
@@ -45,16 +44,7 @@ export default class Profile extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
-  handleBackButton() {
-    BackHandler.exitApp()
-  }
-
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     ProfileStore.initProfileFeed()
   }
 

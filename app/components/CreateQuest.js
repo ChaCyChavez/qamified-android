@@ -170,7 +170,7 @@ export default class CreateQuest extends React.Component {
     <ScrollView>
       <Card style={{ flex: 1, backgroundColor: "white"}}>
         <CardItem>
-          <Text style={styles.tipHeader}>Tip: Leaderboard</Text>
+          <Text style={styles.tipHeader}>Tip: Creating Quest</Text>
         </CardItem>
         <CardItem>
           <Body style={{width: responsiveWidth(40)}}>

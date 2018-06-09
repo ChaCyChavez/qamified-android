@@ -3,8 +3,7 @@ import { StyleSheet,
          TextInput,
          View,
          ScrollView,
-         RefreshControl,
-         BackHandler } from 'react-native'
+         RefreshControl } from 'react-native'
 import { List,
          ListItem,
          Thumbnail,
@@ -30,16 +29,7 @@ export default class Notification extends React.Component {
     super(props)
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
-  handleBackButton() {
-    BackHandler.exitApp()
-  }
-
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     NotificationStore.initNotifications()
   }
 

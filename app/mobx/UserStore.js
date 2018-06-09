@@ -3,6 +3,7 @@ import firebase from 'react-native-firebase'
 import FeedStore from './FeedStore.js'
 import { ToastAndroid } from 'react-native'
 import moment from 'moment'
+import { NavigationActions } from 'react-navigation'
 
 class UserStore {
   @observable
@@ -80,7 +81,16 @@ class UserStore {
                     })
                     this.user.solution = sols
                     setTimeout(() => {this.loading = false}, 5000)
-                    navigation.navigate('Tab')
+
+                    const resetAction = NavigationActions.reset({
+                      index: 0,
+                      actions: [
+                        NavigationActions.navigate({
+                          routeName: "Tab",
+                        })
+                      ]
+                    });
+                    navigation.dispatch(resetAction);
                   }
                 })
             })
