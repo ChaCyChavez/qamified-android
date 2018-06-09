@@ -27,7 +27,7 @@ export default class Todo extends React.Component {
   render () {
     var counter = 0
     var todos = UserStore.user.todos.map((item, i) => {
-      if(i >= UserStore.user.current_todo - 1) {
+      if(i >= UserStore.user.current_todo - 1 || (item.title == "Perfect Week" && (item.requirements[0].current < item.requirements[0].no))) {
         counter += 1
         return (
           <ListItem

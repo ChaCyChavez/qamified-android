@@ -110,6 +110,60 @@ class FeedStore {
       }
     // }
     this.loading = false
+
+    var did_level_up = false
+    firebase.database()
+      .ref(`user/${UserStore.user._id}`)
+      .transaction(user => {
+        if (user.last_open != null) {
+          if (moment(user.last_open).diff(moment().format(), 'days') == 0) {
+            UserStore.user.todos[5].requirements[0].current += 1
+            user.todos[UserStore.user.todos[5]._id].requirements[0].current = UserStore.user.todos[5].requirements[0].current
+            
+            if(this.isDone(UserStore.user.todos[5])) {
+              var todo = UserStore.user.todos[5]
+              UserStore.user.todos[5].is_done = true
+              user.todos[UserStore.user.todos[5]._id].is_done = true
+              ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
+              ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
+              ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
+
+              UserStore.user.experience += todo.experience
+              user.experience = UserStore.user.experience
+
+              UserStore.user.points += todo.points
+              user.points = UserStore.user.points
+
+              UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+              user.rank = UserStore.user.rank
+
+              if(UserStore.user.experience >= UserStore.user.level_exp) {
+                UserStore.user.level += 1
+                user.level = UserStore.user.level
+
+                UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+                user.level_exp = UserStore.user.level_exp
+                did_level_up = true
+              }
+            }
+            user.last_open = moment().format()
+          } else if (moment(user.last_open).diff(moment().format(), 'days') < -1) {
+            if(!UserStore.user.todos[5].is_done) {
+              UserStore.user.todos[5].requirements[0].current = 1
+              user.todos[UserStore.user.todos[5]._id].requirements[0].current = 1
+            }
+          }
+        } else {
+          user.last_open = moment().format()
+          UserStore.user.todos[5].requirements[0].current = 1
+          user.todos[UserStore.user.todos[5]._id].requirements[0].current = 1
+        }
+
+        if(did_level_up) {
+          ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
+        }
+        return user
+      })
   }
 
   voteNotification = (quest, liked) => {
@@ -206,7 +260,6 @@ class FeedStore {
             })
           if(did_level_up) {
             ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
-            did_level_up = false
           }
         })
         .catch((error) => {
