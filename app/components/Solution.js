@@ -124,7 +124,7 @@ export default class Solution extends React.Component {
                 <Body>
                   <View>
                     <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
-                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183 { moment(this.props.solution.date_created).fromNow() }</Text>
+                    <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
                   </View>
                 </Body>
           </Left>
@@ -141,7 +141,7 @@ export default class Solution extends React.Component {
               <Body>
                 <View>
                   <Text style={styles.full_name}>{ this.props.solution.full_name }</Text>
-                  <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183 { moment(this.props.solution.date_created).fromNow() }</Text>
+                  <Text style={styles.username} note>{ "@" + this.props.solution.username } &#183; { moment(this.props.solution.date_created).fromNow() }</Text>
                 </View>
               </Body>
         </Left>
@@ -225,30 +225,22 @@ export default class Solution extends React.Component {
       full_name: UserStore.fullName,
     }
 
-    firebase.analytics()
-      .logEvent('POST_REPLY', {})
-
+    UserStore.logEvent('POST_REPLY')
     SolutionStore.postReply(reply, this.props.solution, this)
   }
 
   upvote = solution => {
-    firebase.analytics()
-      .logEvent('UPVOTE_SOLUTOION', {})
-
+    UserStore.logEvent('UPVOTE_SOLUTOION')
     SolutionStore.upvoteSolution(solution)
   }
 
   downvote = solution => {
-    firebase.analytics()
-      .logEvent('DOWNVOTE_SOLUTION', {})
-
+    UserStore.logEvent('DOWNVOTE_SOLUTION')
     SolutionStore.downvoteSolution(solution)
   }
 
   markAsSolution = solution => {
-    firebase.analytics()
-      .logEvent('MARK_SOLUTION', {})
-
+    UserStore.logEvent('MARK_SOLUTION')
     SolutionStore.markAsSolution(solution)
   }
 
@@ -259,8 +251,7 @@ export default class Solution extends React.Component {
       [
         {text: 'CANCEL', onPress: () => {}},
         {text: 'YES', onPress: () => {
-            firebase.analytics()
-              .logEvent('DELETE_SOLUTION', {})
+            UserStore.logEvent('DELETE_SOLUTION')
             SolutionStore.deleteSolution(solution)
           }
         },
@@ -270,9 +261,7 @@ export default class Solution extends React.Component {
   }
 
   setUser = (user_id) => {
-    firebase.analytics()
-      .logEvent('VIEW_USER', {})
-
+    UserStore.logEvent('VIEW_USER')
     UserProfileStore.setUser(user_id, this.props.navigation)
   }
 }

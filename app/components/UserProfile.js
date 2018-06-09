@@ -81,7 +81,7 @@ export default class UserProfile extends React.Component {
                   <Body>
                     <View>
                       <Text style={styles.postFullName} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username } &#183 { moment(item.date_created).fromNow() }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183; { moment(item.date_created).fromNow() }</Text>
                     </View>
                   </Body>
             </Left>
@@ -146,24 +146,24 @@ export default class UserProfile extends React.Component {
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.email}>
-                  { UserProfileStore.current_user.email } &#183 { UserProfileStore.current_user.institution }
+                  { UserProfileStore.current_user.email } &#183; { UserProfileStore.current_user.institution }
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.stats}>
-                  { UserProfileStore.current_user.points } &nbsp
+                  { UserProfileStore.current_user.points } &nbsp;
                   { UserProfileStore.current_user.points > 1 ? "points" : "point" }
               </Text>
               <Text
                 style={styles.stats}>
-                  &nbsp &#183&nbsp
-                  Level &nbsp
+                  &nbsp; &#183;&nbsp;
+                  Level &nbsp;
                   { UserProfileStore.current_user.level }
               </Text>
               <Text
                 style={styles.stats}>
-                  &nbsp &#183 &nbsp
+                  &nbsp; &#183; &nbsp;
                   { UserProfileStore.current_user.rank }
               </Text>
             </CardItem>
@@ -220,23 +220,17 @@ export default class UserProfile extends React.Component {
   }
 
   viewQuest = (quest) => {
-    firebase.analytics()
-      .logEvent('VIEW_QUEST', {})
-
+    UserStore.logEvent('VIEW_QUEST')
     QuestStore.setCurrentQuest(quest, this.props.navigation)
   }
 
   upvote = (quest) => {
-    firebase.analytics()
-      .logEvent('UPVOTE_QUEST', {})
-
+    UserStore.logEvent('UPVOTE_QUEST')
     FeedStore.upvoteQuest(quest)
   }
 
   downvote = (quest) => {
-    firebase.analytics()
-      .logEvent('DOWNVOTE_QUEST', {})
-
+    UserStore.logEvent('DOWNVOTE_QUEST')
     FeedStore.downvoteQuest(quest)
   }
 
@@ -253,6 +247,7 @@ export default class UserProfile extends React.Component {
   }
 
   checkClicked = (clicked) => {
+    UserStore.logEvent('REPORT_USER')
     UserProfileStore.reportUser(clicked.text)
   }
 }

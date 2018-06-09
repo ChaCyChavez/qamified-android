@@ -59,9 +59,11 @@ export default class MainHeader extends React.Component {
       UserStore.logOut(this.props.navigation)
     }
     else if(buttonClicked.text === "All") {
+      UserStore.logEvent('CHANGE_CATEGORY')
       FeedStore.initFeed("")
     }
     else {
+      UserStore.logEvent('CHANGE_CATEGORY')
       FeedStore.initFeed(buttonClicked.text)
     }
   }

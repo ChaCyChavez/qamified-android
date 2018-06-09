@@ -1,7 +1,8 @@
-import { observable, computed } from 'mobx';
-import firebase from 'react-native-firebase';
-import FeedStore from './FeedStore.js';
-import { ToastAndroid } from 'react-native';
+import { observable, computed } from 'mobx'
+import firebase from 'react-native-firebase'
+import FeedStore from './FeedStore.js'
+import { ToastAndroid } from 'react-native'
+import moment from 'moment'
 
 class UserStore {
   @observable
@@ -199,6 +200,29 @@ class UserStore {
       .then(() => {
         navigation.navigate('Login')
       })
+  }
+
+  logEvent = (event) => {
+    const updates = {}
+    let e = {
+      description: event,
+      username: this.user.username,
+      full_name: this.fullName,
+      user_id: this.user._id,
+      date_created: moment().format()
+    }
+
+    const newEventKey = firebase.database().ref().child('log').push().key
+    e._id = newEventKey
+
+    updates[`log/${e._id}`] = e
+
+    firebase.database()
+      .ref()
+      .update(updates)
+
+    firebase.analytics()
+      .logEvent(event, {})
   }
 }
 

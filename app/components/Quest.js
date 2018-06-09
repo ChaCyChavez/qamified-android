@@ -3,7 +3,9 @@ import { StyleSheet,
          View,
          ScrollView,
          KeyboardAvoidingView,
-         Alert } from 'react-native'
+         Alert,
+         TouchableOpacity,
+         Linking } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions'
@@ -29,6 +31,7 @@ import moment from 'moment'
 import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
 import Markdown from 'react-native-markdown-renderer'
+import Modal from 'react-native-modal'
 
 @observer
 
@@ -41,12 +44,16 @@ export default class Quest extends React.Component {
     }
   }
 
+  _toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  }
+
   render() {
 
     let itemsLength = QuestStore.current_solutions ? QuestStore.current_solutions.length : 0
 
     const status = (isAnswered, isDuplicate, category) => {
-      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183 {category}</Text>)
+      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183; {category}</Text>)
     }
 
     var solutions = []
@@ -133,6 +140,12 @@ export default class Quest extends React.Component {
                   placeholder="Post answer..."
                   placeholderTextColor="#959697"
                   onChangeText={(input) => this.setState({solution: input})}/>
+                  <TouchableOpacity style={{position: "absolute", right: 1, top: 1}} onPress={this._toggleModal}>
+                    <Icon name="ios-bulb" style={{color: 'white'}}/>
+                  </TouchableOpacity>
+                  <Modal isVisible={this.state.isModalVisible}>
+                    { this.renderModal() }
+                  </Modal>
               </Item>
             </CardItem>
             <CardItem style={{backgroundColor: "transparent"}}>
@@ -142,6 +155,138 @@ export default class Quest extends React.Component {
         </KeyboardAvoidingView> 
         </ScrollView>
       </View>
+    )
+  }
+
+  renderModal = () => {
+    return (
+    <ScrollView>
+      <Card style={{ flex: 1, backgroundColor: "white"}}>
+        <CardItem>
+          <Text style={styles.tipHeader}>Tip: Leaderboard</Text>
+        </CardItem>
+        <CardItem>
+          <Body style={{width: responsiveWidth(40)}}>
+            <Text style={styles.tipContent}>
+              {
+                `This application supports markdown (lightweight marup language).\n\nExample:\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Headers
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `# This is an <h1> tag\n## This is an <h2> tag\n###### This is an <h6> tag\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Emphasis
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `*This text will be italic*\n_This will also be italic_\n\n**This text will be bold**\n__This will also be bold__\n\n*You **can** combine them*\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Blockquotes
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `As Grace Hopper said:\n\n> I’ve always been more interested\n> in the future than in the past.\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Lists
+            </Text>
+            <Text style={styles.note}>
+              unordered
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `* Item 1\n* Item 2\n    * Item 2a\n    * Item 2b\n`
+              }
+            </Text>
+            <Text style={styles.note}>
+              ordered
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `* Item 1\n* Item 2\n    * Item 2a\n    * Item 2b\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Images
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `![GitHub Logo](/images/logo.png)\n\nFormat: ![Alt Text](url)\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Links
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `http://github.com - automatic\n\n[GitHub](http://github.com)\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Fenced Code Blocks
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `\`\`\`javascript\nfunction test() {\n console.log("look ma’, no spaces");\n}\n\`\`\`\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Backslash Escapes
+            </Text>
+            <Text style={styles.note}>
+              Markdown allows you to use backslash escapes to generate literal characters which would otherwise have special meaning in Markdown’s formatting syntax.
+              </Text>
+            <Text style={styles.exContent}>
+              {
+                `\*literal asterisks\*`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Task Lists
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `- [x] this is a complete item\n- [ ] this is an incomplete item\n- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del>supported\n- [x] list syntax required (any unordered or ordered list supported)\n`
+              }
+            </Text>
+            <Text style={styles.exHeader}>
+              Tables
+            </Text>
+            <Text style={styles.note}>
+              You can create tables by assembling a list of words and dividing them with hyphens - (for the first row), and then separating each column with a pipe | :
+            </Text>
+            <Text style={styles.exContent}>
+              {
+                `First Header | Second Header\n------------ | -------------\nContent cell 1 | Content cell 2\nContent column 1 | Content column 2\n\n\n`
+              }
+            </Text>
+            <Text>
+              Source:
+            </Text>
+            <Text style={{textDecorationLine: 'underline'}}
+                  onPress={() => Linking.openURL('https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf')}>
+              https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf
+            </Text>
+          </Body>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <TouchableOpacity onPress={this._toggleModal}>
+              <Text style={styles.tipButton}>Hide me!</Text>
+            </TouchableOpacity>
+          </Body>
+        </CardItem>
+      </Card>
+    </ScrollView>
     )
   }
 
@@ -156,7 +301,7 @@ export default class Quest extends React.Component {
                 <Body>
                   <View>
                     <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
-                    <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183 { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
+                    <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
                   </View>
                 </Body>
           </Left>
@@ -173,7 +318,7 @@ export default class Quest extends React.Component {
               <Body>
                 <View>
                   <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ QuestStore.current_quest.full_name }</Text>
-                  <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183 { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
+                  <Text style={styles.username} note ellipsizeMode="tail" numberOfLines={1}>{ "@" + QuestStore.current_quest.username } &#183; { moment(QuestStore.current_quest.date_created).fromNow() }</Text>
                 </View>
               </Body>
         </Left>
@@ -293,23 +438,17 @@ export default class Quest extends React.Component {
       user_avatar: UserStore.user.avatar
     }
 
-    firebase.analytics()
-      .logEvent('POST_SOLUTION', {})
-
+    UserStore.logEvent('POST_SOLUTION')
     QuestStore.postSolution(solution, this)
   }
 
   upvote = (quest) => {
-    firebase.analytics()
-      .logEvent('UPVOTE_QUEST', {})
-
+    UserStore.logEvent('UPVOTE_QUEST')
     FeedStore.upvoteQuest(quest)
   }
 
   downvote = (quest) => {
-    firebase.analytics()
-      .logEvent('DOWNVOTE_QUEST', {})
-
+    UserStore.logEvent('DOWNVOTE_QUEST')
     FeedStore.downvoteQuest(quest)
   }
 
@@ -320,8 +459,7 @@ export default class Quest extends React.Component {
       [
         {text: 'CANCEL', onPress: () => {}},
         {text: 'YES', onPress: () => {
-            firebase.analytics()
-              .logEvent('DELETE_QUEST', {})
+            UserStore.logEvent('DELETE_QUEST')
             QuestStore.deleteQuest(this.props.navigation)
           }
         },
@@ -337,8 +475,7 @@ export default class Quest extends React.Component {
       [
         {text: 'CANCEL', onPress: () => {}},
         {text: 'YES', onPress: () => {
-            firebase.analytics()
-              .logEvent('FLAG_QUEST', {})
+            UserStore.logEvent('FLAG_QUEST')
             QuestStore.flagAsDuplicate()
           }
         },
@@ -348,9 +485,7 @@ export default class Quest extends React.Component {
   }
 
   setUser = (user_id) => {
-    firebase.analytics()
-      .logEvent('VIEW_USER', {})
-
+    UserStore.logEvent('VIEW_USER')
     UserProfileStore.setUser(user_id, this.props.navigation)
   }
 
@@ -429,6 +564,36 @@ const styles = StyleSheet.create({
     backgroundColor: "#b2d8d8",
     borderColor: 'transparent',
   },
+  tipHeader: {
+    textAlign: 'center',
+    fontFamily: 'Gotham Bold',
+    fontSize: 22,
+    color: "#0b0c10"
+  },
+  tipContent: {
+    fontFamily: "Proxima Nova Regular",
+    fontSize: 18,
+    color: "#0b0c10"
+  },
+  tipButton: {
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    fontSize: 18,
+    color: "#1f2833",
+    width: responsiveWidth(80)
+  },
+
+  exHeader: {
+    fontFamily: 'Gotham Bold',
+  },
+  exContent: {
+    fontFamily: 'Courier Prime',
+  },
+  note: {
+    fontFamily: 'Proxima Nova Light',
+    fontSize: 16,
+    color: "#0a0b09"
+  }
 })
 
 export const markdownStyles = StyleSheet.create({

@@ -3,9 +3,9 @@ import { StyleSheet,
          TextInput,
          ScrollView,
          View,
-         TouchableHighlight,
-         Modal,
-         RefreshControl } from 'react-native'
+         TouchableOpacity,
+         RefreshControl,
+         BackHandler } from 'react-native'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions'
@@ -30,6 +30,7 @@ import moment from 'moment'
 import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
 import Markdown from 'react-native-markdown-renderer'
+import Modal from 'react-native-modal'
 
 @observer
 
@@ -40,15 +41,29 @@ export default class Profile extends React.Component {
     this.state = {
       editing: false,
       bio: UserStore.user.description,
+      isModalOpen: false
     }
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton() {
+    BackHandler.exitApp()
+  }
+
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     ProfileStore.initProfileFeed()
   }
 
   _onRefresh() {
     ProfileStore.initProfileFeed()
+  }
+
+  _toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   }
 
   render() {
@@ -77,7 +92,7 @@ export default class Profile extends React.Component {
                   <Body>
                     <View>
                       <Text style={styles.postFullName} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username } &#183 { moment(item.date_created).fromNow() }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183; { moment(item.date_created).fromNow() }</Text>
                     </View>
                   </Body>
             </Left>
@@ -134,6 +149,12 @@ export default class Profile extends React.Component {
             />}
         >
           <Card style={styles.infoContainer}>
+            <TouchableOpacity style={{position: "absolute", right: 15, top: 10}} onPress={this._toggleModal}>
+              <Icon name="ios-bulb" style={{color: 'white', fontSize: 18}}/>
+            </TouchableOpacity>
+            <Modal isVisible={this.state.isModalVisible}>
+              { this.renderModal() }
+            </Modal>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Thumbnail
                 source={images[UserStore.user.avatar]} />
@@ -147,24 +168,24 @@ export default class Profile extends React.Component {
             <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.email}>
-                  { UserStore.user.email  } &#183 { UserStore.user.institution  }
+                  { UserStore.user.email  } &#183; { UserStore.user.institution  }
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.stats}>
-                  { UserStore.user.points } &nbsp
+                  { UserStore.user.points } &nbsp;
                   { UserStore.user.points > 1 ? "points" : "point" }
               </Text>
               <Text
                 style={styles.stats}>
-                  &nbsp &#183&nbsp
-                  Level &nbsp
+                  &nbsp; &#183;&nbsp;
+                  Level &nbsp;
                   { UserStore.user.level }
               </Text>
               <Text
                 style={styles.stats}>
-                  &nbsp &#183 &nbsp
+                  &nbsp; &#183; &nbsp;
                   { UserStore.user.rank }
               </Text>
             </CardItem>
@@ -197,6 +218,32 @@ export default class Profile extends React.Component {
           </View>
         </ScrollView>
       </View>
+    )
+  }
+
+  renderModal = () => {
+    return (
+    <ScrollView>
+      <Card style={{ flex: 1, backgroundColor: "white"}}>
+        <CardItem>
+          <Text style={styles.tipHeader}>Tip: Headquarter, Achievements and Todos</Text>
+        </CardItem>
+        <CardItem>
+          <Text style={styles.tipContent}>
+            {
+              `Headquarter displays user information of the player, achievements and current todos. Quests that are posted and answered by the user is also displayed in this section.\n\nTo view achievements and todos, click the buttons below the user's information card.`
+            }
+          </Text>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <TouchableOpacity onPress={this._toggleModal}>
+              <Text style={styles.tipButton}>Hide me!</Text>
+            </TouchableOpacity>
+          </Body>
+        </CardItem>
+      </Card>
+    </ScrollView>
     )
   }
 
@@ -276,37 +323,27 @@ export default class Profile extends React.Component {
   }
 
   viewQuest = (quest) => {
-    firebase.analytics()
-      .logEvent('VIEW_QUEST', {})
-
+    UserStore.logEvent('VIEW_QUEST')
     QuestStore.setCurrentQuest(quest, this.props.navigation)
   }
 
   upvote = (quest) => {
-    firebase.analytics()
-      .logEvent('UPVOTE_QUEST', {})
-
+    UserStore.logEvent('UPVOTE_QUEST')
     FeedStore.upvoteQuest(quest)
   }
 
   downvote = (quest) => {
-    firebase.analytics()
-      .logEvent('DOWNVOTE_QUEST', {})
-
+    UserStore.logEvent('DOWNVOTE_QUEST')
     FeedStore.downvoteQuest(quest)
   }
 
   viewTodos = (navigation) => {
-    firebase.analytics()
-      .logEvent('VIEW_TODO', {})
-
+    UserStore.logEvent('VIEW_TODO')
     navigation.navigate('Todo')
   }
 
   viewAchievements = (navigation) => {
-    firebase.analytics()
-      .logEvent('VIEW_ACHIEVEMENT', {})
-
+    UserStore.logEvent('VIEW_ACHIEVEMENT')
     navigation.navigate('Achievements')
   }
 }
@@ -410,6 +447,27 @@ const styles = StyleSheet.create({
     color: "#252627",
     fontSize: 28,
     padding: 10,
+  },
+
+  tipHeader: {
+    textAlign: 'center',
+    fontFamily: 'Gotham Bold',
+    fontSize: 22,
+    color: "#0b0c10"
+  },
+
+  tipContent: {
+    fontFamily: "Proxima Nova Regular",
+    fontSize: 18,
+    color: "#0b0c10"
+  },
+
+  tipButton: {
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    fontSize: 18,
+    color: "#1f2833",
+    width: responsiveWidth(80)
   }
 })
 

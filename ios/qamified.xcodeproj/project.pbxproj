@@ -210,6 +210,8 @@
 		D9909156F2F74B308FBD14F1 /* Courier Prime Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5952CC7391024D36A4A9EDFD /* Courier Prime Bold.ttf */; };
 		D54671F2E28B4477BFAEB7E7 /* Courier Prime Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 44A26422AE5C43F8A92591D1 /* Courier Prime Italic.ttf */; };
 		B01F8DB690EA417D82A99B45 /* Courier Prime.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7A5CEAEA9A84D1590DABC15 /* Courier Prime.ttf */; };
+		983D918385114B3699BA1AAD /* libToolTipMenu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 750F096FA1DD4E29A65E917F /* libToolTipMenu.a */; };
+		94D962916A7D4BAF8D7E0EE4 /* ToolTipMenuTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = F6058E628A8140408DD52DEE /* ToolTipMenuTests.xctest */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -684,6 +686,9 @@
 		5952CC7391024D36A4A9EDFD /* Courier Prime Bold.ttf */ = {isa = PBXFileReference; name = "Courier Prime Bold.ttf"; path = "../assets/fonts/Courier Prime Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		44A26422AE5C43F8A92591D1 /* Courier Prime Italic.ttf */ = {isa = PBXFileReference; name = "Courier Prime Italic.ttf"; path = "../assets/fonts/Courier Prime Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D7A5CEAEA9A84D1590DABC15 /* Courier Prime.ttf */ = {isa = PBXFileReference; name = "Courier Prime.ttf"; path = "../assets/fonts/Courier Prime.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CB682A710C544B10AF08261D /* ToolTipMenu.xcodeproj */ = {isa = PBXFileReference; name = "ToolTipMenu.xcodeproj"; path = "../node_modules/react-native-tooltip/ToolTipMenu.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		750F096FA1DD4E29A65E917F /* libToolTipMenu.a */ = {isa = PBXFileReference; name = "libToolTipMenu.a"; path = "libToolTipMenu.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		F6058E628A8140408DD52DEE /* ToolTipMenuTests.xctest */ = {isa = PBXFileReference; name = "ToolTipMenuTests.xctest"; path = "ToolTipMenuTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -714,6 +719,8 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				68B70528A2734DEA89C8B214 /* libRNFirebase.a in Frameworks */,
 				A038CD85D39748E122AC50D7 /* libPods-qamified.a in Frameworks */,
+				983D918385114B3699BA1AAD /* libToolTipMenu.a in Frameworks */,
+				94D962916A7D4BAF8D7E0EE4 /* ToolTipMenuTests.xctest in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -899,6 +906,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				ADF4CB3C3BF44D3EBA8B78C4 /* RNFirebase.xcodeproj */,
+				CB682A710C544B10AF08261D /* ToolTipMenu.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1962,12 +1970,15 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
 				);
 				INFOPLIST_FILE = qamifiedTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1987,12 +1998,15 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
 				);
 				INFOPLIST_FILE = qamifiedTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2015,6 +2029,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
 				);
 				INFOPLIST_FILE = qamified/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2039,6 +2054,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
 				);
 				INFOPLIST_FILE = qamified/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2068,11 +2084,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
 				);
 				INFOPLIST_FILE = "qamified-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2102,11 +2121,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
 				);
 				INFOPLIST_FILE = "qamified-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2137,6 +2159,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.qamified-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2161,6 +2185,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.qamified-tvOSTests";

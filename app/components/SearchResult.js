@@ -16,7 +16,8 @@ import { responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions'
 
 import { SearchStore,
-         QuestStore } from '../mobx'
+         QuestStore,
+         UserStore } from '../mobx'
 import { observer } from 'mobx-react'
 import images from '../../assets/img/images'
 
@@ -67,6 +68,7 @@ export default class SearchResult extends React.Component {
   }
 
   getQuest = (quest) => {
+    UserStore.logEvent('VIEW_QUEST')
     QuestStore.setCurrentQuest(quest, this.props.navigation)
   }
 }

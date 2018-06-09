@@ -6,5 +6,6 @@ export default {
   'quest': require('./quest.png'),
   'conversation': require('./conversation.png'),
   'qamified-logo': require('./qamified-logo.png'),
-  'trophy': require('./trophy.png')
+  'trophy': require('./trophy.png'),
+  'mark_1': require('./mark_1.png')
 }

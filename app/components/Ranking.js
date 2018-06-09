@@ -3,7 +3,9 @@ import { StyleSheet,
          TextInput,
          View,
          ScrollView,
-         RefreshControl } from 'react-native'
+         RefreshControl,
+         TouchableOpacity,
+         BackHandler } from 'react-native'
 import { ListItem,
          Thumbnail,
          Body,
@@ -22,10 +24,12 @@ import { responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions'
 import { observer } from 'mobx-react'
 import { RankingStore,
-         UserProfileStore } from '../mobx'
+         UserProfileStore,
+         UserStore } from '../mobx'
 import moment from 'moment'
 import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
+import Modal from 'react-native-modal'
 
 @observer
 
@@ -34,10 +38,20 @@ export default class Ranking extends React.Component {
     super(props)
     this.state = {
       selected: "points",
+      isModalVisible: false
     }
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton() {
+    BackHandler.exitApp()
+  }
+
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     RankingStore.initRanking()
   }
 
@@ -53,6 +67,9 @@ export default class Ranking extends React.Component {
     RankingStore.sortRanking(value)
   }
 
+  _toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  }
   render () {
     var loading = <Spinner color='#66fcf1' />
     var ranking = RankingStore.users.map((item, i) => {
@@ -104,7 +121,7 @@ export default class Ranking extends React.Component {
               <Left>
               <Text style={styles.sortBy}>Sort by : </Text>
               </Left>
-              <Right>
+              <Body>
               <Picker
                 mode="dropdown"
                 textStyle={{ color: "#5cb85c" }}
@@ -115,6 +132,14 @@ export default class Ranking extends React.Component {
                 <Picker.Item color="#0b0c10" label="Points" value="points" />
                 <Picker.Item color="#0b0c10" label="Experience" value="experience" />
               </Picker>
+              </Body>
+              <Right>
+                <TouchableOpacity onPress={this._toggleModal}>
+                  <Icon name="ios-bulb"/>
+                </TouchableOpacity>
+                <Modal isVisible={this.state.isModalVisible}>
+                  { this.renderModal() }
+                </Modal>
               </Right>
             </CardItem>
           </Card>
@@ -126,10 +151,34 @@ export default class Ranking extends React.Component {
     )
   }
 
-  setUser = (user_id) => {
-    firebase.analytics()
-      .logEvent('VIEW_USER', {})
+  renderModal = () => {
+    return (
+    <ScrollView>
+      <Card style={{ flex: 1, backgroundColor: "white"}}>
+        <CardItem>
+          <Text style={styles.tipHeader}>Tip: Leaderboard</Text>
+        </CardItem>
+        <CardItem>
+          <Text style={styles.tipContent}>
+            {
+              `Leaderboard displays ranking of users based on points and experience. To visit their profile by clicking their item.`
+            }
+          </Text>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <TouchableOpacity onPress={this._toggleModal}>
+              <Text style={styles.tipButton}>Hide me!</Text>
+            </TouchableOpacity>
+          </Body>
+        </CardItem>
+      </Card>
+    </ScrollView>
+    )
+  }
 
+  setUser = (user_id) => {
+    UserStore.logEvent('VIEW_USER')
     UserProfileStore.setUser(user_id, this.props.navigation)
   }
 }
@@ -172,5 +221,25 @@ const styles = StyleSheet.create({
   sortBy: {
     color: "white",
     fontFamily: "Proxima Nova Regular"
+  }, 
+  tipHeader: {
+    textAlign: 'center',
+    fontFamily: 'Gotham Bold',
+    fontSize: 22,
+    color: "#0b0c10"
+  },
+
+  tipContent: {
+    fontFamily: "Proxima Nova Regular",
+    fontSize: 18,
+    color: "#0b0c10"
+  },
+
+  tipButton: {
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    fontSize: 18,
+    color: "#1f2833",
+    width: responsiveWidth(80)
   }
 })

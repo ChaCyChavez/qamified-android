@@ -3,7 +3,8 @@ import { StyleSheet,
          TextInput,
          View,
          ScrollView,
-         RefreshControl } from 'react-native'
+         RefreshControl,
+         BackHandler } from 'react-native'
 import { List,
          ListItem,
          Thumbnail,
@@ -17,7 +18,8 @@ import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions'
 import { observer } from 'mobx-react'
-import { NotificationStore } from '../mobx'
+import { NotificationStore,
+         UserStore } from '../mobx'
 import moment from 'moment'
 import images from '../../assets/img/images'
 
@@ -28,7 +30,16 @@ export default class Notification extends React.Component {
     super(props)
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton() {
+    BackHandler.exitApp()
+  }
+
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     NotificationStore.initNotifications()
   }
 
@@ -87,6 +98,7 @@ export default class Notification extends React.Component {
   }
 
   getQuest = (quest_id) => {
+    UserStore.logEvent('VIEW_QUEST')
     NotificationStore.getQuest(quest_id, this.props.navigation)
   }
 }

@@ -80,7 +80,7 @@ export default class Register extends React.Component {
             <Button small disabled style={styles.disabledNextPrevButton}>
               <Icon name="arrow-back" size={24} color="white"/>
             </Button>
-            <Text> &nbsp </Text>
+            <Text> &nbsp; </Text>
             <Button small onPress={this.nextPage}  style={styles.nextPrevButton}>
               <Icon name="arrow-forward" size={24} color="white"/>
             </Button>
@@ -93,7 +93,7 @@ export default class Register extends React.Component {
             <Button small onPress={this.backPage} style={styles.nextPrevButton}>
               <Icon name="arrow-back" size={24} color="white"/>
             </Button>
-            <Text> &nbsp </Text>
+            <Text> &nbsp; </Text>
             <Button small disabled style={styles.disabledNextPrevButton}>
               <Icon name="arrow-forward" size={24} color="white"/>
             </Button>

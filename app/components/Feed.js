@@ -2,7 +2,10 @@ import React from 'react'
 import { StyleSheet,
          View,
          ScrollView,
-         RefreshControl } from 'react-native'
+         RefreshControl,
+         AppRegistry,
+         TouchableOpacity,
+         BackHandler } from 'react-native'
 import { responsiveHeight,
          responsiveWidth,
          responsiveFontSize } from 'react-native-responsive-dimensions'
@@ -27,15 +30,28 @@ import moment from 'moment'
 import images from '../../assets/img/images'
 import firebase from 'react-native-firebase'
 import Markdown from 'react-native-markdown-renderer'
+import Modal from 'react-native-modal'
 
 @observer
 
 export default class Feed extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      isModalOpen: false
+    }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton() {
+    BackHandler.exitApp()
   }
 
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     FeedStore.initFeed("")
   }
 
@@ -43,12 +59,16 @@ export default class Feed extends React.Component {
     FeedStore.initFeed("")
   }
 
+  _toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  }
+
   render() {
     const {state} = this.props.navigation
     var category = state.params ? state.params.category : "0"
 
     const status = (isAnswered, isDuplicate, category) => {
-      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183 {category}</Text>)
+      return (<Text note style={styles.status}>{isAnswered ? "Answered" : "Unanswered"}{isDuplicate ? " · Duplicate" : ""} &#183; {category}</Text>)
     }
 
     var loading = <Spinner color='#66fcf1' />
@@ -73,7 +93,7 @@ export default class Feed extends React.Component {
                   <Body>
                     <View>
                       <Text style={styles.full_name} ellipsizeMode="tail" numberOfLines={1}>{ item.full_name }</Text>
-                      <Text style={styles.username} note>{ "@" + item.username } &#183 { moment(item.date_created).fromNow() }</Text>
+                      <Text style={styles.username} note>{ "@" + item.username } &#183; { moment(item.date_created).fromNow() }</Text>
                     </View>
                   </Body>
             </Left>
@@ -147,11 +167,45 @@ export default class Feed extends React.Component {
                       </Button>
                     </Body>
               </Left>
+              <Right>
+                <TouchableOpacity onPress={this._toggleModal}>
+                  <Icon name="ios-bulb"/>
+                </TouchableOpacity>
+                <Modal isVisible={this.state.isModalVisible}>
+                  { this.renderModal() }
+                </Modal>
+              </Right>
             </CardItem>
           </Card>
           { FeedStore.loading ? loading : listItems }
         </ScrollView>
       </View>
+    )
+  }
+
+  renderModal = () => {
+    return (
+    <ScrollView>
+      <Card style={{ flex: 1, backgroundColor: "white"}}>
+        <CardItem>
+          <Text style={styles.tipHeader}>Tip: Quest and Quest Board</Text>
+        </CardItem>
+        <CardItem>
+          <Text style={styles.tipContent}>
+            {
+              `Quest Board is where quests are posted. Quests are questions that a user can get points and experience by posting solutions. The points can get in the quest increases based on the amount of activity it gets. It increases if it unanswered for a long time, or if it has been upvoted by players.\n\nUser can post quest by clicking the "Ask a question" button. It will ask for the title, question and the category of the quest. User can also get experience in posting quests`
+            }
+          </Text>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <TouchableOpacity onPress={this._toggleModal}>
+              <Text style={styles.tipButton}>Hide me!</Text>
+            </TouchableOpacity>
+          </Body>
+        </CardItem>
+      </Card>
+    </ScrollView>
     )
   }
 
@@ -176,34 +230,25 @@ export default class Feed extends React.Component {
   }
 
   viewQuest = (quest) => {
-    firebase.analytics()
-      .logEvent('VIEW_QUEST', {})
-
+    UserStore.logEvent('VIEW_QUEST')
     QuestStore.setCurrentQuest(quest, this.props.navigation)
   }
 
   upvote = (quest) => {
-    firebase.analytics()
-      .logEvent('UPVOTE_QUEST', {})
-
+    UserStore.logEvent('UPVOTE_QUEST')    
     FeedStore.upvoteQuest(quest)
   }
 
   downvote = (quest) => {
-    firebase.analytics()
-      .logEvent('DOWNVOTE_QUEST', {})
-
+    UserStore.logEvent('DOWNVOTE_QUEST')
     FeedStore.downvoteQuest(quest)
   }
 
   setUser = (user_id) => {
-    firebase.analytics()
-      .logEvent('VIEW_USER', {})
-
+    UserStore.logEvent('VIEW_USER')
     UserProfileStore.setUser(user_id, this.props.navigation)
   }
- }
-
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -257,6 +302,27 @@ const styles = StyleSheet.create({
     fontFamily: "Proxima Nova Regular",
     color: "#e5e6e7",
   },
+
+  tipHeader: {
+    textAlign: 'center',
+    fontFamily: 'Gotham Bold',
+    fontSize: 22,
+    color: "#0b0c10"
+  },
+
+  tipContent: {
+    fontFamily: "Proxima Nova Regular",
+    fontSize: 18,
+    color: "#0b0c10"
+  },
+
+  tipButton: {
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    fontSize: 18,
+    color: "#1f2833",
+    width: responsiveWidth(80)
+  }
 })
 
 

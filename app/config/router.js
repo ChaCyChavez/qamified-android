@@ -18,7 +18,8 @@ import UserProfile from '../components/UserProfile.js';
 import SearchResult from '../components/SearchResult.js';
 import Menu from '../components/Menu.js';
 import firebase from 'react-native-firebase';
-import { NotificationStore } from '../mobx';
+import { NotificationStore,
+         UserStore } from '../mobx';
 
 export const Stack = StackNavigator({
   Login: {
@@ -82,8 +83,7 @@ export const Tab = TabNavigator({
   animationEnabled: true,
   navigationOptions: ({ navigation }) => ({
     tabBarOnPress: (scene, jumpToIndex) => {
-      firebase.analytics()
-        .logEvent("VIEW_" + navigation.state.key.toUpperCase())
+      UserStore.logEvent('VIEW_' + navigation.state.key.toUpperCase())
       if(navigation.state.key === "Notification") {
         NotificationStore.new_notif = false
       }
