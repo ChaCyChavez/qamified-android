@@ -145,7 +145,7 @@ class QuestStore {
     }
 
     // todo
-    var index = this.inTodo("Solution")
+    var index = this.inTodo("Post Solution")
     if(index != -1) {
       UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
@@ -164,7 +164,7 @@ class QuestStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {

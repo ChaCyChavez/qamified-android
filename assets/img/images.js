@@ -12,4 +12,15 @@ export default {
   'trophy_4': require('./trophy_4.png'),
   'trophy_5': require('./trophy_5.png'),
   'trophy_6': require('./trophy_6.png'),
+  'beginner': require('./medal_1.png'),
+  'intermediate': require('./medal_2.png'),
+  'genius': require('./medal_3.png'),
+  'prodigy': require('./medal_4.png'),
+  'ace': require('./medal_5.png'),
+  'beast': require('./medal_6.png'),
+  'champion': require('./medal_7.png'),
+  'master': require('./medal_8.png'),
+  'grandmaster': require('./medal_9.png'),
+  'legendary grandmaster': require('./medal_10.png'),
+
 }

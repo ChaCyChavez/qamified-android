@@ -123,7 +123,7 @@ class UserStore {
     }
 
     //todo
-    var index = this.inTodo("Question")
+    var index = this.inTodo("Create Quest")
     if(index != -1) {
       this.user.todos[this.user.current_todo - 1].requirements[index].current += 1
       updates[`/user/${this.user._id}/todos/${this.user.todos[this.user.current_todo - 1]._id}/requirements/${index}/current`] = this.user.todos[this.user.current_todo - 1].requirements[index].current 
@@ -142,7 +142,7 @@ class UserStore {
         this.user.points += todo.points
         updates[`/user/${this.user._id}/points`] = this.user.points
 
-        this.user.rank = this.ranks[Math.floor(this.user.points / 100)]
+        this.user.rank = this.ranks[Math.floor(this.user.points / 100)] <= 10000 ? this.ranks[Math.floor(this.user.points / 100)] : this.ranks[9]
         updates[`/user/${this.user._id}/rank`] = this.user.rank
 
         if(this.user.experience >= this.user.level_exp) {

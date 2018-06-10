@@ -146,8 +146,12 @@ export default class Profile extends React.Component {
               { this.renderModal() }
             </Modal>
             <CardItem style={{backgroundColor: "transparent"}}>
-              <Thumbnail
-                source={images[UserStore.user.avatar]} />
+              <Body style={{flexDirection: "row", flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Thumbnail
+                  source={images[UserStore.user.avatar]} style={{marginLeft: 3, marginRight: 3}}/>
+                <Thumbnail square small
+                  source={images[UserStore.user.rank.toLowerCase()]} style={{marginLeft: 3, marginRight: 3}}/>
+              </Body>
             </CardItem>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Text
@@ -164,19 +168,24 @@ export default class Profile extends React.Component {
             <CardItem style={{backgroundColor: "transparent"}}>
               <Text
                 style={styles.stats}>
-                  { UserStore.user.points } &nbsp;
-                  { UserStore.user.points > 1 ? "points" : "point" }
+                  { UserStore.user.points + (UserStore.user.points > 1 ? " points" : " point")}
+              </Text>
+              <Text
+                style={styles.stats}>
+                  &nbsp; &#183; &nbsp;
+                  { UserStore.user.rank}
+              </Text>
+            </CardItem>
+            <CardItem style={{backgroundColor: "transparent"}}>
+              <Text
+                style={styles.stats}>
+                  { UserStore.user.experience + (UserStore.user.experience > 1 ? " experiences" : " experience")}
               </Text>
               <Text
                 style={styles.stats}>
                   &nbsp; &#183;&nbsp;
                   Level &nbsp;
                   { UserStore.user.level }
-              </Text>
-              <Text
-                style={styles.stats}>
-                  &nbsp; &#183; &nbsp;
-                  { UserStore.user.rank }
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: "transparent"}}>

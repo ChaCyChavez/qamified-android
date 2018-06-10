@@ -113,7 +113,7 @@ export default class Quest extends React.Component {
           </Card>
           <Card style={styles.questions}>
             <CardItem style={styles.spinCon}>
-              { QuestStore.initializing ? <Spinner color='#66fcf1' /> : <Text style={styles.answers}>{ itemsLength } Answer/s</Text> }
+              { QuestStore.initializing ? <Spinner color='#66fcf1' /> : <Text style={styles.answers}>{ itemsLength + (itemsLength > 1 ? "Solutions" : "Solution")}</Text> }
             </CardItem>
           </Card>
           { QuestStore.initializing ? <View></View> : solutions }
@@ -137,7 +137,7 @@ export default class Quest extends React.Component {
                   style={styles.answerInput}
                   value={this.state.solution}
                   multiline={true}
-                  placeholder="Post answer..."
+                  placeholder="Post Solution..."
                   placeholderTextColor="#959697"
                   onChangeText={(input) => this.setState({solution: input})}/>
                   <TouchableOpacity style={{position: "absolute", right: 1, top: 1}} onPress={this._toggleModal}>

@@ -152,7 +152,7 @@ export default class Feed extends React.Component {
                           <Text
                             uppercase={false}
                             style={styles.askQuestion}>
-                              Ask question...
+                              Create Quest...
                           </Text>
                       </Button>
                     </Body>
@@ -183,7 +183,7 @@ export default class Feed extends React.Component {
         <CardItem>
           <Text style={styles.tipContent}>
             {
-              `Quest Board is where quests are posted. Quests are questions that a user can get points and experience by posting solutions. The points can get in the quest increases based on the amount of activity it gets. It increases if it unanswered for a long time, or if it has been upvoted by players.\n\nUser can post quest by clicking the "Ask a question" button. It will ask for the title, question and the category of the quest. User can also get experience in posting quests`
+              `Quest Board is where quests are posted. Quests are questions that a user can get points and experience. The points can get in the quest increases based on the amount of activity it gets. It increases if it unanswered for a long time, or if it has been upvoted by players.\n\nUser can post quest by clicking the "Ask a question" button. It will ask for the title, question and the category of the quest. User can also get experience in creating quest, posting solution and reply`
             }
           </Text>
         </CardItem>

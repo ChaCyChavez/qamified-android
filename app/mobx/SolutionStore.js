@@ -66,7 +66,7 @@ class SolutionStore {
     }
 
     //todo
-    var index = this.inTodo("Reply")
+    var index = this.inTodo("Post Reply")
     if(index != -1) {
       UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
@@ -85,7 +85,7 @@ class SolutionStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
@@ -157,7 +157,7 @@ class SolutionStore {
 
     //todo
     //check if first time vote
-    var index = this.inTodo("Solution")
+    var index = this.inTodo("Vote Solution")
     if(index != -1) {
       UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
@@ -176,7 +176,7 @@ class SolutionStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
@@ -213,7 +213,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points += 40
-              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -248,7 +248,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points += 40
-              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -268,7 +268,7 @@ class SolutionStore {
     var did_level_up = false
     //todo
     //check if first time vote
-    var index = this.inTodo("Solution")
+    var index = this.inTodo("Vote Solution")
     if(index != -1) {
       UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
@@ -287,7 +287,7 @@ class SolutionStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
@@ -324,7 +324,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points -= 40
-              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -360,7 +360,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points -= 40
-              user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -419,7 +419,7 @@ class SolutionStore {
 
     //todo
     //check if first time vote
-    var index = this.inTodo("Solution")
+    var index = this.inTodo("Correct Solution")
     if(index != -1) {
       UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current += 1
       updates[`/user/${UserStore.user._id}/todos/${UserStore.user.todos[UserStore.user.current_todo - 1]._id}/requirements/${index}/current`] = UserStore.user.todos[UserStore.user.current_todo - 1].requirements[index].current 
@@ -438,7 +438,7 @@ class SolutionStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)]
+        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
@@ -494,7 +494,7 @@ class SolutionStore {
               .ref('user').child(`${solution.user_id}`)
               .transaction(user => {
                 user.points += 80
-                user.rank = UserStore.ranks[Math.floor(user.points / 100)]
+                user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
                 return user
               })
 

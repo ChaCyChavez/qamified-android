@@ -152,19 +152,24 @@ export default class UserProfile extends React.Component {
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.stats}>
-                  { UserProfileStore.current_user.points } &nbsp;
-                  { UserProfileStore.current_user.points > 1 ? "points" : "point" }
+                  { UserProfileStore.current_user.points + (UserProfileStore.current_user.points > 1 ? "points" : "point") }
+              </Text>
+              <Text
+                style={styles.stats}>
+                  &nbsp; &#183; &nbsp;
+                  { UserProfileStore.current_user.rank}
+              </Text>
+            </CardItem>
+            <CardItem style={{backgroundColor: 'transparent'}}>
+              <Text
+                style={styles.stats}>
+                  { UserProfileStore.current_user.experience + (UserProfileStore.current_user.experience > 1 ? "experiences" : "experience") }
               </Text>
               <Text
                 style={styles.stats}>
                   &nbsp; &#183;&nbsp;
                   Level &nbsp;
                   { UserProfileStore.current_user.level }
-              </Text>
-              <Text
-                style={styles.stats}>
-                  &nbsp; &#183; &nbsp;
-                  { UserProfileStore.current_user.rank }
               </Text>
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
