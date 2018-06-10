@@ -159,7 +159,7 @@ export default class Feed extends React.Component {
               </Left>
               <Right>
                 <TouchableOpacity onPress={this._toggleModal}>
-                  <Icon name="ios-bulb"/>
+                  <Icon name="ios-bulb" style={{color: 'yellow'}}/>
                 </TouchableOpacity>
                 <Modal isVisible={this.state.isModalVisible}>
                   { this.renderModal() }

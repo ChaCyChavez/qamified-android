@@ -140,7 +140,7 @@ export default class Profile extends React.Component {
         >
           <Card style={styles.infoContainer}>
             <TouchableOpacity style={{position: "absolute", right: 15, top: 10}} onPress={this._toggleModal}>
-              <Icon name="ios-bulb" style={{color: 'white', fontSize: 18}}/>
+              <Icon name="ios-bulb" style={{color: 'yellow', fontSize: 18}}/>
             </TouchableOpacity>
             <Modal isVisible={this.state.isModalVisible}>
               { this.renderModal() }
