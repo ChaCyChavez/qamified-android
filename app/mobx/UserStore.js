@@ -42,10 +42,8 @@ class UserStore {
   initUser = (user, navigation) => {
     this.loading = true
     firebase.database()
-      .ref('/user')
-      .orderByChild('email')
-      .equalTo(user.email)
-      .on('child_added', _user => {
+      .ref(`/user/${user.uid}`)
+      .on('value', _user => {
         if (_user.val() != null) {
           this.user = _user.val()
           var reps = []
@@ -133,6 +131,7 @@ class UserStore {
         ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
+        
         this.user.current_todo += 1
         updates[`/user/${this.user._id}/current_todo`] = this.user.current_todo
 
@@ -142,14 +141,16 @@ class UserStore {
         this.user.points += todo.points
         updates[`/user/${this.user._id}/points`] = this.user.points
 
-        this.user.rank = this.ranks[Math.floor(this.user.points / 100)] <= 10000 ? this.ranks[Math.floor(this.user.points / 100)] : this.ranks[9]
+        this.user.rank = Math.floor(UserStore.user.points / 100) <= 9 ? this.ranks[Math.floor(this.user.points / 100)] : this.ranks[9]
         updates[`/user/${this.user._id}/rank`] = this.user.rank
 
         if(this.user.experience >= this.user.level_exp) {
-          updates[`/user/${this.user._id}/level`] = this.user.level + 1
           this.user.level += 1
-          updates[`/user/${this.user._id}/level_exp`] = (2 * this.user.level_exp) + Math.round(this.user.level_exp * 0.10)
+          updates[`/user/${this.user._id}/level`] = this.user.level
+          
           this.user.level_exp += this.user.level_exp + Math.round(this.user.level_exp * 0.10)
+          updates[`/user/${this.user._id}/level_exp`] = this.user.level_exp
+          
           did_level_up = true
         }
       }

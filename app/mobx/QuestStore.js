@@ -155,6 +155,7 @@ class QuestStore {
         ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
+        
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
 
@@ -164,14 +165,16 @@ class QuestStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+        UserStore.user.rank = Math.floor(UserStore.user.points / 100) <= 9 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
-          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
           UserStore.user.level += 1
-          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level
+         
           UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level_exp`] = UserStore.user.level_exp
+          
           did_level_up = true
         }
       }

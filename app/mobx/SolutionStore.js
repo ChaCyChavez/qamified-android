@@ -58,10 +58,12 @@ class SolutionStore {
     UserStore.user.experience += 5
     var did_level_up = false
     if(UserStore.user.experience >= UserStore.user.level_exp) {
-      updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
       UserStore.user.level += 1
-      updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+      updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level
+
       UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+      updates[`/user/${UserStore.user._id}/level_exp`] = UserStore.user.level_exp
+
       did_level_up = true
     }
 
@@ -76,23 +78,25 @@ class SolutionStore {
         ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
+
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
 
-        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience + todo.experience
         UserStore.user.experience += todo.experience
+        updates[`/user/${UserStore.user._id}/experience`] = UserStore.user.experience
 
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+        UserStore.user.rank = Math.floor(UserStore.user.points / 100) <= 9 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
-          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
           UserStore.user.level += 1
-          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level
+
           UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level_exp`] = UserStore.user.level_exp
           did_level_up = true
         }
       }
@@ -108,6 +112,7 @@ class SolutionStore {
         
         ToastAndroid.show('Replied successfully!', ToastAndroid.SHORT);
         ToastAndroid.show('5 experience gained!', ToastAndroid.SHORT);
+
         if(did_level_up) {
           ToastAndroid.show('Level Up!', ToastAndroid.SHORT);
           did_level_up = false
@@ -167,6 +172,7 @@ class SolutionStore {
         ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
+
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
 
@@ -176,14 +182,16 @@ class SolutionStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+        UserStore.user.rank = Math.floor(UserStore.user.points / 100) <= 9 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
-          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
           UserStore.user.level += 1
-          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level
+
           UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level_exp`] = UserStore.user.level_exp
+          
           did_level_up = true
         }
       }
@@ -213,7 +221,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points += 40
-              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -248,7 +256,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points += 40
-              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -278,6 +286,7 @@ class SolutionStore {
         ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
+
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
 
@@ -287,14 +296,16 @@ class SolutionStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+        UserStore.user.rank = Math.floor(UserStore.user.points / 100) <= 9 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
-          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
           UserStore.user.level += 1
-          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level
+
           UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level_exp`] = UserStore.user.level_exp
+          
           did_level_up = true
         }
       }
@@ -324,7 +335,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points -= 40
-              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -360,7 +371,7 @@ class SolutionStore {
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
               user.points -= 40
-              user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
               return user
             })
           if(did_level_up) {
@@ -429,6 +440,7 @@ class SolutionStore {
         ToastAndroid.show('Todo completed!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.experience + ' experiences earned!', ToastAndroid.SHORT)
         ToastAndroid.show(todo.points + ' points earned!', ToastAndroid.SHORT)
+
         UserStore.user.current_todo += 1
         updates[`/user/${UserStore.user._id}/current_todo`] = UserStore.user.current_todo
 
@@ -438,14 +450,16 @@ class SolutionStore {
         UserStore.user.points += todo.points
         updates[`/user/${UserStore.user._id}/points`] = UserStore.user.points
 
-        UserStore.user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+        UserStore.user.rank = Math.floor(UserStore.user.points / 100) <= 9 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
         updates[`/user/${UserStore.user._id}/rank`] = UserStore.user.rank
 
         if(UserStore.user.experience >= UserStore.user.level_exp) {
-          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level + 1
           UserStore.user.level += 1
-          updates[`/user/${UserStore.user._id}/level_exp`] = (2 * UserStore.user.level_exp) + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level`] = UserStore.user.level
+
           UserStore.user.level_exp += UserStore.user.level_exp + Math.round(UserStore.user.level_exp * 0.10)
+          updates[`/user/${UserStore.user._id}/level_exp`] = UserStore.user.level_exp
+          
           did_level_up = true
         }
       }
@@ -494,7 +508,7 @@ class SolutionStore {
               .ref('user').child(`${solution.user_id}`)
               .transaction(user => {
                 user.points += 80
-                user.rank = UserStore.ranks[Math.floor(UserStore.user.points / 100)] <= 10000 ? UserStore.ranks[Math.floor(UserStore.user.points / 100)] : UserStore.ranks[9]
+                user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
                 return user
               })
 
