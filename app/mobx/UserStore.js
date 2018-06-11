@@ -27,7 +27,6 @@ class UserStore {
 
   checkUser = (navigation) => {
     this.loading = true
-    this.user = {}
     firebase.auth()
       .onAuthStateChanged((user) => {
       if (user != null) {

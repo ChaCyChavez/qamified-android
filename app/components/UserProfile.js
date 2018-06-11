@@ -133,9 +133,12 @@ export default class UserProfile extends React.Component {
         <ScrollView behavior="padding" style={styles.scrollView}>
           <Card style={styles.infoContainer}>
             <CardItem style={{backgroundColor: 'transparent'}}>
-              <Thumbnail
-
-                source={images[UserProfileStore.current_user.avatar]} />
+              <Body style={{flexDirection: "row", flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Thumbnail
+                  source={images[UserProfileStore.current_user.avatar]} style={{marginLeft: 3, marginRight: 3}}/>
+                <Thumbnail square small
+                  source={images[UserProfileStore.current_user.rank.toLowerCase()]} style={{marginLeft: 3, marginRight: 3}}/>
+              </Body>
             </CardItem>
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
@@ -152,7 +155,7 @@ export default class UserProfile extends React.Component {
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.stats}>
-                  { UserProfileStore.current_user.points + (UserProfileStore.current_user.points > 1 ? "points" : "point") }
+                  { UserProfileStore.current_user.points + (UserProfileStore.current_user.points > 1 ? " points" : " point") }
               </Text>
               <Text
                 style={styles.stats}>
@@ -163,7 +166,7 @@ export default class UserProfile extends React.Component {
             <CardItem style={{backgroundColor: 'transparent'}}>
               <Text
                 style={styles.stats}>
-                  { UserProfileStore.current_user.experience + (UserProfileStore.current_user.experience > 1 ? "experiences" : "experience") }
+                  { UserProfileStore.current_user.experience + (UserProfileStore.current_user.experience > 1 ? " experiences" : " experience") }
               </Text>
               <Text
                 style={styles.stats}>

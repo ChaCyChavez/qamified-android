@@ -133,7 +133,7 @@ export default class Solution extends React.Component {
     }
     return (
       <CardItem style={{backgroundColor: 'transparent'}}
-        button onPress={() => this.setUser(this.props.user_id)}>
+        button onPress={() => this.setUser(this.props.solution.user_id)}>
         <Left>
           <Thumbnail
             small

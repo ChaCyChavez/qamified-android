@@ -84,7 +84,7 @@ export default class CreateQuest extends React.Component {
                       placeholderTextColor="#959697"
                       onChangeText={(input) => {this.setState({description: input})}}/>
                     <TouchableOpacity style={{position: "absolute", right: 1, top: 1}} onPress={this._toggleModal}>
-                      <Icon name="ios-bulb" style={{color: 'yellow'}}/>
+                      <Icon name="ios-bulb" style={{color: 'yellow', fontSize: 20}}/>
                     </TouchableOpacity>
                     <Modal isVisible={this.state.isModalVisible}>
                       { this.renderModal() }

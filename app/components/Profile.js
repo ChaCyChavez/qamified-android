@@ -40,7 +40,7 @@ export default class Profile extends React.Component {
     this.state = {
       editing: false,
       bio: UserStore.user.description,
-      isModalOpen: false
+      isModalVisible: false
     }
   }
 
@@ -139,12 +139,6 @@ export default class Profile extends React.Component {
             />}
         >
           <Card style={styles.infoContainer}>
-            <TouchableOpacity style={{position: "absolute", right: 15, top: 10}} onPress={this._toggleModal}>
-              <Icon name="ios-bulb" style={{color: 'yellow', fontSize: 18}}/>
-            </TouchableOpacity>
-            <Modal isVisible={this.state.isModalVisible}>
-              { this.renderModal() }
-            </Modal>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Body style={{flexDirection: "row", flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <Thumbnail
@@ -152,6 +146,14 @@ export default class Profile extends React.Component {
                 <Thumbnail square small
                   source={images[UserStore.user.rank.toLowerCase()]} style={{marginLeft: 3, marginRight: 3}}/>
               </Body>
+              <Left style={{position: "absolute", right: 15, top: 10}}>
+                <TouchableOpacity  onPress={this._toggleModal}>
+                  <Icon name="ios-bulb" style={{color: 'yellow', fontSize: 20}}/>
+                </TouchableOpacity>
+                <Modal isVisible={this.state.isModalVisible}>
+                  { this.renderModal() }
+                </Modal>
+              </Left>
             </CardItem>
             <CardItem style={{backgroundColor: "transparent"}}>
               <Text

@@ -42,22 +42,24 @@ export default class Register extends React.Component {
     return (
       <ScrollView style={{"backgroundColor": "#1f2833", height: responsiveHeight(100)}} contentContainerstyle={styles.scrollView}>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-            <Thumbnail
-              square source={images['qamified-logo']} />
-            <Text 
-              style={styles.title }>
-                QAmifiED
-            </Text>
-            <Text
-              style={styles.subtitle}>
-                A Question and Answer Platform
-            </Text>
-            { this.renderForm() }
-            <View style={styles.buttonSection}>
-              { this.renderPageButton() }
-              { RegisterStore.error ? <Text style={styles.errorMessage}>{ RegisterStore.error }</Text> : null }
-              { this.renderRegisterButton() }
-            </View>
+          <Thumbnail
+            square source={images['qamified-logo']} />
+          <Text 
+            style={styles.title }>
+              QAmifiED
+          </Text>
+          <Text
+            style={styles.subtitle}>
+              A Question and Answer Platform
+          </Text>
+          { this.renderForm() }
+          <View style={styles.buttonSection}>
+            { this.renderPageButton() }
+            { RegisterStore.error ? <Text style={styles.errorMessage}>{ RegisterStore.error }</Text> : null }
+          </View>
+          <View style={styles.buttonSection}>
+            { this.renderRegisterButton() }
+          </View>
           <Button 
             block 
             transparent
@@ -229,8 +231,7 @@ export default class Register extends React.Component {
     if(RegisterStore.loading) {
       return (
         <Button 
-          block 
-          dark
+          block
           style={styles.disabledRegisterButton}
           disabled>
             <Text
@@ -245,7 +246,6 @@ export default class Register extends React.Component {
       return (
         <Button
           block
-          dark
           style={styles.disabledRegisterButton}
           disabled>
             <Text
@@ -259,7 +259,6 @@ export default class Register extends React.Component {
     return (
       <Button
         block
-        dark
         style={styles.registerButton}
         onPress={this.register}>
           <Text
@@ -291,7 +290,9 @@ export default class Register extends React.Component {
       date_created: moment().format(),
       level_exp: 50,
       current_todo: 1,
-      avatar: this.state.avatar
+      avatar: this.state.avatar,
+      is_banned: false,
+      last_open: moment().format()
     }
     RegisterStore.register(this.props.navigation, user, this.state.password)
   }

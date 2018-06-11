@@ -9,6 +9,15 @@ class LoginStore {
   @observable
   error = ""
 
+  isEmpty = (obj) => {
+    for(var prop in obj) {
+      if(obj.hasOwnProperty(prop))
+        return false;
+    }
+
+    return JSON.stringify(obj) === JSON.stringify({})
+  }
+
   emailLogin = (navigation, cred) => {
     firebase.auth()
       .signInAndRetrieveDataWithEmailAndPassword(cred.email_username, cred.password)
@@ -18,14 +27,29 @@ class LoginStore {
           .orderByChild('email')
           .equalTo(cred.email_username)
           .limitToFirst(1)
-          .on('child_added', (user) => {
-            if (user) {
+          .once('value', user => {
+
+            user.forEach(u => {
+              UserStore.user = u.val()
+            })
+
+            if (!this.isEmpty(UserStore.user)) {
               UserStore.user = user
+              if (!UserStore.user.is_banned) {
+                this.loading = false;
+                this.error = ""
+                UserStore.initUser(user, navigation)
+              } else {
+                this.loading = false;
+                this.error = "You have been banned in this application for reason of either of the following: False information, Trolling or Spamming."
+              }
+            }
+            else {
+              this.loading = false
+              this.error = "Your account was deleted, please contact administrator."
             }
           })
-        this.loading = false;
-        this.error = ""
-        UserStore.initUser(user, navigation)
+        
       })
       .catch((error) => {
         this.loading = false;
@@ -39,21 +63,31 @@ class LoginStore {
       .orderByChild('username')
       .equalTo(cred.email_username)
       .limitToFirst(1)
-      .on('child_added', user => {
-        if(user.val() !== null) {
-          UserStore.user = user.val()
-          firebase.auth()
-            .signInAndRetrieveDataWithEmailAndPassword(UserStore.user.email, cred.password)
-            .then((user) => {
-              this.loading = false;
-              this.error = ""
-              UserStore.initUser(user, navigation)
-            })
-            .catch((error) => {
-              UserStore.user = {}
-              this.loading = false;
-              this.error = error.message
-            })
+      .once('value', user => {
+        
+        user.forEach(u => {
+          UserStore.user = u.val()
+        })
+
+        if(!this.isEmpty(UserStore.user)) {
+          if (!UserStore.user.is_banned) {
+            firebase.auth()
+              .signInAndRetrieveDataWithEmailAndPassword(UserStore.user.email, cred.password)
+              .then((user) => {
+                this.loading = false;
+                this.error = ""
+                UserStore.initUser(user, navigation)
+              })
+              .catch((error) => {
+                UserStore.user = {}
+                this.loading = false;
+                this.error = error.message
+              })
+          } else {
+            UserStore.user = {}
+            this.loading = false
+            this.error = "You have been banned in this application for reason of either of the following: False information, Trolling or Spamming."
+          }
         } 
         else {
           this.loading = false;

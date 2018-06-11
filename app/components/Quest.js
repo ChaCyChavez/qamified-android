@@ -113,7 +113,7 @@ export default class Quest extends React.Component {
           </Card>
           <Card style={styles.questions}>
             <CardItem style={styles.spinCon}>
-              { QuestStore.initializing ? <Spinner color='#66fcf1' /> : <Text style={styles.answers}>{ itemsLength + (itemsLength > 1 ? "Solutions" : "Solution")}</Text> }
+              { QuestStore.initializing ? <Spinner color='#66fcf1' /> : <Text style={styles.answers}>{ itemsLength + (itemsLength > 1 ? " Solutions" : " Solution")}</Text> }
             </CardItem>
           </Card>
           { QuestStore.initializing ? <View></View> : solutions }
@@ -141,7 +141,7 @@ export default class Quest extends React.Component {
                   placeholderTextColor="#959697"
                   onChangeText={(input) => this.setState({solution: input})}/>
                   <TouchableOpacity style={{position: "absolute", right: 1, top: 1}} onPress={this._toggleModal}>
-                    <Icon name="ios-bulb" style={{color: 'yellow'}}/>
+                    <Icon name="ios-bulb" style={{color: 'yellow', fontSize: 20}}/>
                   </TouchableOpacity>
                   <Modal isVisible={this.state.isModalVisible}>
                     { this.renderModal() }
@@ -290,7 +290,7 @@ export default class Quest extends React.Component {
     )
   }
 
-  renderUserInfo = () => {
+  renderUserInfo = (item) => {
     if(UserProfileStore.open) {
       return (
         <CardItem style={{backgroundColor: 'transparent'}}>
@@ -310,7 +310,7 @@ export default class Quest extends React.Component {
     }
     return (
       <CardItem style={{backgroundColor: 'transparent'}}
-        button onPress={() => this.setUser(item.user_id)}>
+        button onPress={() => this.setUser(QuestStore.current_quest.user_id)}>
         <Left>
           <Thumbnail
             small 

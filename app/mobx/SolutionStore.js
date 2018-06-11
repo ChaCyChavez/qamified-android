@@ -220,8 +220,10 @@ class SolutionStore {
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
-              user.points += 40
-              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              if(user != null) {
+                user.points += 40
+                user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              }
               return user
             })
           if(did_level_up) {
@@ -255,8 +257,10 @@ class SolutionStore {
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
-              user.points += 40
-              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              if(user != null) {
+                user.points += 40
+                user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              }
               return user
             })
           if(did_level_up) {
@@ -334,8 +338,10 @@ class SolutionStore {
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
-              user.points -= 40
-              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              if(user != null) {
+                user.points -= 40
+                user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              }
               return user
             })
           if(did_level_up) {
@@ -370,8 +376,10 @@ class SolutionStore {
           firebase.database()
             .ref('user').child(`${solution.user_id}`)
             .transaction(user => {
-              user.points -= 40
-              user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              if(user != null) {
+                user.points -= 40
+                user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+              }
               return user
             })
           if(did_level_up) {
@@ -507,8 +515,10 @@ class SolutionStore {
             firebase.database()
               .ref('user').child(`${solution.user_id}`)
               .transaction(user => {
-                user.points += 80
-                user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+                if(user != null) {
+                  user.points += 80
+                  user.rank = Math.floor(user.points / 100) <= 9 ? UserStore.ranks[Math.floor(user.points / 100)] : UserStore.ranks[9]
+                }
                 return user
               })
 
