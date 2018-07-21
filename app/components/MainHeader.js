@@ -80,6 +80,7 @@ export default class MainHeader extends React.Component {
   }
 
   search = () => {
+    UserStore.logEvent("SEARCH_QUEST")
     SearchStore.search(this.state.query, this.props.navigation)
   }
 }

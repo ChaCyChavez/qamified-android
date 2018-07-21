@@ -15,6 +15,7 @@ class SearchStore {
   results = []
 
   search = (query, navigation) => {
+    this.results = []
     FeedStore.quests.forEach(quest => {
       if(quest.title.toLowerCase().includes(query.toLowerCase())) {
         this.results.push(quest)

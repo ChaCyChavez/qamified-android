@@ -46,6 +46,7 @@ class NotificationStore {
   hasUnreadNotif = () => {
     for(var i = 0; i < this.notifications.length; i++) {
       if(!this.notifications[i].is_read) {
+        console.error(this.notifications[i])
         return true
       }
     }

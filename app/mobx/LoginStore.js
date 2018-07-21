@@ -40,6 +40,7 @@ class LoginStore {
                 this.error = ""
                 UserStore.initUser(user, navigation)
               } else {
+                UserStore.user = {}
                 this.loading = false;
                 this.error = "You have been banned in this application for reason of either of the following: False information, Trolling or Spamming."
               }

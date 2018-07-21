@@ -2,7 +2,8 @@ import React from 'react'
 import { StyleSheet,
          TextInput,
          View,
-         ScrollView } from 'react-native'
+         ScrollView,
+         TouchableOpacity } from 'react-native'
 import { List,
          ListItem,
          Thumbnail,
@@ -11,7 +12,9 @@ import { List,
          Right,
          Text,
          Button,
-         Icon } from 'native-base'
+         Icon,
+         Card,
+         CardItem } from 'native-base'
 import { responsiveWidth,
          responsiveHeight,
          responsiveFontSize } from 'react-native-responsive-dimensions'
@@ -20,14 +23,20 @@ import { FeedStore,
          UserStore } from '../mobx'
 import { observer } from 'mobx-react'
 import images from '../../assets/img/images'
+import Modal from 'react-native-modal'
 
 @observer
 
 export default class Menu extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      isModalVisible: false
+    }
+  }
 
-    
+  _toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   }
 
   render () {
@@ -37,7 +46,17 @@ export default class Menu extends React.Component {
         <ScrollView style={styles.scrollView}>
           <List>
             <ListItem itemHeader first>
-              <Text style={styles.header}>Choose category</Text>
+              <Left>
+                <Text style={styles.header}>Choose category</Text>
+              </Left>
+              <Right>
+                <TouchableOpacity onPress={this._toggleModal}>
+                  <Icon name="ios-bulb" style={{color: 'yellow'}}/>
+                </TouchableOpacity>
+                <Modal isVisible={this.state.isModalVisible}>
+                  { this.renderModal() }
+                </Modal>
+              </Right>
             </ListItem>
             <ListItem avatar button onPress={() => {this.changeCategory("", goBack)}}>
               <Left>
@@ -96,6 +115,32 @@ export default class Menu extends React.Component {
     )
   }
 
+  renderModal = () => {
+    return (
+    <ScrollView>
+      <Card style={{ flex: 1, backgroundColor: "white"}}>
+        <CardItem>
+          <Text style={styles.tipHeader}>Tip: Leaderboard</Text>
+        </CardItem>
+        <CardItem>
+          <Text style={styles.tipContent}>
+            {
+              `Questboard can be sorted based on categories.`
+            }
+          </Text>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <TouchableOpacity onPress={this._toggleModal}>
+              <Text style={styles.tipButton}>Hide me!</Text>
+            </TouchableOpacity>
+          </Body>
+        </CardItem>
+      </Card>
+    </ScrollView>
+    )
+  }
+
   changeCategory = (category, goBack) => {
     FeedStore.initFeed(category)
     goBack()
@@ -131,5 +176,25 @@ const styles = StyleSheet.create({
   logoutIcon: {
     color: "#ef0202",
     fontSize: 30,
+  },
+  tipHeader: {
+    textAlign: 'center',
+    fontFamily: 'Gotham Bold',
+    fontSize: 22,
+    color: "#0b0c10"
+  },
+
+  tipContent: {
+    fontFamily: "Proxima Nova Regular",
+    fontSize: 18,
+    color: "#0b0c10"
+  },
+
+  tipButton: {
+    textAlign: 'center',
+    fontFamily: "Gotham Bold",
+    fontSize: 18,
+    color: "#1f2833",
+    width: responsiveWidth(80)
   }
 })

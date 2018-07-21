@@ -176,13 +176,13 @@ export default class CreateQuest extends React.Component {
           <Body style={{width: responsiveWidth(40)}}>
             <Text style={styles.tipContent}>
               {
-                `This application supports markdown (lightweight marup language).\n\nExample:\n`
+                `This application supports markdown (lightweight markup language).\n\nExample:\n`
               }
             </Text>
             <Text style={styles.exHeader}>
               Headers
             </Text>
-            <Text style={styles.exContent}>
+            <Text style={sModaltyles.exContent}>
               {
                 `# This is an <h1> tag\n## This is an <h2> tag\n###### This is an <h6> tag\n`
               }

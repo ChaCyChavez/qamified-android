@@ -128,11 +128,11 @@ class SolutionStore {
       })
   }
 
-  voteNotification = (quest, liked) => {
+  voteNotification = (quest, solution, liked) => {
     let n = {
       description: UserStore.user.username + (liked ? " upvoted" : " downvoted") +  " your solution. You " + (liked ? " gain " : " lose ") + "40 points.",
       date_created: moment().format(),
-      user_id: quest.user_id,
+      user_id: solution.user_id,
       quest_id: quest._id,
       is_read: false
     }
@@ -214,7 +214,7 @@ class SolutionStore {
           solution.votes += 1
 
           if(solution.user_id != UserStore.user._id) {
-            this.voteNotification(QuestStore.current_quest, true)
+            this.voteNotification(QuestStore.current_quest, solution, true)
           }
 
           firebase.database()
@@ -251,7 +251,7 @@ class SolutionStore {
           solution.votes += 1
 
           if(solution.user_id != UserStore.user._id) {
-            this.voteNotification(QuestStore.current_quest, true)
+            this.voteNotification(QuestStore.current_quest, solution, true)
           }
 
           firebase.database()
@@ -332,7 +332,7 @@ class SolutionStore {
           solution.votes -= 1
 
           if(solution.user_id != UserStore.user._id) {
-            this.voteNotification(QuestStore.current_quest, false)
+            this.voteNotification(QuestStore.current_quest, solution, false)
           }
 
           firebase.database()
@@ -370,7 +370,7 @@ class SolutionStore {
           solution.votes -= 1
 
           if(solution.user_id != UserStore.user._id) {
-            this.voteNotification(QuestStore.current_quest, false)
+            this.voteNotification(QuestStore.current_quest, solution, false)
           }
 
           firebase.database()

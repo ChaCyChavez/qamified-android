@@ -41,7 +41,9 @@ export default class Reply extends React.Component {
     return (
       <CardItem bordered style={{backgroundColor: "transparent"}}>
         <View>
-          <Text style={styles.full_name} button onPress={() => this.setUser(this.props.reply.user_id)}>{ this.props.reply.full_name }</Text>
+          {
+            UserProfileStore.open ? <Text style={styles.full_name}>{ this.props.reply.full_name }</Text> : <Text style={styles.full_name} button onPress={() => this.setUser(this.props.reply.user_id)}>{ this.props.reply.full_name }</Text>
+          }
           <Text style={styles.username} note>{ "@" + this.props.reply.username } &#183; { moment(this.props.reply.date_created).fromNow() }</Text>
           <Text style={styles.description}>&#183; { this.props.reply.description }</Text>
         </View>

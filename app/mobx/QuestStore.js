@@ -243,8 +243,8 @@ class QuestStore {
           .once('value', reps => {
             const updates = {}
             reps.foreEach(r => {
-              update[`/reply/${r.key}`] = null
-              updates[`/user/${UserStore.user._id}/reply/${reply._id}`] = null
+              updates[`/reply/${r.key}`] = null
+              updates[`/user/${UserStore.user._id}/reply/${r._id}`] = null
             })
 
             firebase.database()
